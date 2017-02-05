@@ -10,6 +10,10 @@ The following dependencies must be installed prior to building Emergent:
 
 * [FreeType](https://www.freetype.org/)
 
+On Debian "jessie" this can be done with the following command:
+
+	apt-get install libfreetype6 libfreetype6-dev
+
 The following dependencies are included with the Emergent source:
 
 * [gl3w](https://github.com/skaslev/gl3w)
@@ -18,19 +22,17 @@ The following dependencies are included with the Emergent source:
 
 ### Building and Installation
 
-**1. Install the required dependencies.** On Debian "jessie" this can be done with the following command:
+#### Configuration
 
-	apt-get install libfreetype6 libfreetype6-dev
-
-**2. Configure with CMake.** The following example configures a debug build for a unix-based platform:
+Emergent uses the CMake build system for configuration. The following command configures a debug build for a unix-based platform:
 
 	cmake . -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
 
-**3. Build**
+#### Building
 
 	cmake --build .
 
-**4. Install**
+#### Installation
 
 	cmake --build . --target install
 
