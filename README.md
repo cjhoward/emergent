@@ -18,19 +18,19 @@ The following dependencies are included with the Emergent source:
 
 ### Building and Installation
 
-1. **Install the required dependencies.** On Debian "jessie" this can be done with the following command:
+**1. Install the required dependencies.** On Debian "jessie" this can be done with the following command:
 
 	apt-get install libfreetype6 libfreetype6-dev
 
-2. **Configure with CMake.** The following example configures a debug build for a unix-based platform:
+**2. Configure with CMake.** The following example configures a debug build for a unix-based platform:
 
 	cmake . -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
 
-3. **Build**
+**3. Build**
 
 	cmake --build .
 
-4 **Install**
+**4. Install**
 
 	cmake --build . --target install
 
