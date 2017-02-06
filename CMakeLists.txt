@@ -166,3 +166,9 @@ install(
 	DIRECTORY ${PROJECT_SOURCE_DIR}/include/emergent
 	DESTINATION include
 	FILES_MATCHING PATTERN *.hpp)
+
+# Add Doxygen target_include_directories
+add_custom_target(emergent-docs
+	COMMAND doxygen
+	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/docs/api-reference
+)

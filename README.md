@@ -38,10 +38,11 @@ Emergent uses the CMake build system for configuration. The following command co
 
 ### Documentation
 
-The Emergent API reference can be generated with [Doxygen](http://www.stack.nl/~dimitri/doxygen/) using the following commands:
+The Emergent API reference can be generated with [Doxygen](http://www.stack.nl/~dimitri/doxygen/). First ensure the `doxygen` executable is in your system path, then execute the following command:
 
-	cd docs/api-reference
-	doxygen
+	cmake --build . --target emergent-docs
+
+The output will be located in `docs/api-reference/html`.
 
 ## License
 
