@@ -22,6 +22,7 @@
 namespace Emergent
 {
 
-
+Material::~Material()
+{}
 
 } // namespace Emergent
