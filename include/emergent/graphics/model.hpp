@@ -51,24 +51,17 @@ public:
 		/// Name of the model group
 		std::string name;
 		
-		/// Pointer to the skeleton which influences this group
-		Skeleton* skeleton;
-		
 		/// Pointer to the material with which this group is associated.
 		Material* material;
 		
+		/// Offset to the index of the first triangle in this group
+		std::uint32_t indexOffset;
+		
 		/// Number of triangles in this group.
-		std::size_t triangleCount;
+		std::uint32_t triangleCount;
 		
 		/// AABB which contains all geometry in this group.
 		AABB bounds;
-		
-		/// The vertex format of this group
-		VertexFormat vertexFormat;
-		
-		GLuint vao;
-		GLuint vbo;
-		GLuint ibo;
 	};
 	
 	/**
@@ -95,14 +88,6 @@ public:
 	bool create(const WingedEdge* mesh);
 	
 	/**
-	 * Loads a model from an Emergent MDL file.
-	 *
-	 * @param filename Specifies the path to an MDL file.
-	 * @return `true` if the model was successfully loaded, `false` otherwise.
-	 */
-	bool load(const std::string& filename);
-	
-	/**
 	 * Creates a model instance of this model.
 	 *
 	 * @return Pointer to the new instance of this model.
@@ -116,13 +101,20 @@ public:
 	 */
 	void addGroup(Model::Group* group);
 	
-	/**
-	 * Adds a material to this model. The added material becomes owned by this model and will be deleted when Model::destroy() is called.
-	 *
-	 * @param name Specifies the name of the material.
-	 * @param material Specifies the material to add.
-	 */
-	void addMaterial(const std::string& name, Material* material);
+	/// Sets the vertex format flags.
+	void setVertexFormat(std::uint32_t vertexFormat);
+	
+	/// Sets the VAO
+	void setVAO(GLuint vao);
+	
+	/// Sets the VBO
+	void setVBO(GLuint vbo);
+	
+	/// Sets the IBO
+	void setIBO(GLuint ibo);
+	
+	/// Sets the skeleton. The set skeleton becomes owned by this model and will be deleted when Model::destroy() is called.
+	void setSkeleton(Skeleton* skeleton);
 	
 	/**
 	 * Sets the bounds of this model.
@@ -146,21 +138,24 @@ public:
 	/// @copydoc Model::getGroup(const std::string&) const
 	Model::Group* getGroup(const std::string& name);
 	
-	/// Returns the number of materials in the model.
-	std::size_t getMaterialCount() const;
+	/// Returns the vertex format flags
+	std::uint32_t getVertexFormat();
 	
-	/// Returns the material at the specified index.
-	const Material* getMaterial(std::size_t index) const;
+	/// Returns the VAO
+	GLuint getVAO() const;
 	
-	/// @copydoc Model::getMaterial(std::size_t) const
-	Material* getMaterial(std::size_t index);
+	/// Returns the VBO
+	GLuint getVBO() const;
 	
-	/// Returns the material with the specified name, or `nullptr` if it does not exist.
-	const Material* getMaterial(const std::string& name) const;
+	/// Returns the IBO
+	GLuint getIBO() const;
 	
-	/// @copydoc Model::getMaterial(const std::string&) const
-	Material* getMaterial(const std::string& name);
-		
+	/// Returns the skeleton
+	const Skeleton* getSkeleton() const;
+	
+	/// @copydoc Model::getSkeleton() const
+	Skeleton* getSkeleton();
+	
 	/// Returns the bounds of this model.
 	const AABB& getBounds() const;
 	
@@ -182,8 +177,11 @@ private:
 	
 	std::vector<Model::Group*> groups;
 	std::map<std::string, Model::Group*> groupMap;
-	std::vector<Material*> materials;
-	std::map<std::string, Material*> materialMap;
+	std::uint32_t vertexFormat;
+	GLuint vao;
+	GLuint vbo;
+	GLuint ibo;
+	Skeleton* skeleton;
 	AABB bounds;
 };
 
@@ -202,19 +200,34 @@ inline Model::Group* Model::getGroup(std::size_t index)
 	return groups[index];
 }
 
-inline std::size_t Model::getMaterialCount() const
+inline std::uint32_t Model::getVertexFormat()
 {
-	return materials.size();
+	return vertexFormat;
 }
 
-inline const Material* Model::getMaterial(std::size_t index) const
+inline GLuint Model::getVAO() const
 {
-	return materials[index];
+	return vao;
 }
 
-inline Material* Model::getMaterial(std::size_t index)
+inline GLuint Model::getVBO() const
 {
-	return materials[index];
+	return vbo;
+}
+
+inline GLuint Model::getIBO() const
+{
+	return ibo;
+}
+
+inline const Skeleton* Model::getSkeleton() const
+{
+	return skeleton;
+}
+	
+inline Skeleton* Model::getSkeleton()
+{
+	return skeleton;
 }
 
 inline const AABB& Model::getBounds() const

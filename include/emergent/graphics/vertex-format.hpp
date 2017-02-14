@@ -20,29 +20,17 @@
 #ifndef EMERGENT_GRAPHICS_VERTEX_FORMAT_HPP
 #define EMERGENT_GRAPHICS_VERTEX_FORMAT_HPP
 
-#define EMERGENT_VERTEX_POSITION 0
-#define EMERGENT_VERTEX_TEXCOORD 1
-#define EMERGENT_VERTEX_NORMAL 2
-#define EMERGENT_VERTEX_TANGENT 3
-#define EMERGENT_VERTEX_COLOR 4
-#define EMERGENT_VERTEX_BONE_INDICES 5
-#define EMERGENT_VERTEX_BONE_WEIGHTS 6
-
 namespace Emergent
 {
 
-/**
- * @ingroup graphics
- */
-struct VertexFormat
-{
-	bool hasPositions;
-	bool hasTexcoords;
-	bool hasNormals;
-	bool hasColors;
-	bool hasWeights;
-	int bonesPerVertex;
-};
+#define EMERGENT_VERTEX_POSITION 0
+#define EMERGENT_VERTEX_NORMAL 1
+#define EMERGENT_VERTEX_TEXCOORD 2
+#define EMERGENT_VERTEX_TANGENT 3
+#define EMERGENT_VERTEX_BITANGENT 4
+#define EMERGENT_VERTEX_BONE_INDICES 5
+#define EMERGENT_VERTEX_BONE_WEIGHTS 6
+#define EMERGENT_VERTEX_COLOR 7
 
 } // namespace Emergent
 

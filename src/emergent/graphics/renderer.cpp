@@ -54,7 +54,6 @@ void RenderQueue::queue(const ModelInstance* instance)
 {
 	// Create new render operation
 	RenderOperation operation;
-	operation.baseVertex = 0;
 
 	// Set operation transform
 	operation.transform = instance->getMatrix();
@@ -63,12 +62,14 @@ void RenderQueue::queue(const ModelInstance* instance)
 	//operation.depth = camera->getViewFrustum().getNear().distance(instance->getTranslation());
 
 	const Model* model = instance->getModel();
+	operation.vao = model->getVAO();
+	
 	for (std::size_t i = 0; i < model->getGroupCount(); ++i)
 	{
 		// Queue a render operation for each model group
 		const Model::Group* group = model->getGroup(i);
 		
-		operation.vao = group->vao;
+		operation.indexOffset = group->indexOffset;
 		operation.triangleCount = group->triangleCount;
 		operation.material = group->material;
 
@@ -93,7 +94,7 @@ void RenderQueue::queue(const BillboardBatch* batch)
 	{
 		const BillboardBatch::Range* range = batch->getRange(i);
 		operation.material = range->material;
-		operation.baseVertex = range->start * 4;
+		operation.indexOffset = range->start * 4;
 		operation.triangleCount = range->length * 2;
 		
 		queue(operation);

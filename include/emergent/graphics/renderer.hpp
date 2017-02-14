@@ -68,8 +68,8 @@ struct RenderTarget
 struct RenderOperation
 {
 	GLuint vao;
+	std::size_t indexOffset;
 	std::size_t triangleCount;
-	int baseVertex;
 	const Material* material;
 	glm::mat4 transform;
 	float depth;
