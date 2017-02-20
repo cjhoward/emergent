@@ -89,6 +89,9 @@
 #include <emergent/graphics/scene-object.hpp>
 #include <emergent/graphics/scene.hpp>
 #include <emergent/graphics/shader.hpp>
+#include <emergent/graphics/shader-loader.hpp>
+#include <emergent/graphics/shader-parameter.hpp>
+#include <emergent/graphics/shader-parameter-set.hpp>
 #include <emergent/graphics/skeleton.hpp>
 #include <emergent/graphics/stb-image.hpp>
 #include <emergent/graphics/texture.hpp>

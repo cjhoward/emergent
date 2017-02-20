@@ -63,6 +63,9 @@ set(emergent_SOURCES
 	src/emergent/graphics/scene-object.cpp
 	src/emergent/graphics/scene.cpp
 	src/emergent/graphics/shader.cpp
+	src/emergent/graphics/shader-loader.cpp
+	src/emergent/graphics/shader-parameter.cpp
+	src/emergent/graphics/shader-parameter-set.cpp
 	src/emergent/graphics/skeleton.cpp
 	src/emergent/graphics/texture.cpp
 	src/emergent/math/math.cpp
@@ -122,6 +125,9 @@ set(emergent_HEADERS
 	include/emergent/graphics/scene-object.hpp
 	include/emergent/graphics/scene.hpp
 	include/emergent/graphics/shader.hpp
+	include/emergent/graphics/shader-loader.hpp
+	include/emergent/graphics/shader-parameter.hpp
+	include/emergent/graphics/shader-parameter-set.hpp
 	include/emergent/graphics/skeleton.hpp
 	include/emergent/graphics/stb-image.hpp
 	include/emergent/graphics/texture.hpp
