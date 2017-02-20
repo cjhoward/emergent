@@ -59,6 +59,7 @@ bool Texture::load(const std::string& filename)
 	int components;
 	
 	// Load image data
+	stbi_set_flip_vertically_on_load(true);
 	unsigned char* pixels = stbi_load(filename.c_str(), &width, &height, &components, 4);
 	if (!pixels)
 	{

@@ -108,11 +108,17 @@ bool FontLoader::load(const std::string& filename, int size, Font* font)
 		
 		unsigned int pixelCount = bitmap.width * bitmap.rows;
 		unsigned char* pixels = new unsigned char[pixelCount * 2];	
-			
-		for (unsigned int i = 0; i < pixelCount; ++i)
+		
+		for (unsigned int y = 0; y < bitmap.rows; ++y)
 		{
-			pixels[i * 2] = 255;
-			pixels[i * 2 + 1] = bitmap.buffer[i];
+			for (unsigned int x = 0; x < bitmap.width; ++x)
+			{
+				std::size_t index0 = (bitmap.rows - y - 1) * bitmap.width + x;
+				std::size_t index1 = (y * bitmap.width + x) * 2;
+				
+				pixels[index1] = 255;
+				pixels[index1 + 1] = bitmap.buffer[index0];
+			}
 		}
 		
 		// Create glyph

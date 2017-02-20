@@ -189,7 +189,7 @@ void BillboardBatch::update()
 		*(v++) = tintColor.b;
 		*(v++) = tintColor.a;
 		*(v++) = coordinatesMin.x;
-		*(v++) = coordinatesMin.y;
+		*(v++) = coordinatesMax.y;
 		
 		*(v++) = v1.x;
 		*(v++) = v1.y;
@@ -199,7 +199,7 @@ void BillboardBatch::update()
 		*(v++) = tintColor.b;
 		*(v++) = tintColor.a;
 		*(v++) = coordinatesMax.x;
-		*(v++) = coordinatesMin.y;
+		*(v++) = coordinatesMax.y;
 		
 		*(v++) = v2.x;
 		*(v++) = v2.y;
@@ -209,7 +209,7 @@ void BillboardBatch::update()
 		*(v++) = tintColor.b;
 		*(v++) = tintColor.a;
 		*(v++) = coordinatesMax.x;
-		*(v++) = coordinatesMax.y;
+		*(v++) = coordinatesMin.y;
 		
 		*(v++) = v3.x;
 		*(v++) = v3.y;
@@ -219,7 +219,7 @@ void BillboardBatch::update()
 		*(v++) = tintColor.b;
 		*(v++) = tintColor.a;
 		*(v++) = coordinatesMin.x;
-		*(v++) = coordinatesMax.y;
+		*(v++) = coordinatesMin.y;
 	}
 	
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
