@@ -39,9 +39,6 @@ public:
 	
 	void destroy();
 	
-	bool load(const std::string& filename);
-	bool loadCubemap(const std::string& filename);
-	
 	void setTextureID(GLuint textureID);
 	void setWidth(int width);
 	void setHeight(int height);

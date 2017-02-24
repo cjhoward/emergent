@@ -95,6 +95,7 @@
 #include <emergent/graphics/skeleton.hpp>
 #include <emergent/graphics/stb-image.hpp>
 #include <emergent/graphics/texture.hpp>
+#include <emergent/graphics/texture-loader.hpp>
 #include <emergent/graphics/vertex-format.hpp>
 
 /**

@@ -68,6 +68,7 @@ set(emergent_SOURCES
 	src/emergent/graphics/shader-parameter-set.cpp
 	src/emergent/graphics/skeleton.cpp
 	src/emergent/graphics/texture.cpp
+	src/emergent/graphics/texture-loader.cpp
 	src/emergent/math/math.cpp
 	src/emergent/math/transform.cpp
 	src/emergent/utility/timer.cpp
@@ -131,6 +132,7 @@ set(emergent_HEADERS
 	include/emergent/graphics/skeleton.hpp
 	include/emergent/graphics/stb-image.hpp
 	include/emergent/graphics/texture.hpp
+	include/emergent/graphics/texture-loader.hpp
 	include/emergent/graphics/vertex-format.hpp
 	include/emergent/math/glm.hpp
 	include/emergent/math/hash.hpp
