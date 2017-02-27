@@ -32,6 +32,121 @@
 namespace Emergent
 {
 
+const int TextureLoader::cubemapLayoutDimensions[5][2] = 
+{
+	{3, 4}, // Vertical cross
+	{4, 3}, // Horizontal cross
+	{1, 6}, // Vertical strip
+	{6, 1}, // Horizontal strip
+	{3, 2}  // Blender
+};
+
+const int TextureLoader::cubemapLayoutOffsets[5][6][2] = 
+{
+	// Vertical cross
+	{
+		{2, 1}, // +X
+		{0, 1}, // -X
+		{1, 0}, // +Y
+		{1, 2}, // -Y
+		{1, 1}, // +Z
+		{1, 3}  // -Z
+	},
+	
+	// Horizontal cross
+	{
+		{2, 1}, // +X
+		{0, 1}, // -X
+		{1, 0}, // +Y
+		{1, 2}, // -Y
+		{3, 1}, // +Z
+		{1, 1}  // -Z
+	},
+	
+	// Vertical strip
+	{
+		{0, 0}, // +X
+		{0, 1}, // -X
+		{0, 2}, // +Y
+		{0, 3}, // -Y
+		{0, 4}, // +Z
+		{0, 5}  // -Z
+	},
+	
+	// Horizontal strip
+	{
+		{0, 0}, // +X
+		{1, 0}, // -X
+		{2, 0}, // +Y
+		{3, 0}, // -Y
+		{4, 0}, // +Z
+		{5, 0}  // -Z
+	},
+	
+	// Blender
+	{
+		{2, 0}, // +X
+		{0, 0}, // -X
+		{1, 1}, // +Y
+		{0, 1}, // -Y
+		{1, 0}, // +Z
+		{2, 1}  // -Z
+	}
+};
+
+const bool TextureLoader::cubemapLayoutFlips[5][6][2] = 
+{
+	// Vertical cross
+	{
+		{false, true}, // +X
+		{false, true}, // -X
+		{false, true}, // +Y
+		{false, true}, // -Y
+		{false, true}, // +Z
+		{true, false}, // -Z
+	},
+	
+	// Horizontal cross
+	{
+		{false, false}, // +X
+		{false, false}, // -X
+		{false, false}, // +Y
+		{false, false}, // -Y
+		{false, false}, // +Z
+		{false, false}, // -Z
+	},
+	
+	// Vertical strip
+	{
+		{false, false}, // +X
+		{false, false}, // -X
+		{false, false}, // +Y
+		{false, false}, // -Y
+		{false, false}, // +Z
+		{false, false}, // -Z
+	},
+	
+	// Horizontal strip
+	{
+		{false, false}, // +X
+		{false, false}, // -X
+		{false, false}, // +Y
+		{false, false}, // -Y
+		{false, false}, // +Z
+		{false, false}, // -Z
+	},
+	
+	// Blender
+	{
+		{false, false}, // +X
+		{false, false}, // -X
+		{false, false}, // +Y
+		{false, false}, // -Y
+		{false, false}, // +Z
+		{false, false}, // -Z
+	}
+};
+
 TextureLoader::TextureLoader():
 	gamma(1.0f),
 	mipmapChain(false),
@@ -261,7 +376,189 @@ bool TextureLoader::loadMipmap(Texture* texture, const std::string& filename, in
 
 bool TextureLoader::loadCubemapMipmap(Texture* texture, const std::string& filename, int mipmapLevel)
 {
-	return false;
+	int cubemapWidth;
+	int cubemapHeight;
+	int channels;
+	
+	// Determine if image is in an HDR format
+	bool hdr = (stbi_is_hdr(filename.c_str()) != 0);
+	
+	// Disable vertical flip on load
+	stbi_set_flip_vertically_on_load(true);
+	
+	// Load image data
+	void* cubemapPixels = nullptr;
+	if (hdr)
+	{
+		cubemapPixels = stbi_loadf(filename.c_str(), &cubemapWidth, &cubemapHeight, &channels, 0);
+	}
+	else
+	{
+		cubemapPixels = stbi_load(filename.c_str(), &cubemapWidth, &cubemapHeight, &channels, 0);
+	}
+	
+	// Check if image was loaded
+	if (!cubemapPixels)
+	{
+		std::cerr << "TextureLoader::loadCubemapMipmap(): Failed to load mipmap level " << mipmapLevel << " from \"" << filename << "\"" << std::endl;
+		return false;
+	}
+	
+	// Determine cubemap layout
+	int layoutIndex = -1;
+	CubemapLayout layout;
+	for (std::size_t i = 0; i < 5; ++i)
+	{
+		float aspectRatio = (float)cubemapLayoutDimensions[i][0] / (float)cubemapLayoutDimensions[i][1];
+		if ((int)(cubemapHeight * aspectRatio) == cubemapWidth)
+		{
+			layout = static_cast<CubemapLayout>(i);
+			layoutIndex = i;
+			break;
+		}
+	}
+		
+	// Check for valid layout
+	if (layoutIndex == -1)
+	{
+		std::cerr << "TextureLoader::loadCubemapMipmap(): Invalid cubemap layout in image file \"" << filename << "\"" << std::endl;
+		stbi_image_free(cubemapPixels);
+		return false;
+	}
+	
+	// Calculate cubemap face size
+	int faceSize = cubemapWidth / cubemapLayoutDimensions[static_cast<std::size_t>(layout)][0];
+	
+	// If this is the base-level mipmap, set the texture dimensions
+	if (!mipmapLevel)
+	{
+		texture->setWidth(faceSize);
+		texture->setHeight(faceSize);
+	}
+	else
+	{
+		// Verify mipmap dimensions
+		if (faceSize != texture->getWidth() >> mipmapLevel)
+		{
+			std::cerr << "TextureLoader::loadCubemapMipmap(): Mipmap level " << mipmapLevel << " loaded from \"" << filename << "\" has incorrect dimensions" << std::endl;
+			stbi_image_free(cubemapPixels);
+			return false;
+		}
+	}
+	
+	// Select texture formats according to number of color channels in the image
+	GLint internalFormat;
+	GLenum format;
+	GLenum type = (hdr) ? GL_FLOAT : GL_UNSIGNED_BYTE;
+	if (channels == 1)
+	{
+		// Grey
+		internalFormat = (hdr) ? GL_R32F : GL_R8;
+		format = GL_RED;
+		
+		GLint swizzleMask[] = {GL_RED, GL_RED, GL_RED, GL_ONE};
+		glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+	}
+	else if (channels == 2)
+	{
+		// Grey, alpha
+		internalFormat = (hdr) ? GL_RG32F : GL_RG8;
+		format = GL_RG;
+		
+		GLint swizzleMask[] = {GL_RED, GL_RED, GL_RED, GL_GREEN};
+		glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+	}
+	else if (channels == 3)
+	{
+		// Red, green, blue
+		internalFormat = (hdr) ? GL_RGB32F : GL_RGB8;
+		format = GL_RGB;
+		
+		GLint swizzleMask[] = {GL_RED, GL_GREEN, GL_BLUE, GL_ONE};
+		glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+	}
+	else if (channels == 4)
+	{
+		// Red, green, blue, alpha
+		internalFormat = (hdr) ? GL_RGBA32F : GL_RGBA8;
+		format = GL_RGBA;
+	}
+	else
+	{
+		std::cerr << "TextureLoader::loadMipmap(): Invalid number of color channels in image file \"" << filename << "\"" << std::endl;
+		stbi_image_free(cubemapPixels);
+		return false;
+	}
+	
+	// Allocate cubemap face pixels
+	void* facePixels = nullptr;
+	if (hdr)
+	{
+		facePixels = new float[faceSize * faceSize * channels];
+	}
+	else
+	{
+		facePixels = new unsigned char[faceSize * faceSize * channels];
+	}
+	
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	
+	for (int faceIndex = 0; faceIndex < 6; ++faceIndex)
+	{
+		int offsetX = faceSize * cubemapLayoutOffsets[layoutIndex][faceIndex][0];
+		int offsetY = faceSize * ((cubemapLayoutDimensions[layoutIndex][1] - 1) - cubemapLayoutOffsets[layoutIndex][faceIndex][1]);
+		
+		bool flipX = cubemapLayoutFlips[layoutIndex][faceIndex][0];
+		bool flipY = cubemapLayoutFlips[layoutIndex][faceIndex][1];
+		
+		for (int y = 0; y < faceSize; ++y)
+		{
+			for (int x = 0; x < faceSize; ++x)
+			{
+				std::size_t facePixelIndex;
+				
+				int faceX = (flipX) ? (faceSize - 1 - x) : x;
+				int faceY = (flipY) ? (faceSize - 1 - y) : y;
+				facePixelIndex = (faceY * faceSize + faceX) * channels;
+				
+				std::size_t cubemapPixelIndex = ((offsetY + y) * cubemapWidth + (offsetX + x)) * channels;
+				
+				if (hdr)
+				{
+					for (int c = 0; c < channels; ++c)
+					{
+						static_cast<float*>(facePixels)[facePixelIndex + c] = static_cast<float*>(cubemapPixels)[cubemapPixelIndex + c];
+					}
+				}
+				else
+				{
+					for (int c = 0; c < channels; ++c)
+					{
+						static_cast<unsigned char*>(facePixels)[facePixelIndex + c] = static_cast<unsigned char*>(cubemapPixels)[cubemapPixelIndex + c];
+					}
+				}
+			}
+		}
+		
+		// Upload cubemap face pixels to OpenGL
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + faceIndex, mipmapLevel, internalFormat, faceSize, faceSize, 0, format, type, facePixels);
+	}
+	
+	// Free cubemap face pixels
+	if (hdr)
+	{
+		delete[] static_cast<float*>(facePixels);
+	}
+	else
+	{
+		delete[] static_cast<unsigned char*>(facePixels);
+	}
+	
+	// Free loaded image data
+	stbi_image_free(cubemapPixels);
+	
+	return true;
 }
 
 bool TextureLoader::loadMipmapChain(Texture* texture, const std::string& filename)

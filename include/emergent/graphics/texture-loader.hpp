@@ -77,6 +77,19 @@ public:
 	void setMaxAnisotropy(float anisotropy);
 	
 private:
+	enum class CubemapLayout
+	{
+		VERTICAL_CROSS,
+		HORIZONTAL_CROSS,
+		VERTICAL_STRIP,
+		HORIZONTAL_STRIP,
+		BLENDER
+	};
+	
+	static const int cubemapLayoutDimensions[5][2];
+	static const int cubemapLayoutOffsets[5][6][2];
+	static const bool cubemapLayoutFlips[5][6][2];
+	
 	Texture* loadCubemap(const std::string& filename);
 	bool loadMipmap(Texture* texture, const std::string& filename, int mipmapLevel);
 	bool loadCubemapMipmap(Texture* texture, const std::string& filename, int mipmapLevel);
