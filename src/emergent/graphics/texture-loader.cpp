@@ -45,8 +45,8 @@ const int TextureLoader::cubemapLayoutOffsets[5][6][2] =
 {
 	// Vertical cross
 	{
-		{2, 1}, // +X
-		{0, 1}, // -X
+		{0, 1}, // +X
+		{2, 1}, // -X
 		{1, 0}, // +Y
 		{1, 2}, // -Y
 		{1, 1}, // +Z
@@ -55,18 +55,18 @@ const int TextureLoader::cubemapLayoutOffsets[5][6][2] =
 	
 	// Horizontal cross
 	{
-		{2, 1}, // +X
-		{0, 1}, // -X
+		{0, 1}, // +X
+		{2, 1}, // -X
 		{1, 0}, // +Y
 		{1, 2}, // -Y
-		{3, 1}, // +Z
-		{1, 1}  // -Z
+		{1, 1}, // +Z
+		{3, 1}  // -Z
 	},
 	
 	// Vertical strip
 	{
-		{0, 0}, // +X
-		{0, 1}, // -X
+		{0, 1}, // +X
+		{0, 0}, // -X
 		{0, 2}, // +Y
 		{0, 3}, // -Y
 		{0, 4}, // +Z
@@ -75,8 +75,8 @@ const int TextureLoader::cubemapLayoutOffsets[5][6][2] =
 	
 	// Horizontal strip
 	{
-		{0, 0}, // +X
-		{1, 0}, // -X
+		{1, 0}, // +X
+		{0, 0}, // -X
 		{2, 0}, // +Y
 		{3, 0}, // -Y
 		{4, 0}, // +Z
@@ -85,8 +85,8 @@ const int TextureLoader::cubemapLayoutOffsets[5][6][2] =
 	
 	// Blender
 	{
-		{2, 0}, // +X
-		{0, 0}, // -X
+		{0, 0}, // +X
+		{2, 0}, // -X
 		{1, 1}, // +Y
 		{0, 1}, // -Y
 		{1, 0}, // +Z
@@ -98,52 +98,52 @@ const bool TextureLoader::cubemapLayoutFlips[5][6][2] =
 {
 	// Vertical cross
 	{
-		{false, true}, // +X
-		{false, true}, // -X
-		{false, true}, // +Y
-		{false, true}, // -Y
-		{false, true}, // +Z
-		{true, false}, // -Z
+		{true, true}, // +X
+		{true, true}, // -X
+		{true, true}, // +Y
+		{true, true}, // -Y
+		{true, true}, // +Z
+		{false, false}, // -Z
 	},
 	
 	// Horizontal cross
 	{
-		{false, false}, // +X
-		{false, false}, // -X
-		{false, false}, // +Y
-		{false, false}, // -Y
-		{false, false}, // +Z
-		{false, false}, // -Z
+		{true, true}, // +X
+		{true, true}, // -X
+		{true, true}, // +Y
+		{true, true}, // -Y
+		{true, true}, // +Z
+		{true, true}, // -Z
 	},
 	
 	// Vertical strip
 	{
-		{false, false}, // +X
-		{false, false}, // -X
-		{false, false}, // +Y
-		{false, false}, // -Y
-		{false, false}, // +Z
-		{false, false}, // -Z
+		{true, true}, // +X
+		{true, true}, // -X
+		{true, true}, // +Y
+		{true, true}, // -Y
+		{true, true}, // +Z
+		{true, true}, // -Z
 	},
 	
 	// Horizontal strip
 	{
-		{false, false}, // +X
-		{false, false}, // -X
-		{false, false}, // +Y
-		{false, false}, // -Y
-		{false, false}, // +Z
-		{false, false}, // -Z
+		{true, true}, // +X
+		{true, true}, // -X
+		{true, true}, // +Y
+		{true, true}, // -Y
+		{true, true}, // +Z
+		{true, true}, // -Z
 	},
 	
 	// Blender
 	{
-		{false, false}, // +X
-		{false, false}, // -X
-		{false, false}, // +Y
-		{false, false}, // -Y
-		{false, false}, // +Z
-		{false, false}, // -Z
+		{true, true}, // +X
+		{true, true}, // -X
+		{true, true}, // +Y
+		{true, true}, // -Y
+		{true, true}, // +Z
+		{true, true}, // -Z
 	}
 };
 
