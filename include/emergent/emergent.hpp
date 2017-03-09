@@ -99,6 +99,13 @@
 #include <emergent/graphics/vertex-format.hpp>
 
 /**
+ * @defgroup input Input
+ *
+ * Input systems and devices
+ */
+#include <emergent/input/arcball.hpp>
+
+/**
  * @defgroup math Math
  *
  * Essential math functions and structures

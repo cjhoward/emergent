@@ -69,6 +69,7 @@ set(emergent_SOURCES
 	src/emergent/graphics/skeleton.cpp
 	src/emergent/graphics/texture.cpp
 	src/emergent/graphics/texture-loader.cpp
+	src/emergent/input/arcball.cpp
 	src/emergent/math/math.cpp
 	src/emergent/math/transform.cpp
 	src/emergent/utility/timer.cpp
@@ -134,6 +135,7 @@ set(emergent_HEADERS
 	include/emergent/graphics/texture.hpp
 	include/emergent/graphics/texture-loader.hpp
 	include/emergent/graphics/vertex-format.hpp
+	include/emergent/input/arcball.hpp
 	include/emergent/math/glm.hpp
 	include/emergent/math/hash.hpp
 	include/emergent/math/math.hpp
