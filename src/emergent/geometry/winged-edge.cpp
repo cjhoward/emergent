@@ -117,10 +117,16 @@ bool WingedEdge::create(const std::vector<Vector3>& vertices, const std::vector<
 			}
 		}
 
-		// Add edges and triangle to lists
+		// Set edge indices and add edges to the edge list
+		ab->index = edges.size();
 		edges.push_back(ab);
+		bc->index = edges.size();
 		edges.push_back(bc);
+		ca->index = edges.size();
 		edges.push_back(ca);
+		
+		// Set triangle index and add triangle to the triangle list
+		triangle->index = currentTriangle;
 		triangles[currentTriangle++] = triangle;
 	}
 	

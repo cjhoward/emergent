@@ -124,6 +124,9 @@ public:
 		
 		/// Pointer to the symmetric edge
 		WingedEdge::Edge* symmetric;
+		
+		/// Index of this edge
+		std::size_t index;
 	};
 	
 	/**
@@ -136,6 +139,9 @@ public:
 		
 		/// Faceted surface normal
 		Vector3 normal;
+		
+		/// Index of this triangle
+		std::size_t index;
 	};
 	
 private:
