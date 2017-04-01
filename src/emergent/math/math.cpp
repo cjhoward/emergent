@@ -18,6 +18,7 @@
  */
 
 #include <emergent/math/math.hpp>
+#include <cstdlib>
 
 namespace Emergent
 {
@@ -179,6 +180,29 @@ float ease_out_quintic(float t, float b, float c, float d) {
 
 	float tc=ts*t;
 	return b+c*(tc*ts + -5*ts*ts + 10*tc + -10*ts + 5*t);
+}
+
+float frand(float min, float max)
+{
+    double f = (float)std::rand() / RAND_MAX;
+    return min + f * (max - min);
+}
+
+Vector3 limit(const Vector3& v, float l)
+{
+	float lengthSquared = glm::dot(v, v);
+	if (!lengthSquared)
+	{
+		return v;
+	}
+	
+	float length = std::sqrt(lengthSquared);
+	if (length > l)
+	{
+		return v * (1.0f / length) * l;
+	}
+	
+	return v;
 }
 
 } // namespace Emergent

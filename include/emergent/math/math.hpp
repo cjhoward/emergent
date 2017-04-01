@@ -53,6 +53,15 @@ void project_on_triangle(const Vector3& p, const Vector3& a, const Vector3& b, c
 
 float ease_out_quintic(float t, float b, float c, float d);
 
+float frand(float min, float max);
+
+Vector3 limit(const Vector3& v, float l);
+
+inline bool nonzero(const Vector3& v)
+{
+	return (v.x != 0.0f || v.y != 0.0f || v.z != 0.0f);
+}
+
 } // namespace Emergent
 
 #endif // EMERGENT_MATH_HPP
