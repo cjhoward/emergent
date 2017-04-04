@@ -62,6 +62,7 @@
 #include <emergent/geometry/aabb.hpp>
 #include <emergent/geometry/bounding-volume.hpp>
 #include <emergent/geometry/convex-hull.hpp>
+#include <emergent/geometry/octree.hpp>
 #include <emergent/geometry/plane.hpp>
 #include <emergent/geometry/ray.hpp>
 #include <emergent/geometry/rect.hpp>
