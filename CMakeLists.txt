@@ -50,6 +50,8 @@ set(emergent_SOURCES
 	src/emergent/geometry/view-frustum.cpp
 	src/emergent/geometry/winged-edge.cpp
 	src/emergent/graphics/ambient-light.cpp
+	src/emergent/graphics/animation.cpp
+	src/emergent/graphics/animation-channel.cpp
 	src/emergent/graphics/billboard.cpp
 	src/emergent/graphics/bind-pose.cpp
 	src/emergent/graphics/bone.cpp
@@ -114,6 +116,9 @@ set(emergent_HEADERS
 	include/emergent/geometry/view-frustum.hpp
 	include/emergent/geometry/winged-edge.hpp
 	include/emergent/graphics/ambient-light.hpp
+	include/emergent/graphics/animation.hpp
+	include/emergent/graphics/animation-channel.hpp
+	include/emergent/graphics/key-frame.hpp
 	include/emergent/graphics/billboard.hpp
 	include/emergent/graphics/bind-pose.hpp
 	include/emergent/graphics/bone.hpp
