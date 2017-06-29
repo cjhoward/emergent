@@ -72,6 +72,11 @@ public:
 	 */
 	bool loadOBJ(const std::string& filename);
 	
+	/**
+	 * Calculates the faceted surface normals for each triangle.
+	 */
+	void calculateNormals();
+	
 	/// Returns a pointer to the winged-edge mesh vertices
 	const std::vector<WingedEdge::Vertex*>* getVertices() const;
 	
@@ -144,12 +149,7 @@ public:
 		std::size_t index;
 	};
 	
-private:
-	/**
-	 * Calculates the faceted surface normals for each triangle.
-	 */
-	void calculateNormals();
-	
+private:	
 	/**
 	 * Reads Wavefront OBJ data from an input stream
 	 *
