@@ -27,6 +27,7 @@
 #include <emergent/math/types.hpp>
 #include <emergent/geometry/aabb.hpp>
 #include <emergent/geometry/bounding-volume.hpp>
+#include <emergent/geometry/ray.hpp>
 
 namespace Emergent
 {
@@ -89,6 +90,22 @@ public:
 	 * @param[out] results Returns a list of entries intersected by the specified volume.
 	 */
 	void query(const BoundingVolume& volume, std::list<EntryType>* results) const;
+	
+	/**
+	 * Queries the octree for a list of entries whose bounding volumes are intersected by the specified ray.
+	 *
+	 * @param volume Specifies the ray to query.
+	 * @return List of entries intersected by the specified ray.
+	 */
+	std::list<EntryType> query(const Ray& ray) const;
+	
+	/**
+	 * Queries the octree for a list of entries whose bounding volumes are intersected by the specified ray.
+	 *
+	 * @param ray Specifies the ray to query.
+	 * @param[out] results Returns a list of entries intersected by the specified ray.
+	 */
+	void query(const Ray& ray, std::list<EntryType>* results) const;
 
 	/**
 	 * Returns the bounds of this octree.
@@ -287,6 +304,46 @@ void Octree<T>::query(const BoundingVolume& volume, std::list<EntryType>* result
 		octants[5]->query(volume, results);
 		octants[6]->query(volume, results);
 		octants[7]->query(volume, results);
+	}
+}
+
+template <typename T>
+std::list<typename Octree<T>::EntryType> Octree<T>::query(const Ray& ray) const
+{
+	std::list<EntryType> results;
+
+	query(ray, &results);
+
+	return results;
+}
+
+template <typename T>
+void Octree<T>::query(const Ray& ray, std::list<EntryType>* results) const
+{
+	// Check if the ray intersects with this quadtree
+	if (!std::get<0>(ray.intersects(bounds)))
+		return;
+
+	// Perform intersection tests for individual entries
+	for (auto it = entries.begin(); it != entries.end(); ++it)
+	{
+		if (std::get<0>(ray.intersects(it->first)))
+		{
+			results->push_back(it->second);
+		}
+	}
+	
+	if (depth < maxDepth)
+	{
+		// Query octants
+		octants[0]->query(ray, results);
+		octants[1]->query(ray, results);
+		octants[2]->query(ray, results);
+		octants[3]->query(ray, results);
+		octants[4]->query(ray, results);
+		octants[5]->query(ray, results);
+		octants[6]->query(ray, results);
+		octants[7]->query(ray, results);
 	}
 }
 
