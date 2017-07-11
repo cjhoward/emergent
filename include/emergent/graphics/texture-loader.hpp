@@ -76,6 +76,15 @@ public:
 	 */
 	void setMaxAnisotropy(float anisotropy);
 	
+	/// Enables or disables repeating the texture S coordinates
+	void setWrapS(bool repeat);
+	
+	/// Enables or disables repeating the texture T coordinates
+	void setWrapT(bool repeat);
+	
+	/// Enables or disables repeating the texture R coordinates
+	void setWrapR(bool repeat);
+	
 private:
 	enum class CubemapLayout
 	{
@@ -99,6 +108,10 @@ private:
 	bool mipmapChain;
 	bool cubemap;
 	float maxAnisotropy;
+	
+	bool wrapRepeatS;
+	bool wrapRepeatT;
+	bool wrapRepeatR;
 };
 
 } // namespace Emergent

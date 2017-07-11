@@ -151,7 +151,10 @@ TextureLoader::TextureLoader():
 	gamma(1.0f),
 	mipmapChain(false),
 	cubemap(false),
-	maxAnisotropy(1.0f)
+	maxAnisotropy(1.0f),
+	wrapRepeatS(true),
+	wrapRepeatT(true),
+	wrapRepeatR(true)
 {}
 
 Texture* TextureLoader::load(const std::string& filename)
@@ -169,8 +172,8 @@ Texture* TextureLoader::load(const std::string& filename)
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	
 	// Set wrapping and filtering parameters
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (wrapRepeatS) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (wrapRepeatT) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
@@ -227,6 +230,21 @@ void TextureLoader::setMaxAnisotropy(float anisotropy)
 	this->maxAnisotropy = anisotropy;
 }
 
+void TextureLoader::setWrapS(bool repeat)
+{
+	this->wrapRepeatS = repeat;
+}
+
+void TextureLoader::setWrapT(bool repeat)
+{
+	this->wrapRepeatT = repeat;
+}
+
+void TextureLoader::setWrapR(bool repeat)
+{
+	this->wrapRepeatR = repeat;
+}
+
 Texture* TextureLoader::loadCubemap(const std::string& filename)
 {
 	// Generate OpenGL texture ID
@@ -235,9 +253,9 @@ Texture* TextureLoader::loadCubemap(const std::string& filename)
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 	
 	// Set wrapping and filtering parameters
-	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, (wrapRepeatS) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, (wrapRepeatT) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, (wrapRepeatR) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	

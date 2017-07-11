@@ -174,6 +174,10 @@ void BillboardBatch::update()
 				alignment = glm::normalize(lookRotation(look, up));
 			}
 		}
+		else
+		{
+			alignment = billboard.getRotation();
+		}
 				
 		Vector2 offset = dimensions * 0.5f;
 		Vector3 v0 = translation + alignment * Vector3(-offset.x, -offset.y, 0.0f);
