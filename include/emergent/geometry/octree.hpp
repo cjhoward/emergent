@@ -51,15 +51,29 @@ public:
 	/**
 	 * Creates an instance of Octree.
 	 *
+	 * @param maxDepth Specifies the maximum depth of the octree.
 	 * @param bounds Specifies the bounds of the octree.
+	 */
+	Octree(std::size_t maxDepth, const AABB& bounds);
+	
+	/**
+	 * Creates an instance of Octree.
+	 *
 	 * @param maxDepth Specifies the maximum depth of the octree.
 	 */
-	Octree(const AABB& bounds, std::size_t maxDepth);
+	explicit Octree(std::size_t maxDepth);
 
 	/**
 	 * Destroys an instance of Octree.
 	 */
 	~Octree();
+	
+	/**
+	 * Resizes the octree.
+	 *
+	 * @param bounds New bounds of the octree.
+	 */
+	void resize(const AABB& bounds);
 
 	/**
 	 * Inserts an entry into the octree.
@@ -140,25 +154,30 @@ private:
 	 * @param depth Specifies the depth of this octree.
 	 * @param maxDepth Specifies the max depth of the root octree.
 	 */
-	Octree(const AABB& bounds, std::size_t depth, std::size_t maxDepth);
-
-	AABB bounds;
+	Octree(std::size_t depth, std::size_t maxDepth, const AABB& bounds);
+	
 	std::size_t depth;
 	std::size_t maxDepth;
+	AABB bounds;
 	Octree* octants[8];
 	std::list<std::pair<AABB, EntryType>> entries;
 };
 
 template <typename T>
-Octree<T>::Octree(const AABB& bounds, std::size_t maxDepth):
-	Octree(bounds, 0, maxDepth)
+Octree<T>::Octree(std::size_t maxDepth, const AABB& bounds):
+	Octree(0, maxDepth, bounds)
 {}
 
 template <typename T>
-Octree<T>::Octree(const AABB& bounds, std::size_t depth, std::size_t maxDepth):
-	bounds(bounds),
+Octree<T>::Octree(std::size_t maxDepth):
+	Octree(AABB(Vector3(0.0f), Vector3(0.0f)), 0, maxDepth)
+{}
+
+template <typename T>
+Octree<T>::Octree(std::size_t depth, std::size_t maxDepth, const AABB& bounds):
 	depth(depth),
-	maxDepth(maxDepth)
+	maxDepth(maxDepth),
+	bounds(bounds)
 {
 	octants[0] = nullptr;
 	octants[1] = nullptr;
@@ -189,14 +208,48 @@ Octree<T>::Octree(const AABB& bounds, std::size_t depth, std::size_t maxDepth):
 
 		std::size_t octantDepth = depth + 1;
 
-		octants[0] = new Octree(octantBounds[0], octantDepth, maxDepth);
-		octants[1] = new Octree(octantBounds[1], octantDepth, maxDepth);
-		octants[2] = new Octree(octantBounds[2], octantDepth, maxDepth);
-		octants[3] = new Octree(octantBounds[3], octantDepth, maxDepth);
-		octants[4] = new Octree(octantBounds[4], octantDepth, maxDepth);
-		octants[5] = new Octree(octantBounds[5], octantDepth, maxDepth);
-		octants[6] = new Octree(octantBounds[6], octantDepth, maxDepth);
-		octants[7] = new Octree(octantBounds[7], octantDepth, maxDepth);
+		octants[0] = new Octree(octantDepth, maxDepth, octantBounds[0]);
+		octants[1] = new Octree(octantDepth, maxDepth, octantBounds[1]);
+		octants[2] = new Octree(octantDepth, maxDepth, octantBounds[2]);
+		octants[3] = new Octree(octantDepth, maxDepth, octantBounds[3]);
+		octants[4] = new Octree(octantDepth, maxDepth, octantBounds[4]);
+		octants[5] = new Octree(octantDepth, maxDepth, octantBounds[5]);
+		octants[6] = new Octree(octantDepth, maxDepth, octantBounds[6]);
+		octants[7] = new Octree(octantDepth, maxDepth, octantBounds[7]);
+	}
+}
+
+template <typename T>
+void Octree<T>::resize(const AABB& bounds)
+{
+	this->bounds = bounds;
+	
+	if (depth < maxDepth)
+	{
+		const Vector3& min = bounds.getMin();
+		const Vector3& max = bounds.getMax();
+		const Vector3 center = (min + max) * float(0.5);
+
+		const AABB octantBounds[8] =
+		{
+			AABB(min, center),
+			AABB({center.x, min.y, min.z}, {max.x, center.y, center.z}),
+			AABB({min.x, min.y, center.z}, {center.x, center.y, max.z}),
+			AABB({center.x, min.y, center.z}, {max.x, center.y, max.z}),
+			AABB({min.x, center.y, min.z}, {center.x, max.y, center.z}),
+			AABB({center.x, center.y, min.z}, {max.x, max.y, center.z}),
+			AABB({min.x, center.y, center.z}, {center.x, max.y, max.z}),
+			AABB(center, max)
+		};
+		
+		octants[0]->resize(octantBounds[0]);
+		octants[1]->resize(octantBounds[1]);
+		octants[2]->resize(octantBounds[2]);
+		octants[3]->resize(octantBounds[3]);
+		octants[4]->resize(octantBounds[4]);
+		octants[5]->resize(octantBounds[5]);
+		octants[6]->resize(octantBounds[6]);
+		octants[7]->resize(octantBounds[7]);
 	}
 }
 
