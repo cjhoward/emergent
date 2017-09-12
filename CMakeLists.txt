@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.7)
-project("Emergent"
+
+if("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
+	message(SEND_ERROR "In-source builds are not allowed.")
+endif()
+
+project("emergent"
 	VERSION "0.0.0")
 
 # Set output directories
@@ -7,20 +12,34 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
 
 # Set C++ flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -g")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -s -DNDEBUG")
+if(MSVC)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W2")
+elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+	# Update if necessary
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -g")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -s -DNDEBUG")
+endif()
 
 # Set C++ version
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Find dependencies
-find_package(Freetype REQUIRED)
-message("${FREETYPE_INCLUDE_DIRS}")
-message("${FREETYPE_LIBRARY}")
-message("${FREETYPE_LIBRARIES}")
+# Include ExternalProject_Add command
+include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
+
+# Configure, build and install freetype
+set(FREETYPE_BUILD_DIR ${PROJECT_BINARY_DIR}/deps/build/freetype)
+set(FREETYPE_INSTALL_DIR ${PROJECT_BINARY_DIR}/deps/install/freetype)
+set(FREETYPE_INCLUDE_DIR ${FREETYPE_INSTALL_DIR}/include/freetype2)
+set(FREETYPE_LIBRARY ${FREETYPE_INSTALL_DIR}/lib/freetyped.lib)
+ExternalProject_Add(freetype
+	SOURCE_DIR ${PROJECT_SOURCE_DIR}/lib/freetype-2.8
+	CMAKE_ARGS
+	"-DCMAKE_INSTALL_PREFIX=${FREETYPE_INSTALL_DIR}"
+	BINARY_DIR ${FREETYPE_BUILD_DIR}
+	INSTALL_DIR ${FREETYPE_INSTALL_DIR})
 
 # Setup configuration variables
 set(EMERGENT_VERSION ${PROJECT_VERSION})
@@ -158,14 +177,16 @@ set(emergent_HEADERS
 
 # Set linked libraries
 set(emergent_LIBRARIES
-	m	
-	#dl
+	m
 	stdc++
-	${FREETYPE_LIBRARIES}
+	${FREETYPE_LIBRARY}
 )
 
-# Build and install library
+# Build library
 add_library(emergent ${emergent_SOURCES} ${emergent_HEADERS})
+
+# Set library dependencies
+add_dependencies(emergent freetype)
 
 # Include directories
 include_directories("${PROJECT_SOURCE_DIR}/include")
@@ -173,9 +194,13 @@ target_include_directories(emergent PUBLIC
 	${PROJECT_SOURCE_DIR}/lib/gl3w/include
 	${PROJECT_SOURCE_DIR}/lib/glm
 	${PROJECT_SOURCE_DIR}/lib/stb
-	${FREETYPE_INCLUDE_DIRS})
+	${FREETYPE_INCLUDE_DIR})
+
+# Link library
 target_link_libraries(emergent ${emergent_LIBRARIES})
-install(TARGETS emergent DESTINATION ${CMAKE_BINARY_DIR})
+
+# Install library
+install(TARGETS emergent DESTINATION lib)
 
 # Install public headers
 install(

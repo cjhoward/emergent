@@ -26,28 +26,28 @@ namespace Emergent
 
 void AABB::add(const Vector3& v)
 {
-	min.x = std::min(min.x, v.x);
-	min.y = std::min(min.y, v.y);
-	min.z = std::min(min.z, v.z);
-	max.x = std::max(max.x, v.x);
-	max.y = std::max(max.y, v.y);
-	max.z = std::max(max.z, v.z);
+	minPoint.x = std::min(minPoint.x, v.x);
+	minPoint.y = std::min(minPoint.y, v.y);
+	minPoint.z = std::min(minPoint.z, v.z);
+	maxPoint.x = std::max(maxPoint.x, v.x);
+	maxPoint.y = std::max(maxPoint.y, v.y);
+	maxPoint.z = std::max(maxPoint.z, v.z);
 }
 
 AABB AABB::transformed(const Matrix4& m) const
 {
 	Vector3 corners[7] =
 	{
-		Vector3(min.x, min.y, max.z),
-		Vector3(min.x, max.y, min.z),
-		Vector3(min.x, max.y, max.z),
-		Vector3(max.x, min.y, min.z),
-		Vector3(max.x, min.y, max.z),
-		Vector3(max.x, max.y, min.z),
-		max
+		Vector3(minPoint.x, minPoint.y, maxPoint.z),
+		Vector3(minPoint.x, maxPoint.y, minPoint.z),
+		Vector3(minPoint.x, maxPoint.y, maxPoint.z),
+		Vector3(maxPoint.x, minPoint.y, minPoint.z),
+		Vector3(maxPoint.x, minPoint.y, maxPoint.z),
+		Vector3(maxPoint.x, maxPoint.y, minPoint.z),
+		maxPoint
 	};
 	
-	Vector3 transformedCorner = Vector3(m * Vector4(min, 1.0f));
+	Vector3 transformedCorner = Vector3(m * Vector4(minPoint, 1.0f));
 	AABB result(transformedCorner, transformedCorner);
 	for (std::size_t i = 0; i < 7; ++i)
 	{
@@ -62,16 +62,16 @@ AABB AABB::transformed(const Transform& transform) const
 {
 	Vector3 corners[7] =
 	{
-		Vector3(min.x, min.y, max.z),
-		Vector3(min.x, max.y, min.z),
-		Vector3(min.x, max.y, max.z),
-		Vector3(max.x, min.y, min.z),
-		Vector3(max.x, min.y, max.z),
-		Vector3(max.x, max.y, min.z),
-		max
+		Vector3(minPoint.x, minPoint.y, maxPoint.z),
+		Vector3(minPoint.x, maxPoint.y, minPoint.z),
+		Vector3(minPoint.x, maxPoint.y, maxPoint.z),
+		Vector3(maxPoint.x, minPoint.y, minPoint.z),
+		Vector3(maxPoint.x, minPoint.y, maxPoint.z),
+		Vector3(maxPoint.x, maxPoint.y, minPoint.z),
+		maxPoint
 	};
 	
-	Vector3 transformedCorner = transform.transform(min);
+	Vector3 transformedCorner = transform.transform(minPoint);
 	AABB result(transformedCorner, transformedCorner);
 	for (std::size_t i = 0; i < 7; ++i)
 	{
@@ -84,27 +84,27 @@ AABB AABB::transformed(const Transform& transform) const
 
 bool AABB::intersects(const Sphere& sphere) const
 {
-	return AABB(min - sphere.getRadius(), max + sphere.getRadius()).contains(sphere.getCenter());
+	return AABB(minPoint - sphere.getRadius(), maxPoint + sphere.getRadius()).contains(sphere.getCenter());
 }
 
 bool AABB::intersects(const AABB& aabb) const
 {
-	if (max.x < aabb.min.x || min.x > aabb.max.x)
+	if (maxPoint.x < aabb.minPoint.x || minPoint.x > aabb.maxPoint.x)
 		return false;
-	if (max.y < aabb.min.y || min.y > aabb.max.y)
+	if (maxPoint.y < aabb.minPoint.y || minPoint.y > aabb.maxPoint.y)
 		return false;
-	if (max.z < aabb.min.z || min.z > aabb.max.z)
+	if (maxPoint.z < aabb.minPoint.z || minPoint.z > aabb.maxPoint.z)
 		return false;
 	return true;
 }
 
 bool AABB::contains(const Vector3& point) const
 {
-	if (point.x < min.x || point.x > max.x)
+	if (point.x < minPoint.x || point.x > maxPoint.x)
 		return false;
-	if (point.y < min.y || point.y > max.y)
+	if (point.y < minPoint.y || point.y > maxPoint.y)
 		return false;
-	if (point.z < min.z || point.z > max.z)
+	if (point.z < minPoint.z || point.z > maxPoint.z)
 		return false;
 	return true;
 }
@@ -114,22 +114,22 @@ bool AABB::contains(const Sphere& sphere) const
 	const Vector3& center = sphere.getCenter();
 	float radius = sphere.getRadius();
 	
-	if (center.x - radius < min.x || center.x + radius > max.x)
+	if (center.x - radius < minPoint.x || center.x + radius > maxPoint.x)
 		return false;
-	if (center.y - radius < min.y || center.y + radius > max.y)
+	if (center.y - radius < minPoint.y || center.y + radius > maxPoint.y)
 		return false;
-	if (center.z - radius < min.z || center.z + radius > max.z)
+	if (center.z - radius < minPoint.z || center.z + radius > maxPoint.z)
 		return false;
 	return true;
 }
 
 bool AABB::contains(const AABB& aabb) const
 {
-	if (aabb.min.x < min.x || aabb.max.x > max.x)
+	if (aabb.minPoint.x < minPoint.x || aabb.maxPoint.x > maxPoint.x)
 		return false;
-	if (aabb.min.y < min.y || aabb.max.y > max.y)
+	if (aabb.minPoint.y < minPoint.y || aabb.maxPoint.y > maxPoint.y)
 		return false;
-	if (aabb.min.z < min.z || aabb.max.z > max.z)
+	if (aabb.minPoint.z < minPoint.z || aabb.maxPoint.z > maxPoint.z)
 		return false;
 	return true;
 }

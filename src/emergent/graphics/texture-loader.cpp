@@ -615,7 +615,7 @@ bool TextureLoader::loadMipmapChain(Texture* texture, const std::string& filenam
 	}
 	
 	// Calculate number of mipmap levels
-	int mipmapLevelCount = 1 + std::floor(std::log2(std::max(width, height)));
+	int mipmapLevelCount = 1 + static_cast<int>(std::floor(std::log2(std::max<int>(width, height))));
 	
 	// Load remaining mipmap levels
 	for (int i = 1; i < mipmapLevelCount; ++i)

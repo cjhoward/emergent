@@ -38,10 +38,10 @@ class AABB: public BoundingVolume
 public:
 	AABB() = default;
 	
-	AABB(const Vector3& min, const Vector3& max);
+	AABB(const Vector3& minPoint, const Vector3& maxPoint);
 	
-	void setMin(const Vector3& min);
-	void setMax(const Vector3& max);
+	void setMin(const Vector3& minPoint);
+	void setMax(const Vector3& maxPoint);
 	
 	const Vector3& getMin() const;
 	const Vector3& getMax() const;
@@ -59,33 +59,33 @@ public:
 	virtual bool contains(const AABB& aabb) const;
 	
 private:
-	Vector3 min;
-	Vector3 max;
+	Vector3 minPoint;
+	Vector3 maxPoint;
 };
 
-inline AABB::AABB(const Vector3& min, const Vector3& max):
-	min(min),
-	max(max)
+inline AABB::AABB(const Vector3& minPoint, const Vector3& maxPoint):
+	minPoint(minPoint),
+	maxPoint(maxPoint)
 {}
 
-inline void AABB::setMin(const Vector3& min)
+inline void AABB::setMin(const Vector3& minPoint)
 {
-	this->min = min;
+	this->minPoint = minPoint;
 }
 
-inline void AABB::setMax(const Vector3& max)
+inline void AABB::setMax(const Vector3& maxPoint)
 {
-	this->max = max;
+	this->maxPoint = maxPoint;
 }
 
 inline const Vector3& AABB::getMin() const
 {
-	return min;
+	return minPoint;
 }
 
 inline const Vector3& AABB::getMax() const
 {
-	return max;
+	return maxPoint;
 }
 
 inline BoundingVolume::Type AABB::getType() const
