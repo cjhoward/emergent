@@ -24,31 +24,20 @@ The following dependencies are included with the Emergent source:
 
 #### Windows
 
-Building on Windows requires Visual Studio 2017 and CMake. Open the Visual Studio Command Prompt (VsDevCmd.bat) and navigate to the `emergent\build` directory:
+Building on Windows requires Visual Studio 2017 and CMake. Open the Visual Studio Command Prompt (VsDevCmd.bat) and run the following commands:
 
-	cd `emergent\build`
-
-Then configure the build:
-
-	cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Debug
-	
-Finally, build and install the library:
-
-	cmake --build . -DCMAKE_INSTALL_PREFIX=<...>
+	cd emergent\build
+	cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=<...>
+	cmake --build .
 	cmake --build . --target install
 
-#### Configuration
+#### GNU/Linux
 
-Emergent uses the CMake build system for configuration. The following command configures a debug build for a unix-based platform:
+Building on GNU/Linux requires CMake and Make. Open a terminal and run the following commands:
 
-	cmake . -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
-
-#### Building
-
+	cd emergent/build
+	cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=<...>
 	cmake --build .
-
-#### Installation
-
 	cmake --build . --target install
 
 ### Documentation
