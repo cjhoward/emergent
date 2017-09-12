@@ -2,27 +2,9 @@
 
 Emergent is a C++ framework for real-time 3D applications.
 
-## Getting Started
+## Building and Installation
 
-### Dependencies
-
-The following dependencies must be installed prior to building Emergent:
-
-* [FreeType](https://www.freetype.org/)
-
-On Debian "jessie" this can be done with the following command:
-
-	apt-get install libfreetype6 libfreetype6-dev
-
-The following dependencies are included with the Emergent source:
-
-* [gl3w](https://github.com/skaslev/gl3w)
-* [GLM](http://glm.g-truc.net)
-* [stb_image](https://github.com/nothings/stb)
-
-### Building and Installation
-
-#### Windows
+### Windows
 
 Building on Windows requires Visual Studio 2017 and CMake. Open the Visual Studio Command Prompt (VsDevCmd.bat) and run the following commands:
 
@@ -31,7 +13,7 @@ Building on Windows requires Visual Studio 2017 and CMake. Open the Visual Studi
 	cmake --build .
 	cmake --build . --target install
 
-#### GNU/Linux
+### GNU/Linux
 
 Building on GNU/Linux requires CMake and Make. Open a terminal and run the following commands:
 
@@ -40,7 +22,7 @@ Building on GNU/Linux requires CMake and Make. Open a terminal and run the follo
 	cmake --build .
 	cmake --build . --target install
 
-### Documentation
+## Documentation
 
 The Emergent API reference can be generated with [Doxygen](http://www.stack.nl/~dimitri/doxygen/). First ensure the `doxygen` executable is in your system path, then execute the following command:
 
