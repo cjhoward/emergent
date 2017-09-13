@@ -6,7 +6,7 @@ Emergent is a C++ framework for real-time 3D applications.
 
 ### Windows
 
-Building on Windows requires Visual Studio 2017 and CMake. Open the Visual Studio Command Prompt (VsDevCmd.bat) and run the following commands:
+Building on Windows requires CMake and Visual Studio 2017. Open the Visual Studio Command Prompt (`VsDevCmd.bat`) and run the following commands:
 
 	cd emergent\build
 	cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=<...>
@@ -15,7 +15,7 @@ Building on Windows requires Visual Studio 2017 and CMake. Open the Visual Studi
 
 ### GNU/Linux
 
-Building on GNU/Linux requires CMake and Make. Open a terminal and run the following commands:
+Building on GNU/Linux requires CMake, GCC, G++, and GNU Make. Open a terminal and run the following commands:
 
 	cd emergent/build
 	cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=<...>

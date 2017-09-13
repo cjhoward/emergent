@@ -24,12 +24,15 @@
 #include <emergent/font/glyph-metrics.hpp>
 #include <iostream>
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 namespace Emergent
 {
 	
 FontLoader::FontLoader()
 {
-	FT_Error error = FT_Init_FreeType(&library);
+	FT_Error error = FT_Init_FreeType(&static_cast<FT_Library>(library));
 	
 	if (error != 0)
 	{		
@@ -39,14 +42,14 @@ FontLoader::FontLoader()
 
 FontLoader::~FontLoader()
 {
-	FT_Done_FreeType(library);
+	FT_Done_FreeType(static_cast<FT_Library>(library));
 }
 
 bool FontLoader::load(const std::string& filename, int size, Font* font)
 {
 	// Create typeface
 	FT_Face face;
-	FT_Error error = FT_New_Face(library, filename.c_str(), 0, &face);
+	FT_Error error = FT_New_Face(static_cast<FT_Library>(library), filename.c_str(), 0, &face);
 	if (0 != error)
 	{
 		std::cerr << "Failed to load FreeType font: error code (" << error << ")" << std::endl;

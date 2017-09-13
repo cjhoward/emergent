@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.7)
 
-if("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
-	message(SEND_ERROR "In-source builds are not allowed.")
-endif()
-
 project("emergent"
 	VERSION "0.0.0")
 
@@ -31,15 +27,16 @@ include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
 # Configure, build and install freetype
 set(FREETYPE_BUILD_DIR ${PROJECT_BINARY_DIR}/deps/build/freetype)
-set(FREETYPE_INSTALL_DIR ${PROJECT_BINARY_DIR}/deps/install/freetype)
+set(FREETYPE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
 set(FREETYPE_INCLUDE_DIR ${FREETYPE_INSTALL_DIR}/include/freetype2)
-set(FREETYPE_LIBRARY ${FREETYPE_INSTALL_DIR}/lib/freetyped.lib)
+set(FREETYPE_LIBRARY ${CMAKE_INSTALL_PREFIX}/lib/freetyped.lib)
 ExternalProject_Add(freetype
 	SOURCE_DIR ${PROJECT_SOURCE_DIR}/lib/freetype-2.8
 	CMAKE_ARGS
-	"-DCMAKE_INSTALL_PREFIX=${FREETYPE_INSTALL_DIR}"
+	"-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
+	"-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
 	BINARY_DIR ${FREETYPE_BUILD_DIR}
-	INSTALL_DIR ${FREETYPE_INSTALL_DIR})
+	INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
 
 # Setup configuration variables
 set(EMERGENT_VERSION ${PROJECT_VERSION})
@@ -175,15 +172,15 @@ set(emergent_HEADERS
 	include/emergent/font/kerning-table.hpp
 	include/emergent/font/texture-atlas.hpp)
 
-# Set linked libraries
-set(emergent_LIBRARIES
-	m
-	stdc++
+# Set dependencies
+set(emergent_DEPENDENCIES
+	#m
+	#stdc++
 	${FREETYPE_LIBRARY}
 )
 
 # Build library
-add_library(emergent ${emergent_SOURCES} ${emergent_HEADERS})
+add_library(emergent STATIC ${emergent_SOURCES} ${emergent_HEADERS})
 
 # Set library dependencies
 add_dependencies(emergent freetype)
@@ -196,10 +193,7 @@ target_include_directories(emergent PUBLIC
 	${PROJECT_SOURCE_DIR}/lib/stb
 	${FREETYPE_INCLUDE_DIR})
 
-# Link library
-target_link_libraries(emergent ${emergent_LIBRARIES})
-
-# Install library
+# Install emergent library and dependency libraries
 install(TARGETS emergent DESTINATION lib)
 
 # Install public headers

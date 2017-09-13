@@ -144,6 +144,7 @@ public:
 	struct Range
 	{
 		Range();
+		Range(const Range& range);
 		
 		Material* material;
 		std::size_t start;

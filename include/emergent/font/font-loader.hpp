@@ -21,8 +21,6 @@
 #define EMERGENT_FONT_FONT_LOADER_HPP
 
 #include <string>
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 namespace Emergent
 {
@@ -43,7 +41,7 @@ public:
 	bool load(const std::string& filename, int size, Font* font);
 
 private:
-	FT_Library library;
+	void* library;
 };
 
 } // namespace Emergent

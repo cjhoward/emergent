@@ -39,6 +39,12 @@ BillboardBatch::Range::Range():
 	length(0)
 {}
 
+BillboardBatch::Range::Range(const BillboardBatch::Range& range):
+	material(range.material),
+	start(range.start),
+	length(range.length)
+{}
+
 BillboardBatch::BillboardBatch():
 	vertexSize(0),
 	vertexCount(0),
