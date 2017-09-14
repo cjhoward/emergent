@@ -27,16 +27,20 @@ include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
 # Configure, build and install freetype
 set(FREETYPE_BUILD_DIR ${PROJECT_BINARY_DIR}/deps/build/freetype)
-set(FREETYPE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
+set(FREETYPE_INSTALL_DIR ${PROJECT_BINARY_DIR}/deps/install/freetype)
 set(FREETYPE_INCLUDE_DIR ${FREETYPE_INSTALL_DIR}/include/freetype2)
-set(FREETYPE_LIBRARY ${CMAKE_INSTALL_PREFIX}/lib/freetyped.lib)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+	set(FREETYPE_LIBRARY ${FREETYPE_INSTALL_DIR}/lib/freetyped.lib)
+else()
+	set(FREETYPE_LIBRARY ${FREETYPE_INSTALL_DIR}/lib/freetype.lib)
+endif()
 ExternalProject_Add(freetype
-	SOURCE_DIR ${PROJECT_SOURCE_DIR}/lib/freetype-2.8
+	SOURCE_DIR ${PROJECT_SOURCE_DIR}/lib/freetype
 	CMAKE_ARGS
 	"-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
-	"-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
+	"-DCMAKE_INSTALL_PREFIX=${FREETYPE_INSTALL_DIR}"
 	BINARY_DIR ${FREETYPE_BUILD_DIR}
-	INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
+	INSTALL_DIR ${FREETYPE_INSTALL_DIR})
 
 # Setup configuration variables
 set(EMERGENT_VERSION ${PROJECT_VERSION})
@@ -195,6 +199,7 @@ target_include_directories(emergent PUBLIC
 
 # Install emergent library and dependency libraries
 install(TARGETS emergent DESTINATION lib)
+install(FILES ${emergent_DEPENDENCIES} DESTINATION lib)
 
 # Install public headers
 install(
