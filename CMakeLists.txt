@@ -3,10 +3,6 @@ cmake_minimum_required(VERSION 3.7)
 project("emergent"
 	VERSION "0.0.0")
 
-# Set output directories
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
-
 # Set C++ flags
 if(MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W2")
