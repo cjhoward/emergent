@@ -75,6 +75,7 @@ set(emergent_SOURCES
 	src/emergent/graphics/light.cpp
 	src/emergent/graphics/material.cpp
 	src/emergent/graphics/model.cpp
+	src/emergent/graphics/model-instance.cpp
 	src/emergent/graphics/pose.cpp
 	src/emergent/graphics/renderer.cpp
 	src/emergent/graphics/scene-layer.cpp
@@ -143,6 +144,7 @@ set(emergent_HEADERS
 	include/emergent/graphics/light.hpp
 	include/emergent/graphics/material.hpp
 	include/emergent/graphics/model.hpp
+	include/emergent/graphics/model-instance.hpp
 	include/emergent/graphics/pose.hpp
 	include/emergent/graphics/renderer.hpp
 	include/emergent/graphics/scene-layer.hpp

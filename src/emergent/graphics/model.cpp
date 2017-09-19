@@ -18,7 +18,8 @@
  */
 
 #include <emergent/graphics/model.hpp>
-#include <emergent/graphics/scene-object.hpp>
+#include <emergent/graphics/skeleton.hpp>
+#include <emergent/graphics/model-instance.hpp>
 #include <emergent/graphics/material.hpp>
 #include <emergent/graphics/texture.hpp>
 #include <emergent/graphics/vertex-format.hpp>

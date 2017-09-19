@@ -18,7 +18,6 @@
  */
 
 #include <emergent/graphics/scene-object.hpp>
-#include <emergent/graphics/model.hpp>
 
 namespace Emergent
 {
@@ -87,30 +86,6 @@ void SceneObject::updateTransform()
 	matrix = transform.toMatrix();
 	transformed();
 	bounds = calculateBounds();
-}
-
-ModelInstance::ModelInstance(const Model* model):
-	model(model)
-{}
-
-ModelInstance::ModelInstance():
-	model(nullptr)
-{}
-
-void ModelInstance::setModel(const Model* model)
-{
-	this->model = model;
-	updateBounds();
-}
-
-AABB ModelInstance::calculateBounds() const
-{
-	if (model)
-	{
-		return model->getBounds().transformed(getTransform());
-	}
-	
-	return AABB(getTranslation(), getTranslation());
 }
 
 } // namespace Emergent

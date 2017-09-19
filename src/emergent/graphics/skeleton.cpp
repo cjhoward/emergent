@@ -29,15 +29,6 @@ Skeleton::Skeleton():
 	bindPose(nullptr)
 {
 	root = createBone();
-	
-	/*
-	bindPose = new SkeletonBindPose(this);
-	for (std::size_t i = 0; i < bones.size(); ++i)
-	{
-		bindPose->setRelativeTransform(i, bones[i]->getRelativeTransform());
-	}
-	bindPose->concatenate();
-	*/
 }
 
 Skeleton::~Skeleton()
@@ -48,6 +39,17 @@ Skeleton::~Skeleton()
 	{
 		delete *it;
 	}
+}
+
+void Skeleton::calculateBindPose()
+{
+	delete bindPose;
+	bindPose = new BindPose(this);
+	for (std::size_t i = 0; i < bones.size(); ++i)
+	{
+		bindPose->setRelativeTransform(i, bones[i]->getRelativeTransform());
+	}
+	bindPose->concatenate();
 }
 
 const Bone* Skeleton::getBone(const std::string& name) const

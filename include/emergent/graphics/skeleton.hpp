@@ -50,6 +50,11 @@ public:
 	~Skeleton();
 	
 	/**
+	 * Forms a bind pose
+	 */
+	void calculateBindPose();
+	
+	/**
 	 * Returns the number of bones in the skeleton.
 	 */
 	std::size_t getBoneCount() const;

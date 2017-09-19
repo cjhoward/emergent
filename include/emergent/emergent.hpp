@@ -87,6 +87,7 @@
 #include <emergent/graphics/light.hpp>
 #include <emergent/graphics/material.hpp>
 #include <emergent/graphics/model.hpp>
+#include <emergent/graphics/model-instance.hpp>
 #include <emergent/graphics/pose.hpp>
 #include <emergent/graphics/renderer.hpp>
 #include <emergent/graphics/scene-layer.hpp>

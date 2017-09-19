@@ -162,38 +162,6 @@ inline const Matrix4& SceneObject::getMatrix() const
 	return matrix;
 }
 
-/**
- * An instance of a 3D model.
- *
- * @ingroup graphics
- */
-class ModelInstance: public SceneObject
-{
-public:
-	ModelInstance(const Model* model);
-	ModelInstance();
-	
-	void setModel(const Model* model);
-	
-	virtual SceneObjectType getSceneObjectType() const;
-	const Model* getModel() const;
-	
-private:
-	virtual AABB calculateBounds() const;
-	
-	const Model* model;
-};
-
-inline SceneObjectType ModelInstance::getSceneObjectType() const
-{
-	return SceneObjectType::MODEL_INSTANCE;
-}
-
-inline const Model* ModelInstance::getModel() const
-{
-	return model;
-}
-
 } // namespace Emergent
 
 #endif // EMERGENT_GRAPHICS_SCENE_OBJECT_HPP

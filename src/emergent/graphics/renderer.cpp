@@ -23,6 +23,7 @@
 #include <emergent/graphics/scene.hpp>
 #include <emergent/graphics/scene-layer.hpp>
 #include <emergent/graphics/scene-object.hpp>
+#include <emergent/graphics/model-instance.hpp>
 #include <emergent/graphics/light.hpp>
 #include <emergent/graphics/billboard.hpp>
 #include <emergent/graphics/material.hpp>
