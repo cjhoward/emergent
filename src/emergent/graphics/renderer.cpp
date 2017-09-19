@@ -64,6 +64,7 @@ void RenderQueue::queue(const ModelInstance* instance)
 
 	const Model* model = instance->getModel();
 	operation.vao = model->getVAO();
+	operation.pose = instance->getPose();
 	
 	for (std::size_t i = 0; i < model->getGroupCount(); ++i)
 	{
@@ -90,6 +91,7 @@ void RenderQueue::queue(const BillboardBatch* batch)
 	//operation.depth = camera->getViewFrustum().getNear().distance(batch->getTranslation());
 
 	operation.vao = batch->vao;
+	operation.pose = nullptr;
 	
 	for (std::size_t i = 0; i < batch->getRangeCount(); ++i)
 	{

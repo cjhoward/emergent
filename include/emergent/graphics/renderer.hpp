@@ -33,6 +33,7 @@ class Camera;
 class Scene;
 class SceneLayer;
 class Material;
+class Pose;
 class SceneObject;
 class ModelInstance;
 class BillboardBatch;
@@ -72,6 +73,7 @@ struct RenderOperation
 	std::size_t triangleCount;
 	const Material* material;
 	glm::mat4 transform;
+	const Pose* pose;
 	float depth;
 };
 
