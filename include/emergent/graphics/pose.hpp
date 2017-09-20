@@ -69,6 +69,13 @@ public:
 	void setRelativeTransform(std::size_t index, const Transform& transform);
 	
 	/**
+	 * Returns the skeleton with which this pose is associated.
+	 *
+	 * @return Skeleton with which this pose is associated.
+	 */
+	const Skeleton* getSkeleton() const;
+	
+	/**
 	 * Returns the transform of the specified bone, relative to its parent bone.
 	 *
 	 * @param index Specifies the index of a bone.
@@ -135,6 +142,11 @@ inline void Pose::setRelativeTransform(std::size_t index, const Transform& trans
 {
 	relativeTransforms[index] = transform;
 	setDirty(index);
+}
+
+inline const Skeleton* Pose::getSkeleton() const
+{
+	return skeleton;
 }
 
 inline const Transform& Pose::getRelativeTransform(std::size_t index) const
