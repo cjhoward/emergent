@@ -28,6 +28,7 @@
 namespace Emergent
 {
 
+class Animation;
 class Bone;
 class BindPose;
 
@@ -53,6 +54,32 @@ public:
 	 * Forms a bind pose
 	 */
 	void calculateBindPose();
+	
+	/**
+	 * Adds an animation to the skeleton.
+	 *
+	 * @param animation Animation to add. This animation will be deleted when the skeleton is deleted.
+	 */
+	void addAnimation(Animation* animation);
+	
+	/**
+	 * Returns the number of animations in the skeleton.
+	 */
+	std::size_t getAnimationCount() const;
+	
+	/**
+	 * Returns the animation at the specified index.
+	 *
+	 * @param index Index of an animation.
+	 */
+	const Animation* getAnimation(std::size_t index) const;
+	
+	/**
+	 * Returns the animation with the specified name.
+	 *
+	 * @param name Name of an animation.
+	 */
+	const Animation* getAnimation(const std::string& name) const;
 	
 	/**
 	 * Returns the number of bones in the skeleton.
@@ -124,7 +151,19 @@ private:
 	std::vector<Bone*> bones;
 	std::map<std::string, Bone*> boneMap;
 	BindPose* bindPose;
+	std::map<std::string, Animation*> animationMap;
+	std::vector<Animation*> animations;
 };
+
+inline std::size_t Skeleton::getAnimationCount() const
+{
+	return animations.size();
+}
+
+inline const Animation* Skeleton::getAnimation(std::size_t index) const
+{
+	return animations[index];
+}
 
 inline std::size_t Skeleton::getBoneCount() const
 {

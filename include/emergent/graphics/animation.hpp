@@ -62,11 +62,12 @@ public:
 	void setName(const std::string& name);
 	
 	/**
-	 * Sets the interval between keyframes.
+	 * Sets the time frame of the animation.
 	 *
-	 * @param interval Specifies the interval between keyframes, in seconds.
+	 * @param start Start time of the animation.
+	 * @param end End time of the animation.
 	 */
-	void setInterval(float interval);
+	void setTimeFrame(float start, float end);
 	
 	/**
 	 * Returns the name of the animation.
@@ -74,9 +75,14 @@ public:
 	const std::string& getName() const;
 	
 	/**
-	 * Returns the interval between keyframes, in seconds.
+	 * Returns the start time of the animation.
 	 */
-	float getInterval() const;
+	float getStartTime() const;
+	
+	/**
+	 * Returns the end time of the animation.
+	 */
+	float getEndTime() const;
 	
 	/**
 	 * Returns the number of animation channels in the animation.
@@ -99,23 +105,24 @@ public:
 	
 private:	
 	std::string name;
-	float interval;
+	float startTime;
+	float endTime;
 	std::vector<AnimationChannel*> channels;
 };
-
-inline void Animation::setInterval(float interval)
-{
-	this->interval = interval;
-}
 
 inline const std::string& Animation::getName() const
 {
 	return name;
 }
 
-inline float Animation::getInterval() const
+inline float Animation::getStartTime() const
 {
-	return interval;
+	return startTime;
+}
+
+inline float Animation::getEndTime() const
+{
+	return endTime;
 }
 
 inline std::size_t Animation::getChannelCount() const

@@ -18,6 +18,7 @@
  */
 
 #include <emergent/graphics/skeleton.hpp>
+#include <emergent/graphics/animation.hpp>
 #include <emergent/graphics/bone.hpp>
 #include <emergent/graphics/bind-pose.hpp>
 #include <iostream>
@@ -35,9 +36,14 @@ Skeleton::~Skeleton()
 {
 	delete bindPose;
 	
-	for (auto it = bones.begin(); it != bones.end(); ++it)
+	for (Bone* bone: bones)
 	{
-		delete *it;
+		delete bone;
+	}
+	
+	for (Animation* animation: animations)
+	{
+		delete animation;
 	}
 }
 
@@ -50,6 +56,27 @@ void Skeleton::calculateBindPose()
 		bindPose->setRelativeTransform(i, bones[i]->getRelativeTransform());
 	}
 	bindPose->concatenate();
+}
+
+void Skeleton::addAnimation(Animation* animation)
+{
+	animations.push_back(animation);
+	
+	if (!animation->getName().empty())
+	{
+		animationMap[animation->getName()] = animation;
+	}
+}
+
+const Animation* Skeleton::getAnimation(const std::string& name) const
+{
+	auto it = animationMap.find(name);
+	if (it != animationMap.end())
+	{
+		return it->second;
+	}
+	
+	return nullptr;
 }
 
 const Bone* Skeleton::getBone(const std::string& name) const

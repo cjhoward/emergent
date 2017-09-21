@@ -21,6 +21,8 @@
 #define EMERGENT_GRAPHICS_ANIMATION_CHANNEL_HPP
 
 #include <emergent/math/transform.hpp>
+#include <set>
+#include <tuple>
 #include <vector>
 
 namespace Emergent
@@ -51,9 +53,9 @@ public:
 	/**
 	 * Creates a key frame.
 	 *
-	 * @param transform Specifies the transform at the keyframe.
+	 * @param time Time at which to insert the keyframe.
 	 */
-	KeyFrame* createKeyFrame(const Transform& transform);
+	KeyFrame* insertKeyFrame(float time);
 	
 	/**
 	 * Returns the ID of the this animation channel belongs.
@@ -78,9 +80,24 @@ public:
 	 */
 	KeyFrame* getKeyFrame(std::size_t index);
 	
+	/**
+	 * Returns the indices of the keyframes on the left and right of the specified time.
+	 *
+	 * @param time Time for which to determine bounding keyframes.
+	 */
+	std::tuple<std::size_t, std::size_t> getBoundingKeyFrames(float time) const;
+	
+	/**
+	 * Calculates the transform for this animation channel at the specified time by interpolating bounding keyframes.
+	 *
+	 * @param time Animation time
+	 */
+	Transform interpolateBoundingKeyFrames(float time) const;
+	
 private:
 	std::size_t channelID;
 	std::vector<KeyFrame*> keyFrames;
+	std::set<float> timeline;
 };
 
 inline std::size_t AnimationChannel::getChannelID() const

@@ -23,7 +23,9 @@
 namespace Emergent
 {
 
-Animation::Animation()
+Animation::Animation():
+	startTime(0.0f),
+	endTime(0.0f)
 {}
 
 Animation::~Animation()
@@ -45,6 +47,12 @@ AnimationChannel* Animation::createChannel(std::size_t channelID)
 void Animation::setName(const std::string& name)
 {
 	this->name = name;
+}
+
+void Animation::setTimeFrame(float start, float end)
+{
+	startTime = start;
+	endTime = end;
 }
 
 } // namespace Emergent

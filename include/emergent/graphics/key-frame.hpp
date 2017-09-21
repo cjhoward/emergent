@@ -36,14 +36,9 @@ public:
 	/**
 	 * Creates an instance of KeyFrame.
 	 *
-	 * @param transform Specifies the key frame transform.
+	 * @param time Specifies the time at which this keyframe occurs.
 	 */
-	KeyFrame(const Transform& transform);
-
-	/**
-	 * Creates an instance of KeyFrame.
-	 */
-	KeyFrame();
+	KeyFrame(float time);
 	
 	/**
 	 * Destroys an instance of KeyFrame.
@@ -56,22 +51,25 @@ public:
 	 * @param transform Specifies a transform.
 	 */
 	void setTransform(const Transform& transform);
-
+	
+	/**
+	 * Returns the time of the key frame
+	 */
+	float getTime() const;
+	
 	/**
 	 * Returns the transform at this key frame.
 	 */
 	const Transform& getTransform() const;
 	
 private:
+	float time;
 	Transform transform;
 };
 
-inline KeyFrame::KeyFrame(const Transform& transform):
-	transform(transform)
-{}
-
-inline KeyFrame::KeyFrame():
-	KeyFrame(Transform::getIdentity())
+inline KeyFrame::KeyFrame(float time):
+	time(time),
+	transform(Transform::getIdentity())
 {}
 
 inline KeyFrame::~KeyFrame()
@@ -80,6 +78,11 @@ inline KeyFrame::~KeyFrame()
 inline void KeyFrame::setTransform(const Transform& transform)
 {
 	this->transform = transform;
+}
+
+inline float KeyFrame::getTime() const
+{
+	return time;
 }
 
 inline const Transform& KeyFrame::getTransform() const
