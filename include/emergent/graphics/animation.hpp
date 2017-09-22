@@ -27,6 +27,7 @@ namespace Emergent
 {
 
 class AnimationChannel;
+class Pose;
 
 /**
  * A skeletal animation.
@@ -53,6 +54,14 @@ public:
 	 * @return Pointer to the created animation channel.
 	 */
 	AnimationChannel* createChannel(std::size_t channelID);
+	
+	/**
+	 * Applies this animation to a skeleton pose. Note that Pose::concatenate() needs to be called after for the animation to take effect.
+	 *
+	 * @param pose Skeleton pose to be animated
+	 * @param time Time in the animation from which to apply.
+	 */
+	void animate(Pose* pose, float time) const;
 	
 	/**
 	 * Sets the name of the animation.

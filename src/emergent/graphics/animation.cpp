@@ -19,6 +19,7 @@
 
 #include <emergent/graphics/animation.hpp>
 #include <emergent/graphics/animation-channel.hpp>
+#include <emergent/graphics/pose.hpp>
 
 namespace Emergent
 {
@@ -42,6 +43,15 @@ AnimationChannel* Animation::createChannel(std::size_t channelID)
 	channels.push_back(channel);
 	
 	return channel;
+}
+
+void Animation::animate(Pose* pose, float time) const
+{
+	for (const AnimationChannel* channel: channels)
+	{
+		Transform interpolatedTransform = channel->interpolateBoundingKeyFrames(time);
+		pose->setRelativeTransform(channel->getChannelID(), interpolatedTransform);
+	}
 }
 
 void Animation::setName(const std::string& name)
