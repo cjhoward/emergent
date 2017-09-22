@@ -61,6 +61,25 @@ public:
 	void concatenate() const;
 	
 	/**
+	 * Copies the transforms of a pose into this pose.
+	 *
+	 * @param pose Pose from which to copy transforms.
+	 */
+	void copy(const Pose* pose);
+	
+	/**
+	 * Resets the transform of the specified bone to its bind pose transform.
+	 *
+	 * @param index Index of the bone transform to reset.
+	 */
+	void reset(std::size_t index);
+	
+	/**
+	 * Resets all transforms to bind pose transforms.
+	 */
+	void reset();
+	
+	/**
 	 * Sets the transform of the specified bone, relative to its parent bone.
 	 *
 	 * @param index Specifies the index of a bone.

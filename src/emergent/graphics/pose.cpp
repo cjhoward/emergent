@@ -60,6 +60,27 @@ void Pose::concatenate() const
 	}
 }
 
+void Pose::copy(const Pose* pose)
+{
+	for (std::size_t i = 0; i < skeleton->getBoneCount(); ++i)
+	{
+		setRelativeTransform(i, pose->getRelativeTransform(i));
+	}
+}
+
+void Pose::reset(std::size_t index)
+{
+	setRelativeTransform(index, skeleton->getBindPose()->getRelativeTransform(index));
+}
+
+void Pose::reset()
+{
+	for (std::size_t i = 0; i < skeleton->getBoneCount(); ++i)
+	{
+		setRelativeTransform(i, skeleton->getBindPose()->getRelativeTransform(i));
+	}
+}
+
 const Transform& Pose::getAbsoluteTransform(std::size_t index) const
 {
 	if (dirtyFlags[index])
