@@ -151,7 +151,7 @@ public:
 	const SceneLayer* layer;
 	
 	/// Pointer to the loaded render queue
-	const RenderQueue* queue;
+	RenderQueue* queue;
 };
 
 /**
@@ -172,7 +172,7 @@ public:
 	virtual void unload() = 0;
 	
 	/// Performs a single render pass, given a render context.
-	virtual void render(const RenderContext* renderContext) = 0;
+	virtual void render(RenderContext* renderContext) = 0;
 	
 	/// Enables or disales the render pass.
 	void setEnabled(bool enabled);
@@ -220,7 +220,7 @@ public:
 	void unload();
 	
 	/// Sequentially renders each render pass.
-	void render(const RenderContext* renderContext);
+	void render(RenderContext* renderContext);
 	
 	/// Adds a pass to the compositor.
 	void addPass(RenderPass* pass);

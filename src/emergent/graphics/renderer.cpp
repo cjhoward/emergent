@@ -149,7 +149,7 @@ void Compositor::unload()
 	}
 }
 
-void Compositor::render(const RenderContext* renderContext)
+void Compositor::render(RenderContext* renderContext)
 {
 	for (RenderPass* pass: passes)
 	{
