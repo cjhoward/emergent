@@ -68,6 +68,7 @@
 #include <emergent/geometry/rect.hpp>
 #include <emergent/geometry/sphere.hpp>
 #include <emergent/geometry/view-frustum.hpp>
+#include <emergent/geometry/split-view-frustum.hpp>
 #include <emergent/geometry/winged-edge.hpp>
 
 /**

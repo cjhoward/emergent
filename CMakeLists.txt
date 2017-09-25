@@ -64,6 +64,7 @@ set(emergent_SOURCES
 	src/emergent/geometry/ray.cpp
 	src/emergent/geometry/sphere.cpp
 	src/emergent/geometry/view-frustum.cpp
+	src/emergent/geometry/split-view-frustum.cpp
 	src/emergent/geometry/winged-edge.cpp
 	src/emergent/graphics/ambient-light.cpp
 	src/emergent/graphics/animation.cpp
@@ -131,6 +132,7 @@ set(emergent_HEADERS
 	include/emergent/geometry/rect.hpp
 	include/emergent/geometry/sphere.hpp
 	include/emergent/geometry/view-frustum.hpp
+	include/emergent/geometry/split-view-frustum.hpp
 	include/emergent/geometry/winged-edge.hpp
 	include/emergent/graphics/ambient-light.hpp
 	include/emergent/graphics/animation.hpp

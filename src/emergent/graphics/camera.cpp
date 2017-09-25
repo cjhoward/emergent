@@ -37,7 +37,7 @@ Camera::Camera():
 	inverseProjection(1.0f),
 	viewProjection(1.0f),
 	inverseViewProjection(1.0f),
-	viewFrustum(viewProjection),
+	viewFrustum(),
 	cullingMask(&viewFrustum),
 	active(true),
 	compositor(nullptr),
@@ -113,12 +113,14 @@ void Camera::transformed()
 void Camera::updateView()
 {
 	view = glm::lookAt(getTranslation(), getTranslation() - getForward(), getUp());
+	viewFrustum.setViewMatrix(view);
 	updateViewProjection();
 }
 
 void Camera::updateProjection()
 {
 	inverseProjection = glm::inverse(projection);
+	viewFrustum.setProjectionMatrix(projection);
 	updateViewProjection();
 }
 
@@ -126,7 +128,6 @@ void Camera::updateViewProjection()
 {
 	viewProjection = projection * view;
 	inverseViewProjection = glm::inverse(viewProjection);
-	viewFrustum.setMatrix(viewProjection);
 }
 
 } // namespace Emergent

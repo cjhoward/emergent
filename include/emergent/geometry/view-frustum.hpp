@@ -34,33 +34,116 @@ namespace Emergent
 class ViewFrustum: public ConvexHull
 {
 public:
+	/**
+	 * Creates an instance of ViewFrustum.
+	 */
 	ViewFrustum();
-	explicit ViewFrustum(const Matrix4& m);
 	
-	void setMatrix(const Matrix4& m);
+	/**
+	 * Sets the view matrix of the frustum.
+	 *
+	 * @param view Camera view matrix.
+	 */
+	void setViewMatrix(const Matrix4& view);
 	
-	const Matrix4& getMatrix() const;
+	/**
+	 * Sets the projection matrix of the frustum.
+	 *
+	 * @param projection Camera projection matrix.
+	 */
+	void setProjectionMatrix(const Matrix4& projection);
+	
+	/**
+	 * Sets the view and projection matrices of the frustum.
+	 *
+	 * @param view Camera view matrix.
+	 * @param projection Camera projection matrix.
+	 */
+	void setMatrices(const Matrix4& view, const Matrix4& projection);
+	
+	/**
+	 * Returns the frustum view matrix.
+	 */
+	const Matrix4& getViewMatrix() const;
+	
+	/**
+	 * Returns the frustum projection matrix.
+	 */
+	const Matrix4& getProjectionMatrix() const;
+	
+	/**
+	 * Returns the frustum view-projection matrix.
+	 */
+	const Matrix4& getViewProjectionMatrix() const;
+	
+	/**
+	 * Returns the left plane of the frustum.
+	 */
 	const Plane& getLeft() const;
+	
+	/**
+	 * Returns the right plane of the frustum.
+	 */
 	const Plane& getRight() const;
+	
+	/**
+	 * Returns the bottom plane of the frustum.
+	 */
 	const Plane& getBottom() const;
+	
+	/**
+	 * Returns the top plane of the frustum.
+	 */
 	const Plane& getTop() const;
+	
+	/**
+	 * Returns the near plane of the frustum.
+	 */
 	const Plane& getNear() const;
+	
+	/**
+	 * Returns the far plane of the frustum.
+	 */
 	const Plane& getFar() const;
 	
+	/**
+	 * Returns the number of corners (8) in the frustum.
+	 */
 	std::size_t getCornerCount() const;
-	const glm::vec3& getCorner(std::size_t index) const;
-
-private:
-	void calculatePlanes();
-	void calculateCorners();	
 	
-	Matrix4 matrix;
-	glm::vec3 corners[8];
+	/**
+	 * Returns the frustum corner at the specified index. The corners are stored in the following order: `ntl`, `ntr`, `nbl`, `nbr`, `ftl`, `ftr`, `fbl`, `fbr`. The corners are referred to by the three intersecting planes at which they are located. Where `n` is near, `f` is far, `t` is top, `b` is bottom, `l` is left, and `r` is right. So `ntl` refers to the corner at the intersection of the near, top, and left planes.
+	 *
+	 * @param index Index of a corner.
+	 */
+	const Vector3& getCorner(std::size_t index) const;
+	
+protected:
+	virtual void recalculateFrustum();
+	
+private:
+	void recalculatePlanes();
+	void recalculateCorners();	
+	
+	Matrix4 view;
+	Matrix4 projection;
+	Matrix4 viewProjection;
+	Vector3 corners[8];
 };
 
-inline const Matrix4& ViewFrustum::getMatrix() const
+inline const Matrix4& ViewFrustum::getViewMatrix() const
 {
-	return matrix;
+	return view;
+}
+
+inline const Matrix4& ViewFrustum::getProjectionMatrix() const
+{
+	return projection;
+}
+
+inline const Matrix4& ViewFrustum::getViewProjectionMatrix() const
+{
+	return viewProjection;
 }
 
 inline const Plane& ViewFrustum::getLeft() const
@@ -98,7 +181,7 @@ inline std::size_t ViewFrustum::getCornerCount() const
 	return 8;
 }
 
-inline const glm::vec3& ViewFrustum::getCorner(std::size_t index) const
+inline const Vector3& ViewFrustum::getCorner(std::size_t index) const
 {
 	return corners[index];
 }

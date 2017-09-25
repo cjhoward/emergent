@@ -23,25 +23,44 @@ namespace Emergent
 {
 
 ViewFrustum::ViewFrustum():
-	ConvexHull(6)
-{}
-
-ViewFrustum::ViewFrustum(const Matrix4& m):
-	ConvexHull(6)
+	ConvexHull(6),
+	view(1.0f),
+	projection(1.0f),
+	viewProjection(1.0f)
 {
-	setMatrix(m);
+	recalculatePlanes();
+	recalculateCorners();
 }
 
-void ViewFrustum::setMatrix(const Matrix4& m)
+void ViewFrustum::setViewMatrix(const Matrix4& view)
 {
-	this->matrix = m;
-	calculatePlanes();
-	calculateCorners();
+	this->view = view;
+	recalculateFrustum();
 }
 
-void ViewFrustum::calculatePlanes()
+void ViewFrustum::setProjectionMatrix(const Matrix4& projection)
 {
-	Matrix4 transpose = glm::transpose(matrix);
+	this->projection = projection;
+	recalculateFrustum();
+}
+
+void ViewFrustum::setMatrices(const Matrix4& view, const Matrix4& projection)
+{
+	this->view = view;
+	this->projection = projection;
+	recalculateFrustum();
+}
+
+void ViewFrustum::recalculateFrustum()
+{
+	viewProjection = projection * view;
+	recalculatePlanes();
+	recalculateCorners();
+}
+
+void ViewFrustum::recalculatePlanes()
+{
+	Matrix4 transpose = glm::transpose(viewProjection);
 	ConvexHull::setPlane(0, Plane(transpose[3] + transpose[0]));
 	ConvexHull::setPlane(1, Plane(transpose[3] - transpose[0]));
 	ConvexHull::setPlane(2, Plane(transpose[3] + transpose[1]));
@@ -50,7 +69,7 @@ void ViewFrustum::calculatePlanes()
 	ConvexHull::setPlane(5, Plane(transpose[3] - transpose[2]));
 }
 
-void ViewFrustum::calculateCorners()
+void ViewFrustum::recalculateCorners()
 {
 	corners[0] = Plane::intersection(getNear(), getTop(), getLeft());
 	corners[1] = Plane::intersection(getNear(), getTop(), getRight());
