@@ -189,4 +189,3 @@ inline const Vector3& ViewFrustum::getCorner(std::size_t index) const
 } // namespace Emergent
 
 #endif // EMERGENT_GEOMETRY_VIEW_FRUSTUM_HPP
-

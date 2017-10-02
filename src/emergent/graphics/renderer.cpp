@@ -210,9 +210,9 @@ void Renderer::render(const Scene& scene)
 			for (auto object: *objects)
 			{
 				// Cull objects outside view frustum
-				if (!camera->getCullingMask()->intersects(object->getBounds()))
+				if (camera->getCullingMask() && !camera->getCullingMask()->intersects(object->getBounds()))
 					continue;
-			
+				
 				renderQueue.queue(object);
 			}
 			
