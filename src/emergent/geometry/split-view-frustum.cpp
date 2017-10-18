@@ -19,6 +19,7 @@
 
 #include <emergent/geometry/split-view-frustum.hpp>
 #include <cmath>
+#include <iostream>
 
 namespace Emergent
 {
@@ -50,16 +51,20 @@ void SplitViewFrustum::distributeSubfrustums()
 		float part = static_cast<float>(i) / static_cast<float>(subfrustumCount);
 		
 		// Calculate uniform split distance
-		float uniformSplit = near + (far - near) * part;
+		float uniformSplitDistance = near + (far - near) * part;
 		
 		// Calculate logarithmic split distance
-		float logSplit = near * std::pow(far / near, part);
+		float logSplitDistance = near * std::pow(far / near, part);
+		
+		//std::cout << i << "uni: " << uniformSplitDistance << ", log: " << logSplitDistance << std::endl;
 		
 		// Interpolate between uniform and logarithmic split distances
-		splitDistances[i] = logSplit * splitSchemeWeight + uniformSplit * (1.0f - splitSchemeWeight);
+		splitDistances[i] = logSplitDistance * splitSchemeWeight + uniformSplitDistance * (1.0f - splitSchemeWeight);
 	}
 	splitDistances[0] = near;
 	splitDistances[subfrustumCount] = far;
+	
+	std::cout << "near: " << near << ", far: " << far << std::endl;
 	
 	// Update subfrustums
 	for (std::size_t i = 0; i < subfrustumCount; ++i)
@@ -68,10 +73,12 @@ void SplitViewFrustum::distributeSubfrustums()
 		float splitNear = splitDistances[i];
 		float splitFar = splitDistances[i + 1];
 		
+		std::cout << i << "dist: " << splitNear << ", " << splitFar << std::endl;
+		
 		// Calculate subfrustum projection matrix
 		Matrix4 splitProjection = getProjectionMatrix();
-		splitProjection[2][2] = (splitFar + splitNear) / (splitFar - splitNear);
-		splitProjection[3][2] = -(2.0f * splitFar * splitNear) / (splitFar - splitNear);
+		splitProjection[2][2] = -2.0f / (splitFar - splitNear);
+		splitProjection[3][2] = -(splitFar + splitNear) / (splitFar - splitNear);
 		
 		// Set subfrustum matrices
 		subfrustums[i].setMatrices(getViewMatrix(), splitProjection);

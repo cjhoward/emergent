@@ -124,7 +124,7 @@ inline void Camera::setActive(bool active)
 
 inline void Camera::setCullingMask(const BoundingVolume* mask)
 {
-	this->cullingMask = (mask != nullptr) ? mask : &viewFrustum;
+	this->cullingMask = mask;
 }
 
 inline void Camera::setCompositor(Compositor* compositor)
