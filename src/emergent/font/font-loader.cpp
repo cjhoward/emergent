@@ -45,7 +45,7 @@ FontLoader::~FontLoader()
 	FT_Done_FreeType(static_cast<FT_Library>(library));
 }
 
-bool FontLoader::load(const std::string& filename, int size, Font* font)
+bool FontLoader::load(const std::string& filename, int size, const std::vector<UnicodeRange>& ranges, Font* font)
 {
 	// Create typeface
 	FT_Face face;
@@ -79,76 +79,85 @@ bool FontLoader::load(const std::string& filename, int size, Font* font)
 	// Set glyph loading flags
 	FT_Int32 flags = FT_LOAD_RENDER | FT_LOAD_FORCE_AUTOHINT;
 	
-	// Load glyphs (extended ASCII character set)
-	for (char32_t charcode = 0; charcode < 256; ++charcode)
+	// Load glyphs from specified Unicode ranges
+	for (const UnicodeRange& range: ranges)
 	{
-		FT_UInt index = FT_Get_Char_Index(face, charcode);
-		
-		error = FT_Load_Glyph(face, index, flags);
-		if (0 != error)
+		for (char32_t charcode = range.start; charcode <= range.end; ++charcode)
 		{
-			std::cerr << "Failed to load glyph " << charcode << ": error code (" << error << ")" << std::endl;
-			continue;
-		}
-		
-		// Load glyph metrics
-		GlyphMetrics glyphMetrics;
-		glyphMetrics.setWidth(face->glyph->metrics.width / 64.0f);
-		glyphMetrics.setHeight(face->glyph->metrics.height / 64.0f);
-		glyphMetrics.setHorizontalBearing(
-			Vector2(
-				face->glyph->metrics.horiBearingX / 64.0f,
-				face->glyph->metrics.horiBearingY / 64.0f));
-		glyphMetrics.setHorizontalAdvance(face->glyph->metrics.horiAdvance / 64.0f);
-		glyphMetrics.setVerticalBearing(
-			Vector2(
-				face->glyph->metrics.vertBearingX / 64.0f,
-				face->glyph->metrics.vertBearingY / 64.0f));
-		glyphMetrics.setVerticalAdvance(face->glyph->metrics.vertAdvance / 64.0f);
-		
-		// Load glyph image
-		const FT_Bitmap& bitmap = face->glyph->bitmap;
-		
-		unsigned int pixelCount = bitmap.width * bitmap.rows;
-		unsigned char* pixels = new unsigned char[pixelCount * 2];	
-		
-		for (unsigned int y = 0; y < bitmap.rows; ++y)
-		{
-			for (unsigned int x = 0; x < bitmap.width; ++x)
+			FT_UInt index = FT_Get_Char_Index(face, charcode);
+			
+			error = FT_Load_Glyph(face, index, flags);
+			if (0 != error)
 			{
-				std::size_t index0 = (bitmap.rows - y - 1) * bitmap.width + x;
-				std::size_t index1 = (y * bitmap.width + x) * 2;
-				
-				pixels[index1] = 255;
-				pixels[index1 + 1] = bitmap.buffer[index0];
+				std::cerr << "Failed to load glyph " << charcode << ": error code (" << error << ")" << std::endl;
+				continue;
 			}
+			
+			// Load glyph metrics
+			GlyphMetrics glyphMetrics;
+			glyphMetrics.setWidth(face->glyph->metrics.width / 64.0f);
+			glyphMetrics.setHeight(face->glyph->metrics.height / 64.0f);
+			glyphMetrics.setHorizontalBearing(
+				Vector2(
+					face->glyph->metrics.horiBearingX / 64.0f,
+					face->glyph->metrics.horiBearingY / 64.0f));
+			glyphMetrics.setHorizontalAdvance(face->glyph->metrics.horiAdvance / 64.0f);
+			glyphMetrics.setVerticalBearing(
+				Vector2(
+					face->glyph->metrics.vertBearingX / 64.0f,
+					face->glyph->metrics.vertBearingY / 64.0f));
+			glyphMetrics.setVerticalAdvance(face->glyph->metrics.vertAdvance / 64.0f);
+			
+			// Load glyph image
+			const FT_Bitmap& bitmap = face->glyph->bitmap;
+			
+			unsigned int pixelCount = bitmap.width * bitmap.rows;
+			unsigned char* pixels = new unsigned char[pixelCount * 2];	
+			
+			for (unsigned int y = 0; y < bitmap.rows; ++y)
+			{
+				for (unsigned int x = 0; x < bitmap.width; ++x)
+				{
+					std::size_t index0 = (bitmap.rows - y - 1) * bitmap.width + x;
+					std::size_t index1 = (y * bitmap.width + x) * 2;
+					
+					pixels[index1] = 255;
+					pixels[index1 + 1] = bitmap.buffer[index0];
+				}
+			}
+			
+			// Create glyph
+			font->createGlyph(charcode, glyphMetrics, pixels, bitmap.width, bitmap.rows);
+			
+			delete[] pixels;
 		}
-		
-		// Create glyph
-		font->createGlyph(charcode, glyphMetrics, pixels, bitmap.width, bitmap.rows);
-		
-		delete[] pixels;
 	}
 
 	// Build kerning table
 	if (FT_HAS_KERNING(face))
 	{
-		for (char32_t first = 0; first < 256; ++first)
+		for (const UnicodeRange& firstRange: ranges)
 		{
-			FT_UInt firstIndex = FT_Get_Char_Index(face, first);
-
-			for (char32_t second = 0; second < 256; ++second)
+			for (char32_t first = firstRange.start; first <= firstRange.end; ++first)
 			{
-				FT_UInt secondIndex = FT_Get_Char_Index(face, second);
-
-				FT_Vector kerning;
-				error = FT_Get_Kerning(face, firstIndex, secondIndex, FT_KERNING_DEFAULT, &kerning);
-				if (0 != error)
-				{
-					continue;
-				}
+				FT_UInt firstIndex = FT_Get_Char_Index(face, first);
 				
-				font->getKerningTable()->setKerning(first, second, Vector2(kerning.x, kerning.y) / 64.0f);
+				for (const UnicodeRange& secondRange: ranges)
+				{
+					for (char32_t second = secondRange.start; second <= secondRange.end; ++second)
+					{
+						FT_UInt secondIndex = FT_Get_Char_Index(face, second);
+
+						FT_Vector kerning;
+						error = FT_Get_Kerning(face, firstIndex, secondIndex, FT_KERNING_DEFAULT, &kerning);
+						if (0 != error)
+						{
+							continue;
+						}
+						
+						font->getKerningTable()->setKerning(first, second, Vector2(kerning.x, kerning.y) / 64.0f);
+					}
+				}
 			}
 		}
 	}

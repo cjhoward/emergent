@@ -54,7 +54,7 @@ Font::~Font()
 	delete atlas;
 }
 
-void Font::puts(BillboardBatch* batch, const Vector3& origin, const char* string, const Vector4& color, std::size_t offset, std::size_t* count) const
+void Font::puts(BillboardBatch* batch, const Vector3& origin, const std::u32string& string, const Vector4& color, std::size_t offset, std::size_t* count) const
 {
 	if (count != nullptr)
 	{
@@ -64,17 +64,17 @@ void Font::puts(BillboardBatch* batch, const Vector3& origin, const char* string
 	float cursorX = origin.x;
 	float cursorY = origin.y + fontMetrics.getAscender();
 
-	float atlasWidth = atlas->getWidth();
-	float atlasHeight = atlas->getHeight();
+	float atlasWidth = static_cast<float>(atlas->getWidth());
+	float atlasHeight = static_cast<float>(atlas->getHeight());
 	
-	std::size_t i = 0;
-	char32_t previousCharacter;
+	std::size_t currentBillboard = offset;
+	char32_t previousCharacter = U'\0';
 	
-	// Add glyph overlays
-	for (const char* c = string; *c != '\0' && i < batch->getBillboardCount(); ++c, ++i)
+	for (std::size_t i = 0; i < string.size(); ++i)
 	{
-		char32_t character = static_cast<char32_t>(*c);
-		if (character == '\n')
+		char32_t character = string[i];
+		
+		if (character == U'\n')
 		{
 			cursorX = origin.x;
 			cursorY += fontMetrics.getHeight();
@@ -91,11 +91,9 @@ void Font::puts(BillboardBatch* batch, const Vector3& origin, const char* string
 		}
 		
 		// Apply kerning
-		if (!kerningTable.isEmpty() && i)
+		if (!kerningTable.isEmpty() && i > 0)
 		{
-			/// @TODO: ignore kerning if new line
-			/// @TODO: vertical kerning
-			
+			/// @TODO: vertical kerning			
 			Vector2 kerning = kerningTable.getKerning(character, previousCharacter);
 			cursorX += kerning[0];
 		}
@@ -118,7 +116,7 @@ void Font::puts(BillboardBatch* batch, const Vector3& origin, const char* string
 		previousCharacter = character;
 		
 		// Add billboard to batch
-		Billboard* billboard = batch->getBillboard(offset + i);
+		Billboard* billboard = batch->getBillboard(currentBillboard);
 		billboard->setDimensions(Vector2(glyphMetrics.getWidth(), glyphMetrics.getHeight()));
 		billboard->setTranslation(Vector3(translation.x, translation.y, origin.z));
 		billboard->setTextureCoordinates(textureCoordinatesMin, textureCoordinatesMax);
@@ -129,20 +127,23 @@ void Font::puts(BillboardBatch* batch, const Vector3& origin, const char* string
 		{
 			++(*count);
 		}
-				
+		
 		// Increment cursor position
 		cursorX += glyphMetrics.getHorizontalAdvance();
+		
+		// Incremen current billboard
+		++currentBillboard;
 	}
 }
 
-float Font::getWidth(const char* string) const
+float Font::getWidth(const std::u32string& string) const
 {
 	float width = 0.0f;
 	
 	char32_t previous;
-	for (const char* c = string; *c != '\0'; ++c)
+	for (std::size_t i = 0; i < string.size(); ++i)
 	{
-		char32_t current = static_cast<char32_t>(*c);
+		char32_t current = string[i];
 		
 		// Find glyph
 		auto it = glyphs.find(current);
@@ -156,7 +157,7 @@ float Font::getWidth(const char* string) const
 		width += (*it).second.getMetrics().getHorizontalAdvance();
 		
 		// Apply kerning
-		if (!kerningTable.isEmpty() && c != string)
+		if (!kerningTable.isEmpty() && i > 0)
 		{
 			Vector2 kerning = kerningTable.getKerning(previous, current);
 

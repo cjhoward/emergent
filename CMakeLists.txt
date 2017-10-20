@@ -96,6 +96,7 @@ set(emergent_SOURCES
 	src/emergent/font/font.cpp
 	src/emergent/font/texture-atlas.cpp
 	src/emergent/font/font-loader.cpp
+	src/emergent/font/unicode-range.cpp
 	lib/gl3w/src/gl3w.c
 	lib/stb/stb_image.c)
 
@@ -174,7 +175,8 @@ set(emergent_HEADERS
 	include/emergent/font/glyph.hpp
 	include/emergent/font/glyph-metrics.hpp
 	include/emergent/font/kerning-table.hpp
-	include/emergent/font/texture-atlas.hpp)
+	include/emergent/font/texture-atlas.hpp
+	include/emergent/font/unicode-range.hpp)
 
 # Set dependencies
 set(emergent_DEPENDENCIES

@@ -20,7 +20,9 @@
 #ifndef EMERGENT_FONT_FONT_LOADER_HPP
 #define EMERGENT_FONT_FONT_LOADER_HPP
 
+#include <emergent/font/unicode-range.hpp>
 #include <string>
+#include <vector>
 
 namespace Emergent
 {
@@ -35,10 +37,26 @@ class Font;
 class FontLoader
 {
 public:
+	/**
+	 * Creates an instance of FontLoader.
+	 */
 	FontLoader();
+	
+	/**
+	 * Destroys an instance of FontLoader.
+	 */
 	~FontLoader();
 	
-	bool load(const std::string& filename, int size, Font* font);
+	/**
+	 * Loads a font.
+	 *
+	 * @param filename Font filename.
+	 * @param size Size (in pixels) of the font.
+	 * @param ranges Unicode ranges to load.
+	 * @param font Font to load.
+	 * @return `true` if the font was loaded successfully, `false` otherwise.
+	 */
+	bool load(const std::string& filename, int size, const std::vector<UnicodeRange>& ranges, Font* font);
 
 private:
 	void* library;

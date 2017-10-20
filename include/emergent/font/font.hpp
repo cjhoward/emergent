@@ -26,6 +26,7 @@
 #include <emergent/graphics/texture.hpp>
 #include <cstdlib>
 #include <map>
+#include <string>
 
 namespace Emergent
 {
@@ -60,11 +61,11 @@ public:
 	 *
 	 * @param[out] batch Specifies a billboard batch.
 	 * @param[in] translation Specifies the origin of the text
-	 * @param[in] string Specifies a null-terminated UTF-8 string.
+	 * @param[in] string Specifies a UTF-32 encoded string.
 	 * @param[in] offset Specifies an offset to the index of the first billboard
 	 * @param[out] count Returns the number of billboards written to the batch
 	 */
-	void puts(BillboardBatch* batch, const Vector3& origin, const char* string, const Vector4& color, std::size_t offset = 0, std::size_t* count = nullptr) const;
+	void puts(BillboardBatch* batch, const Vector3& origin, const std::u32string& string, const Vector4& color, std::size_t offset = 0, std::size_t* count = nullptr) const;
 	
 	/**
 	 * Sets the font metrics.
@@ -89,10 +90,10 @@ public:
 	/**
 	 * Calculates the width of a string.
 	 *
-	 * @param string Specifies a null-terminated UTF-8 string.
+	 * @param string Specifies a UTF-32 string.
 	 * @return Width of the string.
 	 */
-	float getWidth(const char* string) const;
+	float getWidth(const std::u32string& string) const;
 
 	/**
 	 * Returns the font metrics.
