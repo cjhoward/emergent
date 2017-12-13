@@ -69,6 +69,11 @@ public:
 	 */
 	float getSplitSchemeWeight() const;
 	
+	/**
+	 * Returns the distance to the split at the specified index. The distance at index `0` is the near clipping plane. The distance at index `subfrustumCount` is the far clipping plane. The distances in-between are the split distances.
+	 */
+	float getSplitDistance(std::size_t index) const;
+	
 private:
 	virtual void recalculateFrustum();
 	
@@ -96,6 +101,11 @@ inline const ViewFrustum& SplitViewFrustum::getSubfrustum(std::size_t index) con
 inline float SplitViewFrustum::getSplitSchemeWeight() const
 {
 	return splitSchemeWeight;
+}
+
+inline float SplitViewFrustum::getSplitDistance(std::size_t index) const
+{
+	return splitDistances[index];
 }
 
 } // namespace Emergent

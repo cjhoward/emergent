@@ -19,7 +19,6 @@
 
 #include <emergent/geometry/split-view-frustum.hpp>
 #include <cmath>
-#include <iostream>
 
 namespace Emergent
 {
@@ -42,8 +41,24 @@ SplitViewFrustum::~SplitViewFrustum()
 
 void SplitViewFrustum::distributeSubfrustums()
 {
-	float near = getNear().getDistance();
-	float far = getFar().getDistance();
+	float near;
+	float far;
+	bool orthographic = (getProjectionMatrix()[2][3] == 0.0f);
+	
+	// Derive near and far clipping planes from projection matrix
+	// @see https://stackoverflow.com/questions/10830293/decompose-projection-matrix44-to-left-right-bottom-top-near-and-far-boundary
+	if (orthographic)
+	{
+		// Orthographic projection
+		near = (1.0f + getProjectionMatrix()[3][2]) / getProjectionMatrix()[2][2];
+		far = -(1.0f - getProjectionMatrix()[3][2]) / getProjectionMatrix()[2][2];
+	}
+	else
+	{
+		// Perspective projection
+		near = getProjectionMatrix()[3][2] / (getProjectionMatrix()[2][2] - 1.0f);
+		far = getProjectionMatrix()[3][2] / (getProjectionMatrix()[2][2] + 1.0f);
+	}
 	
 	// Calculate split distances
 	for (std::size_t i = 1; i < subfrustumCount; ++i)
@@ -55,33 +70,37 @@ void SplitViewFrustum::distributeSubfrustums()
 		
 		// Calculate logarithmic split distance
 		float logSplitDistance = near * std::pow(far / near, part);
-		
-		//std::cout << i << "uni: " << uniformSplitDistance << ", log: " << logSplitDistance << std::endl;
-		
+			
 		// Interpolate between uniform and logarithmic split distances
 		splitDistances[i] = logSplitDistance * splitSchemeWeight + uniformSplitDistance * (1.0f - splitSchemeWeight);
 	}
 	splitDistances[0] = near;
 	splitDistances[subfrustumCount] = far;
 	
-	std::cout << "near: " << near << ", far: " << far << std::endl;
-	
 	// Update subfrustums
 	for (std::size_t i = 0; i < subfrustumCount; ++i)
 	{
 		// Determine near and far distances for this subfrustum
-		float splitNear = splitDistances[i];
-		float splitFar = splitDistances[i + 1];
-		
-		std::cout << i << "dist: " << splitNear << ", " << splitFar << std::endl;
+		float subfrustumNear = splitDistances[i];
+		float subfrustumFar = splitDistances[i + 1];
 		
 		// Calculate subfrustum projection matrix
-		Matrix4 splitProjection = getProjectionMatrix();
-		splitProjection[2][2] = -2.0f / (splitFar - splitNear);
-		splitProjection[3][2] = -(splitFar + splitNear) / (splitFar - splitNear);
+		Matrix4 subfrustumProjection = getProjectionMatrix();
+		if (orthographic)
+		{
+			// Orthographic projection
+			subfrustumProjection[2][2] = -2.0f / (subfrustumFar - subfrustumNear);
+			subfrustumProjection[3][2] = -(subfrustumFar + subfrustumNear) / (subfrustumFar - subfrustumNear);
+		}
+		else
+		{
+			// Perspective projection
+			subfrustumProjection[2][2] = -(subfrustumFar + subfrustumNear) / (subfrustumFar - subfrustumNear);
+			subfrustumProjection[3][2] = -(2.0f * subfrustumFar * subfrustumNear) / (subfrustumFar - subfrustumNear);
+		}
 		
 		// Set subfrustum matrices
-		subfrustums[i].setMatrices(getViewMatrix(), splitProjection);
+		subfrustums[i].setMatrices(getViewMatrix(), subfrustumProjection);
 	}
 }
 
