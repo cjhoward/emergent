@@ -83,11 +83,11 @@ set(emergent_SOURCES
 	src/emergent/graphics/scene-object.cpp
 	src/emergent/graphics/scene.cpp
 	src/emergent/graphics/shader.cpp
-	src/emergent/graphics/shader-loader.cpp
-	src/emergent/graphics/shader-parameter.cpp
-	src/emergent/graphics/shader-parameter-set.cpp
+	src/emergent/graphics/shader-input.cpp
+	src/emergent/graphics/shader-variable.cpp
 	src/emergent/graphics/skeleton.cpp
-	src/emergent/graphics/texture.cpp
+	src/emergent/graphics/texture-2d.cpp
+	src/emergent/graphics/texture-cube.cpp
 	src/emergent/graphics/texture-loader.cpp
 	src/emergent/input/arcball.cpp
 	src/emergent/math/math.cpp
@@ -154,12 +154,12 @@ set(emergent_HEADERS
 	include/emergent/graphics/scene-object.hpp
 	include/emergent/graphics/scene.hpp
 	include/emergent/graphics/shader.hpp
-	include/emergent/graphics/shader-loader.hpp
-	include/emergent/graphics/shader-parameter.hpp
-	include/emergent/graphics/shader-parameter-set.hpp
+	include/emergent/graphics/shader-input.hpp
+	include/emergent/graphics/shader-variable.hpp
 	include/emergent/graphics/skeleton.hpp
 	include/emergent/graphics/stb-image.hpp
-	include/emergent/graphics/texture.hpp
+	include/emergent/graphics/texture-2d.hpp
+	include/emergent/graphics/texture-cube.hpp
 	include/emergent/graphics/texture-loader.hpp
 	include/emergent/graphics/vertex-format.hpp
 	include/emergent/input/arcball.hpp

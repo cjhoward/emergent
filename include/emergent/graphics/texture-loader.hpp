@@ -25,7 +25,8 @@
 namespace Emergent
 {
 
-class Texture;
+class Texture2D;
+class TextureCube;
 
 /**
  * Loads textures.
@@ -41,12 +42,20 @@ public:
 	TextureLoader();
 	
 	/**
-	 * Loads a texture.
+	 * Loads a 2D texture.
 	 *
 	 * @param filename Path to the texture file.
 	 * @return Pointer to the loaded texture, or `nullptr` if the texture could not be loaded.
 	 */
-	Texture* load(const std::string& filename);
+	Texture2D* load2D(const std::string& filename);
+	
+	/**
+	 * Loads a cube texture.
+	 *
+	 * @param filename Path to the texture file.
+	 * @return Pointer to the loaded texture, or `nullptr` if the texture could not be loaded.
+	 */
+	TextureCube* loadCube(const std::string& filename);
 	
 	/**
 	 * Sets the gamma correction exponent.
@@ -61,13 +70,6 @@ public:
 	 * @param mipmapChain Specifies whether to enable mipmap chain loading.
 	 */
 	void setMipmapChain(bool mipmapChain);
-	
-	/**
-	 * Enables or disables the cubemap loading flag. If enabled, the texture loader will attempt to load the next texture as a cubemap.
-	 *
-	 * @param cubemap Specifies whether to enable cubemap loading.
-	 */
-	void setCubemap(bool cubemap);
 	
 	/**
 	 * Sets the maximum degree of anisotropy. The initial value is `1.0`.
@@ -99,16 +101,14 @@ private:
 	static const int cubemapLayoutOffsets[5][6][2];
 	static const bool cubemapLayoutFlips[5][6][2];
 	
-	Texture* loadCubemap(const std::string& filename);
-	bool loadMipmap(Texture* texture, const std::string& filename, int mipmapLevel);
-	bool loadCubemapMipmap(Texture* texture, const std::string& filename, int mipmapLevel);
-	bool loadMipmapChain(Texture* texture, const std::string& filename);
+	bool loadMipmap(Texture2D* texture, const std::string& filename, int mipmapLevel);
+	bool loadCubemapMipmap(TextureCube* texture, const std::string& filename, int mipmapLevel);
+	bool loadMipmapChain(Texture2D* texture, const std::string& filename);
+	bool loadCubemapMipmapChain(TextureCube* texture, const std::string& filename);
 	
 	float gamma;
 	bool mipmapChain;
-	bool cubemap;
 	float maxAnisotropy;
-	
 	bool wrapRepeatS;
 	bool wrapRepeatT;
 	bool wrapRepeatR;

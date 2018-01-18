@@ -17,33 +17,47 @@
  * along with Emergent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <emergent/graphics/shader-parameter-set.hpp>
+#include <emergent/graphics/texture-2d.hpp>
 
 namespace Emergent
 {
 
-ShaderParameterSet::ShaderParameterSet()
+Texture2D::Texture2D():
+	textureID(0),
+	width(0),
+	height(0)
 {}
 
-ShaderParameterSet::~ShaderParameterSet()
+Texture2D::~Texture2D()
 {
-	removeParameters();
+	destroy();
 }
 
-const ShaderParameter* ShaderParameterSet::addParameter(const std::string& name, ShaderParameter::Type type, int size)
+void Texture2D::destroy()
 {
-	ShaderParameter* parameter = new ShaderParameter(this, parameters.size(), name, type, size);
-	parameters.push_back(parameter);
-	return parameter;
-}
-
-void ShaderParameterSet::removeParameters()
-{
-	for (ShaderParameter* parameter: parameters)
+	if (textureID != 0)
 	{
-		delete parameter;
+		glDeleteTextures(1, &textureID);
+		
+		textureID = 0;
+		width = 0;
+		height = 0;
 	}
-	parameters.clear();
+}
+
+void Texture2D::setTextureID(GLuint textureID)
+{
+	this->textureID = textureID;
+}
+
+void Texture2D::setWidth(int width)
+{
+	this->width = width;
+}
+
+void Texture2D::setHeight(int height)
+{
+	this->height = height;
 }
 
 } // namespace Emergent

@@ -21,10 +21,11 @@
 #define EMERGENT_GRAPHICS_AMBIENT_LIGHT_HPP
 
 #include <emergent/graphics/light.hpp>
-#include <emergent/graphics/gl3w.hpp>
 
 namespace Emergent
 {
+
+class TextureCube;
 
 /**
  * Abstract base class for ambient light sources.
@@ -62,36 +63,36 @@ public:
 	/**
 	 * Sets the diffuse cubemap texture.
 	 */
-	void setDiffuseTexture(GLuint textureID);
+	void setDiffuseTexture(const TextureCube* texture);
 	
 	/**
 	 * Sets the specular cubemap texture
 	 */
-	void setSpecularTexture(GLuint textureID);
+	void setSpecularTexture(const TextureCube* texture);
 	
 	/**
 	 * Returns the diffuse cubemap texture.
 	 */
-	GLuint getDiffuseTexture() const;
+	const TextureCube* getDiffuseTexture() const;
 	
 	/**
 	 * Returns the specular cubemap texture.
 	 */
-	GLuint getSpecularTexture() const;
+	const TextureCube* getSpecularTexture() const;
 
 private:
-	GLuint diffuseTextureID;
-	GLuint specularTextureID;
+	const TextureCube* diffuseTexture;
+	const TextureCube* specularTexture;
 };
 
-inline void AmbientCube::setDiffuseTexture(GLuint textureID)
+inline void AmbientCube::setDiffuseTexture(const TextureCube* texture)
 {
-	this->diffuseTextureID = textureID;
+	this->diffuseTexture = texture;
 }
 
-inline void AmbientCube::setSpecularTexture(GLuint textureID)
+inline void AmbientCube::setSpecularTexture(const TextureCube* texture)
 {
-	this->specularTextureID = textureID;
+	this->specularTexture = texture;
 }
 
 inline LightType AmbientCube::getLightType() const
@@ -99,14 +100,14 @@ inline LightType AmbientCube::getLightType() const
 	return LightType::AMBIENT_CUBE;
 }
 
-inline GLuint AmbientCube::getDiffuseTexture() const
+inline const TextureCube* AmbientCube::getDiffuseTexture() const
 {
-	return diffuseTextureID;
+	return diffuseTexture;
 }
 
-inline GLuint AmbientCube::getSpecularTexture() const
+inline const TextureCube* AmbientCube::getSpecularTexture() const
 {
-	return specularTextureID;
+	return specularTexture;
 }
 
 } // namespace Emergent

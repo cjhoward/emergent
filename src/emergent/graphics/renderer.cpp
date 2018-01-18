@@ -26,8 +26,6 @@
 #include <emergent/graphics/model-instance.hpp>
 #include <emergent/graphics/light.hpp>
 #include <emergent/graphics/billboard.hpp>
-#include <emergent/graphics/material.hpp>
-#include <emergent/graphics/texture.hpp>
 #include <emergent/graphics/vertex-format.hpp>
 #include <iostream>
 
@@ -58,10 +56,7 @@ void RenderQueue::queue(const ModelInstance* instance)
 
 	// Set operation transform
 	operation.transform = instance->getMatrix();
-
-	// Calculate depth (distance to near clipping plane)
-	//operation.depth = camera->getViewFrustum().getNear().distance(instance->getTranslation());
-
+	
 	const Model* model = instance->getModel();
 	operation.vao = model->getVAO();
 	operation.pose = instance->getPose();
@@ -86,10 +81,6 @@ void RenderQueue::queue(const BillboardBatch* batch)
 
 	// Set operation transform
 	operation.transform = batch->getMatrix();
-
-	// Calculate depth (distance to near clipping plane)
-	//operation.depth = camera->getViewFrustum().getNear().distance(batch->getTranslation());
-
 	operation.vao = batch->vao;
 	operation.pose = nullptr;
 	
@@ -237,4 +228,3 @@ void Renderer::render(const Scene& scene)
 }
 
 } // namespace Emergent
-

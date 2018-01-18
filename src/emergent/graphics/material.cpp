@@ -22,7 +22,108 @@
 namespace Emergent
 {
 
-Material::~Material()
+Material::Material(Shader* shader):
+	shader(shader),
+	flags(0)
 {}
+
+Material::Material():
+	shader(nullptr),
+	flags(0)
+{}
+
+Material::~Material()
+{
+	// Unlink material from shader
+	if (this->shader != nullptr)
+	{
+		this->shader->unlinkMaterial(this);
+	}
+	
+	removeVariables();
+}
+
+void Material::setShader(Shader* shader)
+{
+	// Unlink material from old shader
+	if (this->shader != nullptr)
+	{
+		this->shader->unlinkMaterial(this);
+	}
+	
+	// Link material to new shader
+	this->shader = shader;
+	if (this->shader != nullptr)
+	{
+		this->shader->linkMaterial(this);
+	}
+	
+	reconnectVariables();
+}
+
+void Material::removeVariables()
+{
+	for (ShaderVariableBase* variable: variables)
+	{
+		delete variable;
+	}
+	
+	variables.clear();
+	variableMap.clear();
+}
+
+const ShaderVariableBase* Material::getVariable(const std::string& inputName) const
+{
+	auto it = variableMap.find(inputName);
+	if (it == variableMap.end())
+	{
+		return nullptr;
+	}
+	
+	return variables[it->second];
+}
+
+ShaderVariableBase* Material::getVariable(const std::string& inputName)
+{
+	auto it = variableMap.find(inputName);
+	if (it == variableMap.end())
+	{
+		return nullptr;
+	}
+	
+	return variables[it->second];
+}
+
+void Material::reconnectVariables()
+{
+	for (auto it = variableMap.begin(); it != variableMap.end(); ++it)
+	{
+		ShaderVariableBase* variable = variables[it->second];
+		
+		// Disconnect variable
+		variable->disconnect();
+		
+		// If material has a valid shader, attempt to connect the variable
+		if (shader != nullptr)
+		{
+			variable->connect(shader->getInput(it->first));
+		}
+	}
+}
+
+bool Material::upload() const
+{
+	int transmissions = 0;
+	
+	for (const ShaderVariableBase* variable: variables)
+	{
+		if (variable->upload())
+		{
+			++transmissions;
+		}
+	}
+	
+	return (transmissions == variables.size());
+}
 
 } // namespace Emergent

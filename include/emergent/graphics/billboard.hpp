@@ -22,13 +22,14 @@
 
 #include <emergent/graphics/gl3w.hpp>
 #include <emergent/graphics/scene-object.hpp>
-#include <emergent/graphics/material.hpp>
-#include <emergent/graphics/camera.hpp>
 #include <emergent/math/types.hpp>
 #include <vector>
 
 namespace Emergent
 {
+
+class Material;
+class Camera;
 
 /**
  * Enumerates billboard alignment modes
@@ -55,13 +56,13 @@ public:
 	Billboard();
 	
 	void setTranslation(const Vector3& translation);
-	void setRotation(const glm::quat& rotation);
+	void setRotation(const Quaternion& rotation);
 	void setDimensions(const Vector2& dimensions);
 	void setTextureCoordinates(const Vector2& min, const Vector2& max);
 	void setTintColor(const Vector4& color);
 	
 	const Vector3& getTranslation() const;
-	const glm::quat& getRotation() const;
+	const Quaternion& getRotation() const;
 	const Vector2& getDimensions() const;
 	const Vector2& getTextureCoordinatesMin() const;
 	const Vector2& getTextureCoordinatesMax() const;
@@ -69,7 +70,7 @@ public:
 	
 private:
 	Vector3 translation;
-	glm::quat rotation;
+	Quaternion rotation;
 	Vector2 dimensions;
 	Vector2 coordinatesMin;
 	Vector2 coordinatesMax;
@@ -81,7 +82,7 @@ inline void Billboard::setTranslation(const Vector3& translation)
 	this->translation = translation;
 }
 
-inline void Billboard::setRotation(const glm::quat& rotation)
+inline void Billboard::setRotation(const Quaternion& rotation)
 {
 	this->rotation = rotation;
 }
@@ -107,7 +108,7 @@ inline const Vector3& Billboard::getTranslation() const
 	return translation;
 }
 
-inline const glm::quat& Billboard::getRotation() const
+inline const Quaternion& Billboard::getRotation() const
 {
 	return rotation;
 }

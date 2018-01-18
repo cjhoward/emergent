@@ -18,7 +18,8 @@
  */
 
 #include <emergent/graphics/texture-loader.hpp>
-#include <emergent/graphics/texture.hpp>
+#include <emergent/graphics/texture-2d.hpp>
+#include <emergent/graphics/texture-cube.hpp>
 #include <emergent/graphics/stb-image.hpp>
 #include <algorithm>
 #include <cmath>
@@ -150,38 +151,30 @@ const bool TextureLoader::cubemapLayoutFlips[5][6][2] =
 TextureLoader::TextureLoader():
 	gamma(1.0f),
 	mipmapChain(false),
-	cubemap(false),
 	maxAnisotropy(1.0f),
 	wrapRepeatS(true),
 	wrapRepeatT(true),
 	wrapRepeatR(true)
 {}
 
-Texture* TextureLoader::load(const std::string& filename)
+Texture2D* TextureLoader::load2D(const std::string& filename)
 {
-	// Check cubemap loading flag
-	if (cubemap)
-	{
-		// Load cubemap
-		return loadCubemap(filename);
-	}
-	
 	// Generate OpenGL texture ID
 	GLuint textureID;
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	
 	// Set wrapping and filtering parameters
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (wrapRepeatS) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (wrapRepeatT) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (wrapRepeatS) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (wrapRepeatT) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
 	// Set anisotropic filtering
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
 	
 	// Allocate texture and set its texture ID
-	Texture* texture = new Texture();
+	Texture2D* texture = new Texture2D();
 	texture->setTextureID(textureID);
 	
 	// Check mipmap chain loading flag
@@ -210,42 +203,7 @@ Texture* TextureLoader::load(const std::string& filename)
 	return texture;
 }
 
-void TextureLoader::setGamma(float gamma)
-{
-	this->gamma = gamma;
-}
-
-void TextureLoader::setMipmapChain(bool mipmapChain)
-{
-	this->mipmapChain = mipmapChain;
-}
-
-void TextureLoader::setCubemap(bool cubemap)
-{
-	this->cubemap = cubemap;
-}
-
-void TextureLoader::setMaxAnisotropy(float anisotropy)
-{
-	this->maxAnisotropy = anisotropy;
-}
-
-void TextureLoader::setWrapS(bool repeat)
-{
-	this->wrapRepeatS = repeat;
-}
-
-void TextureLoader::setWrapT(bool repeat)
-{
-	this->wrapRepeatT = repeat;
-}
-
-void TextureLoader::setWrapR(bool repeat)
-{
-	this->wrapRepeatR = repeat;
-}
-
-Texture* TextureLoader::loadCubemap(const std::string& filename)
+TextureCube* TextureLoader::loadCube(const std::string& filename)
 {
 	// Generate OpenGL texture ID
 	GLuint textureID;
@@ -253,21 +211,21 @@ Texture* TextureLoader::loadCubemap(const std::string& filename)
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 	
 	// Set wrapping and filtering parameters
-	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, (wrapRepeatS) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, (wrapRepeatT) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, (wrapRepeatR) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, (wrapRepeatS) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, (wrapRepeatT) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, (wrapRepeatR) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
 	// Allocate texture and set its texture ID
-	Texture* texture = new Texture();
+	TextureCube* texture = new TextureCube();
 	texture->setTextureID(textureID);
 	
 	// Check mipmap chain loading flag
 	if (mipmapChain)
 	{
 		// Load cubemap mipmap chain
-		if (!loadMipmapChain(texture, filename))
+		if (!loadCubemapMipmapChain(texture, filename))
 		{
 			delete texture;
 			return nullptr;
@@ -289,7 +247,36 @@ Texture* TextureLoader::loadCubemap(const std::string& filename)
 	return texture;
 }
 
-bool TextureLoader::loadMipmap(Texture* texture, const std::string& filename, int mipmapLevel)
+void TextureLoader::setGamma(float gamma)
+{
+	this->gamma = gamma;
+}
+
+void TextureLoader::setMipmapChain(bool mipmapChain)
+{
+	this->mipmapChain = mipmapChain;
+}
+void TextureLoader::setMaxAnisotropy(float anisotropy)
+{
+	this->maxAnisotropy = anisotropy;
+}
+
+void TextureLoader::setWrapS(bool repeat)
+{
+	this->wrapRepeatS = repeat;
+}
+
+void TextureLoader::setWrapT(bool repeat)
+{
+	this->wrapRepeatT = repeat;
+}
+
+void TextureLoader::setWrapR(bool repeat)
+{
+	this->wrapRepeatR = repeat;
+}
+
+bool TextureLoader::loadMipmap(Texture2D* texture, const std::string& filename, int mipmapLevel)
 {
 	int width;
 	int height;
@@ -392,7 +379,7 @@ bool TextureLoader::loadMipmap(Texture* texture, const std::string& filename, in
 	return true;
 }
 
-bool TextureLoader::loadCubemapMipmap(Texture* texture, const std::string& filename, int mipmapLevel)
+bool TextureLoader::loadCubemapMipmap(TextureCube* texture, const std::string& filename, int mipmapLevel)
 {
 	int cubemapWidth;
 	int cubemapHeight;
@@ -450,13 +437,12 @@ bool TextureLoader::loadCubemapMipmap(Texture* texture, const std::string& filen
 	// If this is the base-level mipmap, set the texture dimensions
 	if (!mipmapLevel)
 	{
-		texture->setWidth(faceSize);
-		texture->setHeight(faceSize);
+		texture->setFaceSize(faceSize);
 	}
 	else
 	{
 		// Verify mipmap dimensions
-		if (faceSize != texture->getWidth() >> mipmapLevel)
+		if (faceSize != texture->getFaceSize() >> mipmapLevel)
 		{
 			std::cerr << "TextureLoader::loadCubemapMipmap(): Mipmap level " << mipmapLevel << " loaded from \"" << filename << "\" has incorrect dimensions" << std::endl;
 			stbi_image_free(cubemapPixels);
@@ -579,7 +565,7 @@ bool TextureLoader::loadCubemapMipmap(Texture* texture, const std::string& filen
 	return true;
 }
 
-bool TextureLoader::loadMipmapChain(Texture* texture, const std::string& filename)
+bool TextureLoader::loadMipmapChain(Texture2D* texture, const std::string& filename)
 {
 	char* baseMipmapFilenameBuffer = new char[filename.length() + 16];
 	std::sprintf(baseMipmapFilenameBuffer, filename.c_str(), 0);
@@ -587,21 +573,10 @@ bool TextureLoader::loadMipmapChain(Texture* texture, const std::string& filenam
 	delete[] baseMipmapFilenameBuffer;
 	
 	// Load base level mipmap first to retrieve image dimensions
-	if (cubemap)
+	if (!loadMipmap(texture, baseMipmapFilename, 0))
 	{
-		if (!loadCubemapMipmap(texture, baseMipmapFilename, 0))
-		{
-			std::cerr << "TextureLoader::loadMipmapChain(): Failed to load cubemap mipmap level 0 from \"" << baseMipmapFilename << "\"" << std::endl;
-			return false;
-		}
-	}
-	else
-	{
-		if (!loadMipmap(texture, baseMipmapFilename, 0))
-		{
-			std::cerr << "TextureLoader::loadMipmapChain(): Failed to load texture mipmap level 0 from \"" << baseMipmapFilename << "\"" << std::endl;
-			return false;
-		}
+		std::cerr << "TextureLoader::loadMipmapChain(): Failed to load texture mipmap level 0 from \"" << baseMipmapFilename << "\"" << std::endl;
+		return false;
 	}
 	
 	// Check that image dimensions are powers of two
@@ -625,21 +600,53 @@ bool TextureLoader::loadMipmapChain(Texture* texture, const std::string& filenam
 		std::string mipmapFilename = mipmapFilenameBuffer;
 		delete[] mipmapFilenameBuffer;
 		
-		if (cubemap)
+		if (!loadMipmap(texture, mipmapFilename, i))
 		{
-			if (!loadCubemapMipmap(texture, mipmapFilename, i))
-			{
-				std::cerr << "TextureLoader::loadMipmapChain(): Failed to load cubemap mipmap level " << i << " from \"" << mipmapFilename << "\"" << std::endl;
-				return false;
-			}
+			std::cerr << "TextureLoader::loadMipmapChain(): Failed to load texture mipmap level " << i << " from \"" << mipmapFilename << "\"" << std::endl;
+			return false;
 		}
-		else
+	}
+	
+	return true;
+}
+
+bool TextureLoader::loadCubemapMipmapChain(TextureCube* texture, const std::string& filename)
+{
+	char* baseMipmapFilenameBuffer = new char[filename.length() + 16];
+	std::sprintf(baseMipmapFilenameBuffer, filename.c_str(), 0);
+	std::string baseMipmapFilename = baseMipmapFilenameBuffer;
+	delete[] baseMipmapFilenameBuffer;
+	
+	// Load base level mipmap first to retrieve image dimensions
+	if (!loadCubemapMipmap(texture, baseMipmapFilename, 0))
+	{
+		std::cerr << "TextureLoader::loadCubemapMipmapChain(): Failed to load cubemap mipmap level 0 from \"" << baseMipmapFilename << "\"" << std::endl;
+		return false;
+	}
+	
+	// Check that image dimensions are powers of two
+	int faceSize = texture->getFaceSize();
+	if (faceSize == 0 || (faceSize & (faceSize - 1)) != 0)
+	{
+		std::cerr << "TextureLoader::loadCubemapMipmapChain(): Texture \"" << baseMipmapFilename << "\" has non power-of-two dimensions" << std::endl;
+		return false;
+	}
+	
+	// Calculate number of mipmap levels
+	int mipmapLevelCount = 1 + static_cast<int>(std::floor(std::log2(faceSize)));
+	
+	// Load remaining mipmap levels
+	for (int i = 1; i < mipmapLevelCount; ++i)
+	{
+		char* mipmapFilenameBuffer = new char[filename.length() + 16];
+		std::sprintf(mipmapFilenameBuffer, filename.c_str(), i);
+		std::string mipmapFilename = mipmapFilenameBuffer;
+		delete[] mipmapFilenameBuffer;
+		
+		if (!loadCubemapMipmap(texture, mipmapFilename, i))
 		{
-			if (!loadMipmap(texture, mipmapFilename, i))
-			{
-				std::cerr << "TextureLoader::loadMipmapChain(): Failed to load texture mipmap level " << i << " from \"" << mipmapFilename << "\"" << std::endl;
-				return false;
-			}
+			std::cerr << "TextureLoader::loadCubemapMipmapChain(): Failed to load cubemap mipmap level " << i << " from \"" << mipmapFilename << "\"" << std::endl;
+			return false;
 		}
 	}
 	

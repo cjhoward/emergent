@@ -17,53 +17,40 @@
  * along with Emergent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <emergent/graphics/texture.hpp>
-#include <emergent/graphics/material.hpp>
-#include <emergent/graphics/stb-image.hpp>
-#include <iostream>
+#include <emergent/graphics/texture-cube.hpp>
 
 namespace Emergent
 {
 
-/// @todo remove this hack
-
-
-Texture::Texture():
+TextureCube::TextureCube():
 	textureID(0),
-	width(0),
-	height(0)
+	faceSize(0)
 {}
 
-Texture::~Texture()
+TextureCube::~TextureCube()
 {
 	destroy();
 }
 
-void Texture::destroy()
+void TextureCube::destroy()
 {
 	if (textureID != 0)
 	{
 		glDeleteTextures(1, &textureID);
 		
 		textureID = 0;
-		width = 0;
-		height = 0;
+		faceSize = 0;
 	}
 }
 
-void Texture::setTextureID(GLuint textureID)
+void TextureCube::setTextureID(GLuint textureID)
 {
 	this->textureID = textureID;
 }
 
-void Texture::setWidth(int width)
+void TextureCube::setFaceSize(int size)
 {
-	this->width = width;
-}
-
-void Texture::setHeight(int height)
-{
-	this->height = height;
+	this->faceSize = size;
 }
 
 } // namespace Emergent

@@ -95,12 +95,12 @@
 #include <emergent/graphics/scene-object.hpp>
 #include <emergent/graphics/scene.hpp>
 #include <emergent/graphics/shader.hpp>
-#include <emergent/graphics/shader-loader.hpp>
-#include <emergent/graphics/shader-parameter.hpp>
-#include <emergent/graphics/shader-parameter-set.hpp>
+#include <emergent/graphics/shader-input.hpp>
+#include <emergent/graphics/shader-variable.hpp>
 #include <emergent/graphics/skeleton.hpp>
 #include <emergent/graphics/stb-image.hpp>
-#include <emergent/graphics/texture.hpp>
+#include <emergent/graphics/texture-2d.hpp>
+#include <emergent/graphics/texture-cube.hpp>
 #include <emergent/graphics/texture-loader.hpp>
 #include <emergent/graphics/vertex-format.hpp>
 

@@ -17,34 +17,71 @@
  * along with Emergent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EMERGENT_GRAPHICS_TEXTURE_HPP
-#define EMERGENT_GRAPHICS_TEXTURE_HPP
+#ifndef EMERGENT_GRAPHICS_TEXTURE_2D_HPP
+#define EMERGENT_GRAPHICS_TEXTURE_2D_HPP
 
 #include <emergent/graphics/gl3w.hpp>
-#include <string>
 
 namespace Emergent
 {
 
 /**
- * 
+ * A 2D texture which can be uploaded to a shader via shader inputs.
  *
  * @ingroup graphics
  */
-class Texture
+class Texture2D
 {
 public:
-	Texture();
-	~Texture();
+	/**
+	 * Creates a 2D texture.
+	 */
+	Texture2D();
 	
+	/**
+	 * Destroys a 2D texture.
+	 */
+	~Texture2D();
+	
+	/**
+	 * Destroys the texture.
+	 */
 	void destroy();
 	
+	/**
+	 * Sets the OpenGL texture ID.
+	 *
+	 * @param textureID OpenGL texture ID.
+	 */
 	void setTextureID(GLuint textureID);
+	
+	/**
+	 * Sets the width of the texture.
+	 *
+	 * @param width Width of the texture in pixels.
+	 */
 	void setWidth(int width);
+	
+	/**
+	 * Sets the height of the texture.
+	 *
+	 * @param height Height of the texture in pixels.
+	 */
 	void setHeight(int height);
 	
+	/**
+	 * Returns the OpenGL texture ID
+	 */
 	GLuint getTextureID() const;
+	
+	/**
+	 * Returns the width of the texture in pixels.
+	 */
 	int getWidth() const;
+	
+	/**
+	 * Returns the height of the texture in pixels.
+	 */
 	int getHeight() const;
 	
 private:
@@ -53,21 +90,21 @@ private:
 	int height;
 };
 
-inline GLuint Texture::getTextureID() const
+inline GLuint Texture2D::getTextureID() const
 {
 	return textureID;
 }
 
-inline int Texture::getWidth() const
+inline int Texture2D::getWidth() const
 {
 	return width;
 }
 
-inline int Texture::getHeight() const
+inline int Texture2D::getHeight() const
 {
 	return height;
 }
 
 } // namespace Emergent
 
-#endif // EMERGENT_GRAPHICS_TEXTURE_HPP
+#endif // EMERGENT_GRAPHICS_TEXTURE_2D_HPP

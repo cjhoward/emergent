@@ -127,15 +127,6 @@ inline std::list<RenderOperation>* RenderQueue::getOperations()
 	return &operations;
 }
 
-/*
- * Render passes are (generally) assigned a single shader file, but may generate separate shader objects according to a hash value. Render passes store shaders in a cache which is hash-mapped. The RenderPass::render() should be defined by subclasses. This method should setup the graphics state as required and perform its complete rendering process given the information provided to it.
- 
-Render passes must have access to:
-camera's render ops
-camera
-lights
- */
-
 /**
  * Information required by a render pass.
  *
@@ -287,4 +278,3 @@ private:
 } // namespace Emergent
 
 #endif // EMERGENT_GRAPHICS_RENDERER_HPP
-

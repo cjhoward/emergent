@@ -23,7 +23,7 @@
 #include <emergent/font/font-metrics.hpp>
 #include <emergent/font/glyph.hpp>
 #include <emergent/font/kerning-table.hpp>
-#include <emergent/graphics/texture.hpp>
+#include <emergent/graphics/texture-2d.hpp>
 #include <cstdlib>
 #include <map>
 #include <string>
@@ -126,17 +126,17 @@ public:
 	/**
 	 * Returns the texture containing the font glyphs.
 	 */
-	const Texture* getTexture() const;
+	const Texture2D* getTexture() const;
 	
 	/// @copydoc Font::getTexture() const
-	Texture* getTexture();
+	Texture2D* getTexture();
 	
 private:
 	FontMetrics fontMetrics;
 	std::map<char32_t, Glyph> glyphs;
 	KerningTable kerningTable;
 	TextureAtlas* atlas;
-	Texture texture;
+	Texture2D texture;
 };
 
 inline void Font::setMetrics(const FontMetrics& metrics)
@@ -170,12 +170,12 @@ inline KerningTable* Font::getKerningTable()
 	return &kerningTable;
 }
 
-inline const Texture* Font::getTexture() const
+inline const Texture2D* Font::getTexture() const
 {
 	return &texture;
 }
 
-inline Texture* Font::getTexture()
+inline Texture2D* Font::getTexture()
 {
 	return &texture;
 }

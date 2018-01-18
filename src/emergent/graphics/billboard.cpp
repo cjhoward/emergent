@@ -19,6 +19,7 @@
 
 #include <emergent/graphics/billboard.hpp>
 #include <emergent/graphics/vertex-format.hpp>
+#include <emergent/graphics/camera.hpp>
 #include <emergent/math/math.hpp>
 
 namespace Emergent
@@ -237,4 +238,3 @@ void BillboardBatch::update()
 }
 
 } // namespace Emergent
-

@@ -23,8 +23,8 @@ namespace Emergent
 {
 
 AmbientCube::AmbientCube():
-	diffuseTextureID(0),
-	specularTextureID(0)
+	diffuseTexture(nullptr),
+	specularTexture(nullptr)
 {}
 
 AmbientCube::~AmbientCube()

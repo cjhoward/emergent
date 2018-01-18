@@ -17,17 +17,34 @@
  * along with Emergent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <emergent/graphics/shader-parameter.hpp>
+#include <emergent/graphics/shader-variable.hpp>
+#include <emergent/graphics/shader-input.hpp>
 
 namespace Emergent
 {
 
-ShaderParameter::ShaderParameter(ShaderParameterSet* parameterSet, std::size_t index, const std::string& name, Type type, int size):
-	parameterSet(parameterSet),
-	index(index),
-	name(name),
-	type(type),
-	size(size)
+ShaderVariableBase::ShaderVariableBase():
+	connectedInput(nullptr)
 {}
+
+ShaderVariableBase::~ShaderVariableBase()
+{}
+
+bool ShaderVariableBase::connect(const ShaderInput* input)
+{
+	if (!input || (input->getDataType() != getDataType()))
+	{
+		return false;
+	}
+	
+	connectedInput = input;
+	
+	return true;
+}
+
+void ShaderVariableBase::disconnect()
+{
+	connectedInput = nullptr;
+}
 
 } // namespace Emergent

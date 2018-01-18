@@ -185,7 +185,7 @@ bool Font::createGlyph(char32_t charcode, const GlyphMetrics& metrics, const uns
 	// Update texture
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, rect.getMin().x, rect.getMin().y, width, height, GL_RG, GL_UNSIGNED_BYTE, data);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(rect.getMin().x), static_cast<GLint>(rect.getMin().y), width, height, GL_RG, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	
 	Glyph& glyph = glyphs[charcode];

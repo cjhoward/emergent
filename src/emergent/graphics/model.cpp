@@ -20,8 +20,6 @@
 #include <emergent/graphics/model.hpp>
 #include <emergent/graphics/skeleton.hpp>
 #include <emergent/graphics/model-instance.hpp>
-#include <emergent/graphics/material.hpp>
-#include <emergent/graphics/texture.hpp>
 #include <emergent/graphics/vertex-format.hpp>
 #include <emergent/graphics/gl3w.hpp>
 #include <emergent/geometry/winged-edge.hpp>
