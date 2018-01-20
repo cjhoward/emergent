@@ -131,7 +131,7 @@ public:
 	/**
 	 * Returns the material flags. Flags may be interpreted by a render pass in order to sort render operations or perform other functions.
 	 */
-	std::uint32_t getFlags() const;
+	std::uint64_t getFlags() const;
 	
 	/**
 	 * Calls the `ShaderVariableBase::upload() const` function of each shader variable in the material.
@@ -151,7 +151,7 @@ private:
 	Shader* shader;
 	std::vector<ShaderVariableBase*> variables;
 	std::map<std::string, std::size_t> variableMap;
-	std::uint32_t flags;
+	std::uint64_t flags;
 };
 
 template <typename T>
@@ -216,7 +216,7 @@ inline ShaderVariableBase* Material::getVariable(std::size_t index)
 	return variables[index];
 }
 
-inline std::uint32_t Material::getFlags() const
+inline std::uint64_t Material::getFlags() const
 {
 	return flags;
 }
