@@ -2,6 +2,12 @@
 
 Emergent is a C++ framework for real-time 3D applications.
 
+## Download
+
+Use Git to download the `emergent` repository and its submodules:
+
+	git clone --recursive https://github.com/cjhoward/emergent.git emergent
+
 ## Building and Installation
 
 ### GNU/Linux
@@ -26,7 +32,7 @@ Building on Windows requires CMake and Visual Studio 2017. Open the Visual Studi
 
 The Emergent API reference can be generated with [Doxygen](http://www.stack.nl/~dimitri/doxygen/). First ensure the `doxygen` executable is in your system path, then execute the following command:
 
-	cmake --build . --target emergent-docs
+	cmake --build . --target docs
 
 The output will be located in `docs/api-reference/html`.
 

@@ -26,9 +26,9 @@ set(FREETYPE_BUILD_DIR ${PROJECT_BINARY_DIR}/deps/build/freetype)
 set(FREETYPE_INSTALL_DIR ${PROJECT_BINARY_DIR}/deps/install/freetype)
 set(FREETYPE_INCLUDE_DIR ${FREETYPE_INSTALL_DIR}/include/freetype2)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-	set(FREETYPE_LIBRARY ${FREETYPE_INSTALL_DIR}/lib/freetyped.lib)
+	set(FREETYPE_LIBRARY ${FREETYPE_INSTALL_DIR}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}freetyped${CMAKE_STATIC_LIBRARY_SUFFIX})
 else()
-	set(FREETYPE_LIBRARY ${FREETYPE_INSTALL_DIR}/lib/freetype.lib)
+	set(FREETYPE_LIBRARY ${FREETYPE_INSTALL_DIR}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}freetype${CMAKE_STATIC_LIBRARY_SUFFIX})
 endif()
 ExternalProject_Add(freetype
 	SOURCE_DIR ${PROJECT_SOURCE_DIR}/lib/freetype
@@ -37,6 +37,50 @@ ExternalProject_Add(freetype
 	"-DCMAKE_INSTALL_PREFIX=${FREETYPE_INSTALL_DIR}"
 	BINARY_DIR ${FREETYPE_BUILD_DIR}
 	INSTALL_DIR ${FREETYPE_INSTALL_DIR})
+
+# Configure, build and install SDL2
+set(SDL2_BUILD_DIR ${PROJECT_BINARY_DIR}/deps/build/SDL2)
+set(SDL2_INSTALL_DIR ${PROJECT_BINARY_DIR}/deps/install/SDL2)
+set(SDL2_INCLUDE_DIR ${SDL2_INSTALL_DIR}/include)
+set(SDL2_LIBRARY SDL2)
+set(SDL2main_LIBRARY SDL2main)
+set(SDL2_LIBRARIES
+	${SDL2main_LIBRARY}
+	${SDL2_LIBRARY}
+)
+
+if(MSVC)
+	set(SDL2_LIBRARIES
+		${SDL2_LIBRARIES}
+		dinput8
+		dxguid
+		user32
+		gdi32
+		winmm
+		imm32
+		ole32
+		oleaut32
+		shell32
+		version
+		uuid
+	)
+else()
+	set(SDL2_LIBRARIES
+		${SDL2_LIBRARIES}
+		pthread
+		dl
+	)
+endif()
+
+ExternalProject_Add(SDL2-project
+	SOURCE_DIR ${PROJECT_SOURCE_DIR}/lib/SDL2
+	CMAKE_ARGS
+	"-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
+	"-DCMAKE_INSTALL_PREFIX=${SDL2_INSTALL_DIR}"
+	"-DSDL_STATIC=true"
+	"-DSDL_SHARED=false"
+	BINARY_DIR ${SDL2_BUILD_DIR}
+	INSTALL_DIR ${SDL2_INSTALL_DIR})
 
 # Setup configuration variables
 set(EMERGENT_VERSION ${PROJECT_VERSION})
@@ -90,9 +134,23 @@ set(emergent_SOURCES
 	src/emergent/graphics/texture-cube.cpp
 	src/emergent/graphics/texture-loader.cpp
 	src/emergent/input/arcball.cpp
+	src/emergent/input/control-profile.cpp
+	src/emergent/input/control.cpp
+	src/emergent/input/gamepad.cpp
+	src/emergent/input/input-device.cpp
+	src/emergent/input/input-event.cpp
+	src/emergent/input/input-manager.cpp
+	src/emergent/input/keyboard.cpp
+	src/emergent/input/mouse.cpp
+	src/emergent/input/sdl-input-manager.cpp
 	src/emergent/math/math.cpp
 	src/emergent/math/transform.cpp
 	src/emergent/utility/timer.cpp
+	src/emergent/window/display.cpp
+	src/emergent/window/sdl-window-manager.cpp
+	src/emergent/window/sdl-window.cpp
+	src/emergent/window/window-manager.cpp
+	src/emergent/window/window.cpp
 	src/emergent/font/font.cpp
 	src/emergent/font/texture-atlas.cpp
 	src/emergent/font/font-loader.cpp
@@ -163,12 +221,24 @@ set(emergent_HEADERS
 	include/emergent/graphics/texture-loader.hpp
 	include/emergent/graphics/vertex-format.hpp
 	include/emergent/input/arcball.hpp
+	include/emergent/input/control-profile.hpp
+	include/emergent/input/control.hpp
+	include/emergent/input/gamepad.hpp
+	include/emergent/input/input-device.hpp
+	include/emergent/input/input-event.hpp
+	include/emergent/input/input-manager.hpp
+	include/emergent/input/keyboard.hpp
+	include/emergent/input/mouse.hpp
+	include/emergent/input/observers.hpp
 	include/emergent/math/glm.hpp
 	include/emergent/math/hash.hpp
 	include/emergent/math/math.hpp
 	include/emergent/math/transform.hpp
 	include/emergent/math/types.hpp
 	include/emergent/utility/timer.hpp
+	include/emergent/window/display.hpp
+	include/emergent/window/window-manager.hpp
+	include/emergent/window/window.hpp
 	include/emergent/font/font.hpp
 	include/emergent/font/font-loader.hpp
 	include/emergent/font/font-metrics.hpp
@@ -183,21 +253,25 @@ set(emergent_DEPENDENCIES
 	#m
 	#stdc++
 	${FREETYPE_LIBRARY}
+	${SDL2_LIBRARIES}
 )
 
 # Build library
 add_library(emergent STATIC ${emergent_SOURCES} ${emergent_HEADERS})
+target_link_libraries(emergent ${emergent_DEPENDENCIES})
 
 # Set library dependencies
-add_dependencies(emergent freetype)
+add_dependencies(emergent freetype SDL2-project)
 
 # Include directories
 include_directories("${PROJECT_SOURCE_DIR}/include")
 target_include_directories(emergent PUBLIC
+	${PROJECT_SOURCE_DIR}/src
 	${PROJECT_SOURCE_DIR}/lib/gl3w/include
 	${PROJECT_SOURCE_DIR}/lib/glm
 	${PROJECT_SOURCE_DIR}/lib/stb
-	${FREETYPE_INCLUDE_DIR})
+	${FREETYPE_INCLUDE_DIR}
+	${SDL2_INCLUDE_DIR})
 
 # Install emergent library and dependency libraries
 install(TARGETS emergent DESTINATION lib)
@@ -210,7 +284,17 @@ install(
 	FILES_MATCHING PATTERN *.hpp)
 
 # Add Doxygen target_include_directories
-add_custom_target(emergent-docs
+add_custom_target(docs
 	COMMAND doxygen
 	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/docs/api-reference
 )
+
+# Examples
+link_directories(${EMERGENT_INSTALL_DIR}/lib
+	${SDL2_INSTALL_DIR}/lib
+	${FREETYPE_INSTALL_DIR}/lib
+)
+
+add_executable(hello-world examples/example-application.cpp examples/hello-world-example.cpp)
+add_dependencies(hello-world emergent)
+target_link_libraries(hello-world emergent)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Christopher J. Howard
+ * Copyright (C) 2017-2018  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -107,9 +107,18 @@
 /**
  * @defgroup input Input
  *
- * Input systems and devices
+ * Input devices and events
  */
 #include <emergent/input/arcball.hpp>
+#include <emergent/input/control-profile.hpp>
+#include <emergent/input/control.hpp>
+#include <emergent/input/gamepad.hpp>
+#include <emergent/input/input-device.hpp>
+#include <emergent/input/input-event.hpp>
+#include <emergent/input/input-manager.hpp>
+#include <emergent/input/keyboard.hpp>
+#include <emergent/input/mouse.hpp>
+#include <emergent/input/observers.hpp>
 
 /**
  * @defgroup math Math
@@ -143,4 +152,14 @@
 #include <emergent/font/texture-atlas.hpp>
 #include <emergent/font/unicode-range.hpp>
 
+/**
+ * @defgroup window Window
+ *
+ * Window management classes
+ */
+#include <emergent/window/display.hpp>
+#include <emergent/window/window-manager.hpp>
+#include <emergent/window/window.hpp>
+
 #endif // EMERGENT_HPP
+

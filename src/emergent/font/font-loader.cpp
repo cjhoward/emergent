@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Christopher J. Howard
+ * Copyright (C) 2017-2018  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -32,24 +32,24 @@ namespace Emergent
 	
 FontLoader::FontLoader()
 {
-	FT_Error error = FT_Init_FreeType(&static_cast<FT_Library>(library));
-	
-	if (error != 0)
-	{		
-		std::cerr << "Failed to initialize FreeType: error code (" << error << ")" << std::endl;
-	}
 }
 
 FontLoader::~FontLoader()
 {
-	FT_Done_FreeType(static_cast<FT_Library>(library));
 }
 
 bool FontLoader::load(const std::string& filename, int size, const std::vector<UnicodeRange>& ranges, Font* font)
 {
+	FT_Library library;
+	FT_Error error = FT_Init_FreeType(&library);
+	if (error != 0)
+	{		
+		std::cerr << "Failed to initialize FreeType: error code (" << error << ")" << std::endl;
+	}
+
 	// Create typeface
 	FT_Face face;
-	FT_Error error = FT_New_Face(static_cast<FT_Library>(library), filename.c_str(), 0, &face);
+	error = FT_New_Face(library, filename.c_str(), 0, &face);
 	if (0 != error)
 	{
 		std::cerr << "Failed to load FreeType font: error code (" << error << ")" << std::endl;
@@ -163,6 +163,7 @@ bool FontLoader::load(const std::string& filename, int size, const std::vector<U
 	}
 	
 	FT_Done_Face(face);
+	FT_Done_FreeType(library);
 
 	return true;
 }
