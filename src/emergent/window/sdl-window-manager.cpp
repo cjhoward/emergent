@@ -22,7 +22,6 @@
 #include <emergent/window/display.hpp>
 #include <emergent/input/sdl-input-manager.hpp>
 #include <GL/gl3w.h>
-#include <iostream>
 
 namespace Emergent
 {
@@ -30,12 +29,12 @@ namespace Emergent
 SDLWindowManager::SDLWindowManager():
 	grabbedWindow(nullptr)
 {
-	std::cout << std::string("Initializing SDL... ");
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_GAMECONTROLLER) < 0)
 	{
-		std::cout << std::string("failed: \"") << SDL_GetError() << std::string("\"") << std::endl;
 		return;
 	}
+
+	SDL_SetHint(SDL_HINT_GRAB_KEYBOARD, "0");
 	
 	// Register displays
 	int displayCount = SDL_GetNumVideoDisplays();
@@ -117,23 +116,54 @@ SDLWindowManager::~SDLWindowManager()
 
 Window* SDLWindowManager::createWindow(const char* title, int x, int y, int width, int height, bool fullscreen, unsigned int flags)
 {
+	int display = 0;
+	SDL_Rect bounds;
+	SDL_GetDisplayBounds(display, &bounds);
+	SDL_DisplayMode mode;
+	SDL_GetCurrentDisplayMode(display, &mode);
+
+	int windowedX = x;
+	int windowedY = y;
+	int windowedWidth = width;
+	int windowedHeight = height;
+	int fullscreenX = bounds.x;
+	int fullscreenY = bounds.y;
+	int fullscreenWidth = mode.w;
+	int fullscreenHeight = mode.h;
+
 	// Determine window flags
 	Uint32 sdlFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
 	if (fullscreen)
 	{
-		sdlFlags |= SDL_WINDOW_FULLSCREEN;
+		sdlFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_BORDERLESS;
+		x = fullscreenX;
+		y = fullscreenY;
+		width = fullscreenWidth;
+		height = fullscreenHeight;
 	}
-	if (flags & WindowFlag::RESIZABLE)
+	else
 	{
-		sdlFlags |= SDL_WINDOW_RESIZABLE;
-	}
-	if (flags & WindowFlag::MINIMIZED)
-	{
-		sdlFlags |= SDL_WINDOW_MINIMIZED;
-	}
-	if (flags & WindowFlag::MAXIMIZED)
-	{
-		sdlFlags |= SDL_WINDOW_MAXIMIZED;
+		x = windowedX;
+		y = windowedY;
+		width = windowedWidth;
+		height = windowedHeight;
+
+		if (flags & WindowFlag::RESIZABLE)
+		{
+			sdlFlags |= SDL_WINDOW_RESIZABLE;
+		}
+		if (flags & WindowFlag::BORDERLESS)
+		{
+			sdlFlags |= SDL_WINDOW_BORDERLESS;
+		}
+		if (flags & WindowFlag::MINIMIZED)
+		{
+			sdlFlags |= SDL_WINDOW_MINIMIZED;
+		}
+		if (flags & WindowFlag::MAXIMIZED)
+		{
+			sdlFlags |= SDL_WINDOW_MAXIMIZED;
+		}
 	}
 
 	// Create SDL window
@@ -142,6 +172,7 @@ Window* SDLWindowManager::createWindow(const char* title, int x, int y, int widt
 	{
 		return nullptr;
 	}
+	SDL_RaiseWindow(sdlWindow);
 
 	// Select OpenGL version
 	int OPENGL_VERSION_MAJOR = 3;
@@ -170,11 +201,10 @@ Window* SDLWindowManager::createWindow(const char* title, int x, int y, int widt
 		return nullptr;
 	}
 
-	// Disable v-sync
-	SDL_GL_SetSwapInterval(0);
+	// Enable v-sync
+	//SDL_GL_SetSwapInterval(1);
 
 	// Initialize GL3W
-	std::cout << std::string("Initializing GL3W... ");
 	if (gl3wInit())
 	{
 		SDL_GL_DeleteContext(context);
@@ -191,6 +221,25 @@ Window* SDLWindowManager::createWindow(const char* title, int x, int y, int widt
 	}
 
 	SDLWindow* window = new SDLWindow(this, sdlWindow, context);
+
+	// If fullscreen, set windowed properties
+	if (fullscreen)
+	{
+		if (flags & WindowFlag::RESIZABLE)
+		{
+			window->setResizable(true);
+		}
+		if (flags & WindowFlag::BORDERLESS)
+		{
+			window->setBordered(false);
+		}
+		else
+		{
+			window->setBordered(true);
+		}
+
+		window->setDimensions(windowedWidth, windowedHeight);
+	}
 	registerWindow(window);
 
 	// Add window to window map

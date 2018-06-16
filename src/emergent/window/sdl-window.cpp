@@ -20,6 +20,8 @@
 #include <emergent/window/sdl-window.hpp>
 #include <emergent/window/sdl-window-manager.hpp>
 
+#include <iostream>
+
 namespace Emergent
 {
 
@@ -27,7 +29,28 @@ SDLWindow::SDLWindow(SDLWindowManager* windowManager, SDL_Window* window, SDL_GL
 	windowManager(windowManager),
 	window(window),
 	context(context)
-{}
+{
+	Uint32 flags = SDL_GetWindowFlags(window);
+
+	fullscreen = false;
+	resizable = false;
+	bordered = true;
+
+	if (flags & SDL_WINDOW_FULLSCREEN_DESKTOP)
+	{
+		windowedX = SDL_WINDOWPOS_CENTERED;
+		windowedY = SDL_WINDOWPOS_CENTERED;
+		fullscreen = true;
+	}
+	if (flags & SDL_WINDOW_RESIZABLE)
+	{
+		resizable = true;
+	}
+	if (flags & SDL_WINDOW_BORDERLESS)
+	{
+		bordered = false;
+	}
+}
 
 SDLWindow::~SDLWindow()
 {}
@@ -44,7 +67,15 @@ void SDLWindow::setPosition(int x, int y)
 
 void SDLWindow::setDimensions(int width, int height)
 {
-	SDL_SetWindowSize(window, width, height);
+	if (!fullscreen)
+	{
+		SDL_SetWindowSize(window, width, height);
+	}
+	else
+	{
+		windowedWidth = width;
+		windowedHeight = height;
+	}
 }
 
 void SDLWindow::setInputGrab(bool grab)
@@ -69,9 +100,80 @@ void SDLWindow::setInputGrab(bool grab)
 	}
 }
 
+void SDLWindow::setResizable(bool resizable)
+{
+	this->resizable = resizable;
+	if (!fullscreen)
+	{
+		SDL_SetWindowResizable(window, (resizable) ? SDL_TRUE : SDL_FALSE);
+	}
+}
+
+void SDLWindow::setBordered(bool bordered)
+{
+	this->bordered = bordered;
+	if (!fullscreen)
+	{
+		SDL_SetWindowBordered(window, (bordered) ? SDL_TRUE : SDL_FALSE);
+	}
+}
+
 void SDLWindow::setFullscreen(bool fullscreen)
 {
-	SDL_SetWindowFullscreen(window, (fullscreen) ? SDL_WINDOW_FULLSCREEN : 0);
+	if (!fullscreen)
+	{
+		SDL_SetWindowFullscreen(window, 0);
+		SDL_SetWindowSize(window, windowedWidth, windowedHeight);
+		SDL_SetWindowPosition(window, windowedX, windowedY);
+		SDL_SetWindowBordered(window, (bordered) ? SDL_TRUE : SDL_FALSE);
+		SDL_SetWindowResizable(window, (resizable) ? SDL_TRUE : SDL_FALSE);
+		SDL_RaiseWindow(window);
+
+		this->fullscreen = false;
+	}
+	else
+	{
+		// Store windowed mode position and size
+		SDL_GetWindowPosition(window, &windowedX, &windowedY);
+		SDL_GetWindowSize(window, &windowedWidth, &windowedHeight);
+
+		int display = SDL_GetWindowDisplayIndex(window);
+		SDL_Rect bounds;
+		SDL_GetDisplayBounds(display, &bounds);
+		SDL_DisplayMode mode;
+		SDL_GetCurrentDisplayMode(display, &mode);
+
+		if (resizable)
+		{
+			SDL_RestoreWindow(window);
+			SDL_SetWindowResizable(window, SDL_FALSE);
+		}
+		if (bordered)
+		{
+			SDL_SetWindowBordered(window, SDL_FALSE);
+		}
+
+		SDL_SetWindowPosition(window, bounds.x, bounds.y);
+		SDL_SetWindowSize(window, mode.w, mode.h);
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+		this->fullscreen = true;
+	}
+}
+
+void SDLWindow::setVSync(bool vsync)
+{
+	if (vsync)
+	{
+		if (SDL_GL_SetSwapInterval(-1) != 0)
+		{
+			SDL_GL_SetSwapInterval(1);
+		}
+	}
+	else
+	{
+		SDL_GL_SetSwapInterval(0);
+	}
 }
 
 void SDLWindow::makeCurrent()

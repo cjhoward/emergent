@@ -72,11 +72,32 @@ public:
 	virtual void setInputGrab(bool grab) = 0;
 
 	/**
+	 * Enables or disables manual resizing of the window.
+	 *
+	 * @param resizable Whether the window will be resizable.
+	 */
+	virtual void setResizable(bool resizable) = 0;
+
+	/**
+	 * Adds or removes the border from the window.
+	 *
+	 * @param bordered Whether the window is to be bordered.
+	 */
+	virtual void setBordered(bool bordered) = 0;
+
+	/**
 	 * Enables or disables fullscreen mode.
 	 *
 	 * @param fullscreen Whether to enable fullscreen mode.
 	 */
 	virtual void setFullscreen(bool fullscreen) = 0;
+
+	/**
+	 * Enables or disables v-sync.
+	 *
+	 * @param vsync Whether to enable v-sync.
+	 */
+	virtual void setVSync(bool vsync) = 0;
 
 	/**
 	 * Activates the window's OpenGL context.

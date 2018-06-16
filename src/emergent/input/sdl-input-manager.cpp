@@ -66,15 +66,21 @@ void SDLInputManager::update()
 		{
 			case SDL_KEYDOWN:
 			{
-				int scancode = event.key.keysym.scancode;
-				keyboard->press(scancode);
-				break;
+				if (event.key.repeat == 0)
+				{
+					int scancode = event.key.keysym.scancode;
+					keyboard->press(scancode);
+					break;
+				}
 			}
 			
 			case SDL_KEYUP:
 			{
-				int scancode = event.key.keysym.scancode;
-				keyboard->release(scancode);
+				if (event.key.repeat == 0)
+				{
+					int scancode = event.key.keysym.scancode;
+					keyboard->release(scancode);
+				}
 				break;
 			}
 			

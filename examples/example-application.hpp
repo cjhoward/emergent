@@ -23,22 +23,51 @@
 #include <emergent/emergent.hpp>
 using namespace Emergent;
 
-class ExampleApplication: public WindowObserver
+class ExampleApplication:
+	public WindowObserver,
+	public KeyObserver,
+	public MouseMotionObserver,
+	public MouseButtonObserver,
+	public MouseWheelObserver
 {
 public:
 	ExampleApplication(int argc, char* argv[]);
-	~ExampleApplication();
+	virtual ~ExampleApplication();
 	int execute();
+
+	virtual void windowClosed() final;
+	virtual void windowResized(int width, int height);
+	virtual void keyPressed(int scancode);
+	virtual void keyReleased(int scancode);
+	virtual void mouseMoved(int x, int y);
+	virtual void mouseButtonPressed(int button, int x, int y);
+	virtual void mouseButtonReleased(int button, int x, int y);
+	virtual void mouseWheelScrolled(int x, int y);
+
+protected:
 	void close(int status);
 
-	virtual void windowClosed();
-	virtual void windowResized(int width, int height);
+	void setTitle(const char* title);
+	void setFrameRate(float framesPerSecond);
 
 private:
+	/// Called once at the start of the application.
+	virtual void setup();
+
+	/**
+	 * Called continuously until the application is closed.
+	 *
+	 * @param dt Delta-time
+	 */
+	virtual void update(float dt);
+
 	bool closed;
 	int status;
 	WindowManager* windowManager;
 	Window* window;
+	bool fullscreen;
+	float framesPerSecond;
+	float dt;
 };
 
 #endif // EMERGENT_EXAMPLE_APPLICATION_HPP

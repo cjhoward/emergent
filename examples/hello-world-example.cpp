@@ -26,6 +26,91 @@ HelloWorldExample::HelloWorldExample(int argc, char* argv[]):
 HelloWorldExample::~HelloWorldExample()
 {}
 
+Vector3 hsvToRGB(Vector3 hsv)
+{
+	Vector3 rgb;
+
+	hsv.x = std::max<float>(0.0f, std::min<float>(1.0f, hsv.x));
+	hsv.y = std::max<float>(0.0f, std::min<float>(1.0f, hsv.y));
+	hsv.z = std::max<float>(0.0f, std::min<float>(1.0f, hsv.z));
+
+	// Achromatic
+	if (!hsv.z)
+	{
+		rgb.x = rgb.y = rgb.z = hsv.z;
+		return rgb;
+	}
+
+	int sector = static_cast<int>(hsv.x * 6.0f);
+	float f = (hsv.x * 6.0f) - sector;
+	float p = hsv.z * (1.0f - hsv.y);
+	float q = hsv.z * (1.0f - hsv.y * f);
+	float t = hsv.z * (1.0f - hsv.y * (1.0f - f));
+
+	switch (sector)
+	{
+		case 0:
+		case 6:
+			rgb.x = hsv.z;
+			rgb.y = t;
+			rgb.z = p;
+			break;
+
+		case 1:
+			rgb.x = q;
+			rgb.y = hsv.z;
+			rgb.z = p;
+			break;
+
+		case 2:
+			rgb.x = p;
+			rgb.y = hsv.z;
+			rgb.z = t;
+			break;
+
+		case 3:
+			rgb.x = p;
+			rgb.y = q;
+			rgb.z = hsv.z;
+			break;
+
+		case 4:
+			rgb.x = t;
+			rgb.y = p;
+			rgb.z = hsv.z;
+			break;
+
+		default:
+			rgb.x = hsv.z;
+			rgb.y = p;
+			rgb.z = q;
+			break;
+	}
+
+	return rgb;
+}
+
+void HelloWorldExample::setup()
+{
+	setTitle("Hello, World!");
+}
+
+void HelloWorldExample::update(float dt)
+{
+	static float bla = 0.0f;
+	bla += 0.001f;
+	if (bla > 1.0f) bla -= 1.0f;
+	Vector3 hsv = Vector3(bla, 1.0f, 1.0f);
+	Vector3 rgb = hsvToRGB(hsv);
+	glClearColor(rgb.x, rgb.y, rgb.z, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void HelloWorldExample::windowResized(int width, int height)
+{
+	glViewport(0, 0, width, height);
+}
+
 int main(int argc, char* argv[])
 {
 	return HelloWorldExample(argc, argv).execute();

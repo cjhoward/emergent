@@ -79,11 +79,11 @@ public:
 	 * Creates a window.
 	 *
 	 * @param title UTF-8 encoded title string.
-	 * @param x X-coordinate of the window position, in pixels.
-	 * @param y Y-coordinate of the window position, in pixels.
-	 * @param width Width of the window, in pixels.
-	 * @param height Height of the window, in pixels.
-	 * @param fullscreen Whether fullscreen mode is enabled.
+	 * @param x X-coordinate of the window position, when in windowed mode.
+	 * @param y Y-coordinate of the window position, when in windowed mode.
+	 * @param width Width of the window, when in windowed mode.
+	 * @param height Height of the window, when in windowed mode.
+	 * @param fullscreen Whether fullscreen mode is enabled. If fullscreen mode is enabled, the dimensions of the window will be equal to the dimensions of the parent display.
 	 * @param flags Window creation flags.
 	 * @return Pointer to the created window, or nullptr if the window creation failed.
 	 */

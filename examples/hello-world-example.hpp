@@ -27,6 +27,12 @@ class HelloWorldExample: public ExampleApplication
 public:
 	HelloWorldExample(int argc, char* argv[]);
 	virtual ~HelloWorldExample();
+
+	virtual void windowResized(int width, int height);
+
+private:
+	virtual void setup();
+	virtual void update(float dt);
 };
 
 #endif // EMERGENT_HELLO_WORLD_EXAMPLE_HPP

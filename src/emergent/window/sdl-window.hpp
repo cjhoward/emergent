@@ -48,8 +48,17 @@ public:
 	/// @copydoc Window::setInputGrab
 	virtual void setInputGrab(bool grab);
 
+	/// @copydoc Window::setResizable
+	virtual void setResizable(bool resizable);
+
+	/// @copydoc Window::setBordered
+	virtual void setBordered(bool bordered);
+
 	/// @copydoc Window::setFullscreen
 	virtual void setFullscreen(bool fullscreen);
+
+	/// @copydoc Window::setVSync
+	virtual void setVSync(bool vsync);
 
 	/// @copydoc Window::makeCurrent
 	virtual void makeCurrent();
@@ -75,6 +84,15 @@ private:
 	SDLWindowManager* windowManager;
 	SDL_Window* window;
 	SDL_GLContext context;
+
+	int windowedX;
+	int windowedY;
+	int windowedWidth;
+	int windowedHeight;
+	bool windowMaximized;
+	bool resizable;
+	bool bordered;
+	bool fullscreen;
 };
 
 } // namespace Emergent

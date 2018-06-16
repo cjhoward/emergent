@@ -34,20 +34,35 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 
 	// Center window
 	const Display* display = windowManager->getDisplay(0);
-	int w = 1280;
-	int h = 720;
+	int w = std::get<0>(display->getDimensions()) * (2.0f / 3.0f);
+	int h = std::get<1>(display->getDimensions()) * (2.0f / 3.0f);
 	int x = std::get<0>(display->getPosition()) + std::get<0>(display->getDimensions()) / 2 - w / 2;
 	int y = std::get<1>(display->getPosition()) + std::get<1>(display->getDimensions()) / 2 - h / 2;
 	unsigned int flags = WindowFlag::RESIZABLE;
+	fullscreen = false;
 
-	window = windowManager->createWindow("Emergent", x, y, w, h, false, flags);
+	window = windowManager->createWindow("Emergent", x, y, w, h, fullscreen, flags);
 	if (!window)
 	{
 		closed = true;
 		return;
 	}
 
+	// Enable v-sync
+	window->setVSync(true);
+
+	// Set default frame rate
+	setFrameRate(60.0f);
+
+	InputManager* inputManager = windowManager->getInputManager();
+	Keyboard* keyboard = (*inputManager->getKeyboards()).front();
+	Mouse* mouse = (*inputManager->getMice()).front();
+
 	window->addWindowObserver(this);
+	keyboard->addKeyObserver(this);
+	mouse->addMouseMotionObserver(this);
+	mouse->addMouseButtonObserver(this);
+	mouse->addMouseWheelObserver(this);
 }
 
 ExampleApplication::~ExampleApplication()
@@ -57,8 +72,31 @@ ExampleApplication::~ExampleApplication()
 
 int ExampleApplication::execute()
 {
+	if (!closed)
+	{
+		setup();
+	}
+
+	float accumulator = 0.0f;
+	float maxFrameTime = 0.25f;
+	Timer frameTimer;
+
+	frameTimer.start();
 	while (!closed)
 	{
+		// Calculate frame time (in milliseconds) then reset frame timer
+		float frameTime = static_cast<float>(frameTimer.microseconds().count()) / 1000.0f;
+		frameTimer.reset();
+
+		// Add frame time to accumulator
+		accumulator += std::min<float>(maxFrameTime, frameTime / 1000.0f);
+
+		while (accumulator >= dt)
+		{
+			update(dt);
+			accumulator -= dt;
+		}
+
 		window->swapBuffers();
 
 		windowManager->getInputManager()->update();
@@ -78,14 +116,58 @@ void ExampleApplication::close(int status)
 	this->status = status;
 }
 
+void ExampleApplication::setTitle(const char* title)
+{
+	std::string fullTitle = std::string(title) + std::string(" - Emergent");
+	window->setTitle(fullTitle.c_str());
+}
+
+void ExampleApplication::setFrameRate(float framesPerSecond)
+{
+	this->framesPerSecond = framesPerSecond;
+	dt = 1.0f / framesPerSecond;
+}
+
 void ExampleApplication::windowClosed()
 {
 	closed = true;
 }
 
 void ExampleApplication::windowResized(int width, int height)
+{}
+
+void ExampleApplication::keyPressed(int scancode)
 {
-	glClearColor((float)width / 1920.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	if (scancode == 41)
+	{
+		close(EXIT_SUCCESS);
+	}
+	else if (scancode == 68)
+	{
+		fullscreen = !fullscreen;
+
+		window->setFullscreen(fullscreen);
+	}
 }
+
+void ExampleApplication::keyReleased(int scancode)
+{}
+
+void ExampleApplication::mouseMoved(int x, int y)
+{}
+
+void ExampleApplication::mouseButtonPressed(int button, int x, int y)
+{}
+
+void ExampleApplication::mouseButtonReleased(int button, int x, int y)
+{}
+
+void ExampleApplication::mouseWheelScrolled(int x, int y)
+{}
+
+void ExampleApplication::setup()
+{}
+
+void ExampleApplication::update(float dt)
+{}
 
