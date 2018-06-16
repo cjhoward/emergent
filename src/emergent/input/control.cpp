@@ -27,37 +27,79 @@ namespace Emergent
 {
 
 Control::Control():
-	deadzone(0.1f),
+	deadzone(0.0f),
 	currentValue(0.0f),
-	previousValue(0.0f)
+	previousValue(0.0f),
+	activatedCallback(nullptr),
+	deactivatedCallback(nullptr),
+	valueChangedCallback(nullptr),
+	callbacksEnabled(true)
 {}
 
 Control::~Control()
 {}
+
+void Control::update()
+{
+	// Perform callbacks, if enabled
+	if (callbacksEnabled)
+	{
+		if (activatedCallback)
+		{
+			if (isActive() && !wasActive())
+			{
+				activatedCallback();
+			}
+		}
+
+		if (deactivatedCallback)
+		{
+			if (!isActive() && wasActive())
+			{
+				deactivatedCallback();
+			}
+		}
+
+		if (valueChangedCallback)
+		{
+			if (currentValue != previousValue)
+			{
+				if (isActive() || wasActive())
+				{
+					valueChangedCallback(currentValue);
+				}
+			}
+		}
+	}
+
+	// Stop infinite mouse wheel scrolling
+	if (!boundMouseWheelAxes.empty())
+	{
+		currentValue = 0.0f;
+	}
+	
+	// Update previous value
+	previousValue = currentValue;
+}
 
 void Control::setDeadzone(float value)
 {
 	deadzone = value;
 }
 
-void Control::update()
+void Control::setActivatedCallback(std::function<void()> callback)
 {
-	if (!boundMouseWheelAxes.empty())
-	{
-		currentValue = 0.0f;
-	}
-	
-	previousValue = currentValue;
+	this->activatedCallback = callback;
 }
 
-bool Control::isTriggered() const
+void Control::setDeactivatedCallback(std::function<void()> callback)
 {
-	return currentValue > deadzone;
+	this->deactivatedCallback = callback;
 }
 
-bool Control::wasTriggered() const
+void Control::setValueChangedCallback(std::function<void(float)> callback)
 {
-	return previousValue > deadzone;
+	this->valueChangedCallback = callback;
 }
 
 bool Control::isUnbound() const

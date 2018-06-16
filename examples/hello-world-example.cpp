@@ -93,15 +93,19 @@ Vector3 hsvToRGB(Vector3 hsv)
 void HelloWorldExample::setup()
 {
 	setTitle("Hello, World!");
+	hue = 0.0f;
 }
 
 void HelloWorldExample::update(float dt)
 {
-	static float bla = 0.0f;
-	bla += 0.001f;
-	if (bla > 1.0f) bla -= 1.0f;
-	Vector3 hsv = Vector3(bla, 1.0f, 1.0f);
-	Vector3 rgb = hsvToRGB(hsv);
+	hue += 0.25f * dt;
+	while (hue >= 1.0f) hue -= 1.0f;
+	hsv = Vector3(hue, 1.0f, 1.0f);
+	rgb = hsvToRGB(hsv);
+}
+
+void HelloWorldExample::draw()
+{
 	glClearColor(rgb.x, rgb.y, rgb.z, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 }

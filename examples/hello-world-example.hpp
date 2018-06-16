@@ -33,6 +33,11 @@ public:
 private:
 	virtual void setup();
 	virtual void update(float dt);
+	virtual void draw();
+
+	float hue;
+	Vector3 hsv;
+	Vector3 rgb;
 };
 
 #endif // EMERGENT_HELLO_WORLD_EXAMPLE_HPP

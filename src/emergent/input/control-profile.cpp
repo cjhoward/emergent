@@ -268,5 +268,13 @@ void ControlProfile::update()
 	}
 }
 
+void ControlProfile::setCallbacksEnabled(bool enabled)
+{
+	for (auto it = controls.begin(); it != controls.end(); ++it)
+	{
+		it->second->setCallbacksEnabled(enabled);
+	}
+}
+
 } // namespace Emergent
 

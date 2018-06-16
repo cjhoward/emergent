@@ -52,7 +52,7 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	window->setVSync(true);
 
 	// Set default frame rate
-	setFrameRate(60.0f);
+	setFrameRate(1.0f);
 
 	InputManager* inputManager = windowManager->getInputManager();
 	Keyboard* keyboard = (*inputManager->getKeyboards()).front();
@@ -65,7 +65,11 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	mouse->addMouseWheelObserver(this);
 
 	closeControl.bindKey(keyboard, Scancode::ESCAPE);
+	closeControl.setActivatedCallback(std::bind(&ExampleApplication::close, this, EXIT_SUCCESS));
+
 	fullscreenControl.bindKey(keyboard, Scancode::F11);
+	fullscreenControl.setActivatedCallback(std::bind(&ExampleApplication::toggleFullscreen, this));
+
 	controlProfile.registerControl("close", &closeControl);
 	controlProfile.registerControl("fullscreen", &fullscreenControl);
 }
@@ -87,41 +91,40 @@ int ExampleApplication::execute()
 		setup();
 	}
 
-	float accumulator = 0.0f;
-	float maxFrameTime = 0.25f;
+	t = 0.0f;
+	double accumulator = 0.0;
+	double maxFrameTime = 0.25;
 	Timer frameTimer;
 
 	frameTimer.start();
 	while (!closed)
 	{
 		// Calculate frame time (in milliseconds) then reset frame timer
-		float frameTime = static_cast<float>(frameTimer.microseconds().count()) / 1000.0f;
+		double frameTime = static_cast<double>(frameTimer.microseconds().count()) / 1000.0;
+		t += static_cast<float>(frameTime / 1000.0);
 		frameTimer.reset();
 
 		// Add frame time to accumulator
-		accumulator += std::min<float>(maxFrameTime, frameTime / 1000.0f);
+		accumulator += std::min<double>(maxFrameTime, frameTime / 1000.0);
 
+		// Input
+		controlProfile.update();
+		windowManager->getInputManager()->update();
+		if (windowManager->getInputManager()->wasClosed())
+		{
+			close(EXIT_SUCCESS);
+		}
+
+		// Logic
 		while (accumulator >= dt)
 		{
 			update(dt);
 			accumulator -= dt;
 		}
 
+		// Draw
+		draw();
 		window->swapBuffers();
-
-
-		controlProfile.update();
-		windowManager->getInputManager()->update();
-
-		if (windowManager->getInputManager()->wasClosed() || closeControl.isTriggered())
-		{
-			close(EXIT_SUCCESS);
-		}
-		if (fullscreenControl.isTriggered() && !fullscreenControl.wasTriggered())
-		{
-			fullscreen = !fullscreen;
-			window->setFullscreen(fullscreen);
-		}
 	}
 
 	return status;
@@ -143,6 +146,12 @@ void ExampleApplication::setFrameRate(float framesPerSecond)
 {
 	this->framesPerSecond = framesPerSecond;
 	dt = 1.0f / framesPerSecond;
+}
+
+void ExampleApplication::toggleFullscreen()
+{
+	fullscreen = !fullscreen;
+	window->setFullscreen(fullscreen);
 }
 
 void ExampleApplication::windowClosed()
@@ -175,5 +184,8 @@ void ExampleApplication::setup()
 {}
 
 void ExampleApplication::update(float dt)
+{}
+
+void ExampleApplication::draw()
 {}
 

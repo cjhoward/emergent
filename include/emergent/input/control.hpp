@@ -21,6 +21,7 @@
 #define EMERGENT_INPUT_CONTROL_HPP
 
 #include <emergent/input/observers.hpp>
+#include <functional>
 #include <list>
 #include <tuple>
 #include <utility>
@@ -55,18 +56,34 @@ public:
 	virtual ~Control();
 
 	/**
-	 * Sets the deadzone value. If the current value of the control is below the deadzone value, the control will not be triggered.
+	 * Performs callbacks then sets the previous value equal to the current value.
+	 */
+	void update();
+
+	/**
+	 * Sets the deadzone value. If the current value of the control is not greater than the deadzone value, the control will not be considered active.
 	 *
 	 * @param value Deadzone value.
 	 */
 	void setDeadzone(float value);
 
+	/// Sets the callback for when the control is activated.
+	void setActivatedCallback(std::function<void()> callback);
+
+	/// Sets the callback for when the control is deactivated.
+	void setDeactivatedCallback(std::function<void()> callback);
+
+	/// Sets the callback for when the control value is changed.
+	void setValueChangedCallback(std::function<void(float)> callback);
+
 	/**
-	 * Updates the control by setting the previous value equal to the current value.
+	 * Enables or disables callbacks.
+	 *
+	 * @param enabled Whether to enable or disable callbacks.
 	 */
-	void update();
-	
-	/// Returns the deadzone value. The default value is 0.1.
+	void setCallbacksEnabled(bool enabled);
+
+	/// Returns the deadzone value. The default value is 0.0.
 	float getDeadzone() const;
 
 	/// Returns the current value of the control.
@@ -75,11 +92,11 @@ public:
 	/// Returns the previous value of the control.
 	float getPreviousValue() const;
 
-	/// Returns true if the control is triggered.
-	bool isTriggered() const;
+	/// Returns true if the control is currently active.
+	bool isActive() const;
 
-	/// Returns true if the control was previously triggered.
-	bool wasTriggered() const;
+	/// Returns true if the control was previously active when update() was last called.
+	bool wasActive() const;
 
 	/// Returns true if the control is not bound to any input events.
 	bool isUnbound() const;
@@ -186,7 +203,16 @@ private:
 	std::list<std::pair<Mouse*, MouseWheelAxis>> boundMouseWheelAxes;
 	std::list<std::pair<Gamepad*, int>> boundGamepadButtons;
 	std::list<std::tuple<Gamepad*, int, bool>> boundGamepadAxes;
+	std::function<void()> activatedCallback;
+	std::function<void()> deactivatedCallback;
+	std::function<void(float)> valueChangedCallback;
+	bool callbacksEnabled;
 };
+
+inline void Control::setCallbacksEnabled(bool enabled)
+{
+	this->callbacksEnabled = enabled;
+}
 
 inline float Control::getDeadzone() const
 {
@@ -201,6 +227,16 @@ inline float Control::getCurrentValue() const
 inline float Control::getPreviousValue() const
 {
 	return previousValue;
+}
+
+inline bool Control::isActive() const
+{
+	return currentValue > deadzone;
+}
+
+inline bool Control::wasActive() const
+{
+	return previousValue > deadzone;
 }
 
 } // namespace Emergent

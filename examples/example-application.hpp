@@ -35,6 +35,13 @@ public:
 	virtual ~ExampleApplication();
 	int execute();
 
+protected:
+	void close(int status);
+	void setTitle(const char* title);
+	void setFrameRate(float framesPerSecond);
+	void toggleFullscreen();
+
+private:
 	virtual void windowClosed() final;
 	virtual void windowResized(int width, int height);
 	virtual void keyPressed(Scancode scancode);
@@ -44,13 +51,6 @@ public:
 	virtual void mouseButtonReleased(int button, int x, int y);
 	virtual void mouseWheelScrolled(int x, int y);
 
-protected:
-	void close(int status);
-
-	void setTitle(const char* title);
-	void setFrameRate(float framesPerSecond);
-
-private:
 	/// Called once at the start of the application.
 	virtual void setup();
 
@@ -61,12 +61,15 @@ private:
 	 */
 	virtual void update(float dt);
 
+	virtual void draw();
+
 	bool closed;
 	int status;
 	WindowManager* windowManager;
 	Window* window;
 	bool fullscreen;
 	float framesPerSecond;
+	float t;
 	float dt;
 	Control fullscreenControl;
 	Control closeControl;

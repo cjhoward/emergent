@@ -67,6 +67,13 @@ public:
 	 * Calls Control::update() on each control registered with this profile.
 	 */
 	void update();
+
+	/**
+	 * Enables or disables callbacks for all controls in the profile.
+	 *
+	 * @param enabled Whether to enable or disable callbacks for all controls in the profile.
+	 */
+	void setCallbacksEnabled(bool enabled);
 	
 	/// Returns the control map.
 	const std::map<std::string, Control*>* getControlMap() const;
