@@ -23,6 +23,8 @@
 namespace Emergent
 {
 
+enum class Scancode;
+
 /**
  * Abstract base class for keyboard event observers.
  * 
@@ -36,14 +38,14 @@ public:
 	 *
 	 * @param scancode Scancode of the pressed key.
 	 */
-	virtual void keyPressed(int scancode) = 0;
+	virtual void keyPressed(Scancode scancode) = 0;
 
 	/**
 	 * Called when a keyboard key has been released.
 	 *
 	 * @param scancode Scancode of the released key.
 	 */
-	virtual void keyReleased(int scancode) = 0;
+	virtual void keyReleased(Scancode scancode) = 0;
 };
 
 /**

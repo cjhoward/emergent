@@ -136,13 +136,13 @@ void ExampleApplication::windowClosed()
 void ExampleApplication::windowResized(int width, int height)
 {}
 
-void ExampleApplication::keyPressed(int scancode)
+void ExampleApplication::keyPressed(Scancode scancode)
 {
-	if (scancode == 41)
+	if (scancode == Scancode::ESCAPE)
 	{
 		close(EXIT_SUCCESS);
 	}
-	else if (scancode == 68)
+	else if (scancode == Scancode::F11)
 	{
 		fullscreen = !fullscreen;
 
@@ -150,7 +150,7 @@ void ExampleApplication::keyPressed(int scancode)
 	}
 }
 
-void ExampleApplication::keyReleased(int scancode)
+void ExampleApplication::keyReleased(Scancode scancode)
 {}
 
 void ExampleApplication::mouseMoved(int x, int y)

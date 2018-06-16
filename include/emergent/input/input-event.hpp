@@ -26,6 +26,7 @@
 namespace Emergent
 {
 
+enum class Scancode;
 class Keyboard;
 class Mouse;
 class Gamepad;
@@ -64,7 +65,7 @@ public:
 	InputEvent();
 	
 	InputEvent::Type type;
-	std::pair<Keyboard*, int> key;
+	std::pair<Keyboard*, Scancode> key;
 	std::pair<Mouse*, int> mouseButton;
 	std::tuple<Mouse*, int, int> mouseWheel;
 	std::pair<Gamepad*, int> gamepadButton;

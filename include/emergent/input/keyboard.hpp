@@ -27,6 +27,7 @@ namespace Emergent
 {
 
 class KeyObserver;
+enum class Scancode;
 
 /**
  * Keyboard input device.
@@ -63,14 +64,14 @@ public:
 	 *
 	 * @param scancode Scancode of the simulated key press.
 	 */
-	void press(int scancode);
+	void press(Scancode scancode);
 
 	/**
 	 * Simulates a key release. Notifies all key observers via KeyObserver::keyReleased().
 	 *
 	 * @param scancode Scancode of the simulated key release.
 	 */
-	void release(int scancode);
+	void release(Scancode scancode);
 	
 private:
 	std::list<KeyObserver*> keyObservers;

@@ -65,7 +65,7 @@ bool Control::isUnbound() const
 	return (boundKeys.empty() && boundMouseButtons.empty() && boundMouseWheelAxes.empty() && boundGamepadButtons.empty() && boundGamepadAxes.empty());
 }
 
-void Control::bindKey(Keyboard* keyboard, int scancode)
+void Control::bindKey(Keyboard* keyboard, Scancode scancode)
 {
 	// Check if already observing this keyboard
 	bool observing = false;
@@ -80,7 +80,7 @@ void Control::bindKey(Keyboard* keyboard, int scancode)
 	
 	if (!observing)
 		keyboard->addKeyObserver(static_cast<KeyObserver*>(this));
-	boundKeys.push_back(std::pair<Keyboard*, int>(keyboard, scancode));
+	boundKeys.push_back(std::pair<Keyboard*, Scancode>(keyboard, scancode));
 }
 
 void Control::bindMouseButton(Mouse* mouse, int button)
@@ -292,7 +292,7 @@ void Control::unbind()
 	}
 }
 
-void Control::keyPressed(int scancode)
+void Control::keyPressed(Scancode scancode)
 {
 	for (auto it: boundKeys)
 	{
@@ -304,7 +304,7 @@ void Control::keyPressed(int scancode)
 	}
 }
 
-void Control::keyReleased(int scancode)
+void Control::keyReleased(Scancode scancode)
 {
 	for (auto it: boundKeys)
 	{
@@ -403,7 +403,7 @@ void Control::gamepadAxisMoved(int axis, bool negative, float value)
 	}
 }
 
-const std::list<std::pair<Keyboard*, int>>* Control::getBoundKeys() const
+const std::list<std::pair<Keyboard*, Scancode>>* Control::getBoundKeys() const
 {
 	return &boundKeys;
 }

@@ -29,6 +29,7 @@ namespace Emergent
 {
 
 class SDLWindowManager;
+enum class Scancode;
 
 /**
  * Input manager implementation using SDL.
@@ -55,6 +56,8 @@ public:
 	virtual void listen(InputEvent* event);
 	
 private:
+	static const Scancode scancodeTable[285];
+
 	SDLWindowManager* windowManager;
 	Keyboard* keyboard;
 	Mouse* mouse;

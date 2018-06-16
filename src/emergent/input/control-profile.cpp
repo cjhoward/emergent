@@ -52,7 +52,7 @@ bool ControlProfile::save(const std::string& filename)
 	for (auto it = controls.begin(); it != controls.end(); ++it)
 	{
 		Control* control = it->second;
-		const std::list<std::pair<Keyboard*, int>>* boundKeys = control->getBoundKeys();
+		const std::list<std::pair<Keyboard*, Scancode>>* boundKeys = control->getBoundKeys();
 		const std::list<std::pair<Mouse*, int>>* boundMouseButtons = control->getBoundMouseButtons();
 		const std::list<std::pair<Mouse*, MouseWheelAxis>>* boundMouseWheelAxes = control->getBoundMouseWheelAxes();
 		const std::list<std::pair<Gamepad*, int>>* boundGamepadButtons = control->getBoundGamepadButtons();
@@ -60,7 +60,7 @@ bool ControlProfile::save(const std::string& filename)
 		
 		for (auto boundKey: *boundKeys)
 		{
-			int key = boundKey.second;
+			int key = static_cast<int>(boundKey.second);
 			file << std::string("control\t") << it->first << std::string("\tkeyboard\tkey\t") << key << '\n';
 		}
 		
@@ -160,10 +160,10 @@ bool ControlProfile::load(const std::string& filename, InputManager* inputManage
 				if (tokens[3] == "key")
 				{
 					std::stringstream keystream(tokens[4]);
-					int scancode = -1;
+					int scancode = 0;
 					keystream >> scancode;
 					
-					control->bindKey(keyboard, scancode);
+					control->bindKey(keyboard, static_cast<Scancode>(scancode));
 				}
 				else
 				{

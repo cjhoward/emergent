@@ -29,6 +29,7 @@ namespace Emergent
 {
 
 enum class MouseWheelAxis;
+enum class Scancode;
 class InputEvent;
 class Keyboard;
 class Mouse;
@@ -89,7 +90,7 @@ public:
 	 * @param keyboard Pointer to a keyboard.
 	 * @param scancode Scancode of the key to which the control will be bound.
 	 */
-	void bindKey(Keyboard* keyboard, int scancode);
+	void bindKey(Keyboard* keyboard, Scancode scancode);
 
 	/**
 	 * Binds the control to a mouse button.
@@ -137,10 +138,10 @@ public:
 	void unbind();
 	
 	/// @copydoc KeyObserver::keyPressed()
-	virtual void keyPressed(int scancode);
+	virtual void keyPressed(Scancode scancode);
 
 	/// @copydoc KeyObserver::keyReleased()
-	virtual void keyReleased(int scancode);
+	virtual void keyReleased(Scancode scancode);
 
 	/// @copdoc MouseButtonObserver::mouseButtonPressed()
 	virtual void mouseButtonPressed(int button, int x, int y);
@@ -161,7 +162,7 @@ public:
 	virtual void gamepadAxisMoved(int axis, bool negative, float value);
 	
 	/// Returns a list of bound keys.
-	const std::list<std::pair<Keyboard*, int>>* getBoundKeys() const;
+	const std::list<std::pair<Keyboard*, Scancode>>* getBoundKeys() const;
 
 	/// Returns a list of bound mouse buttons.
 	const std::list<std::pair<Mouse*, int>>* getBoundMouseButtons() const;
@@ -180,7 +181,7 @@ private:
 	float currentValue;
 	float previousValue;
 	
-	std::list<std::pair<Keyboard*, int>> boundKeys;
+	std::list<std::pair<Keyboard*, Scancode>> boundKeys;
 	std::list<std::pair<Mouse*, int>> boundMouseButtons;
 	std::list<std::pair<Mouse*, MouseWheelAxis>> boundMouseWheelAxes;
 	std::list<std::pair<Gamepad*, int>> boundGamepadButtons;

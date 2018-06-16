@@ -45,7 +45,7 @@ void Keyboard::removeKeyObservers()
 	keyObservers.clear();
 }
 
-void Keyboard::press(int scancode)
+void Keyboard::press(Scancode scancode)
 {
 	for (auto observer: keyObservers)
 	{
@@ -53,7 +53,7 @@ void Keyboard::press(int scancode)
 	}
 }
 
-void Keyboard::release(int scancode)
+void Keyboard::release(Scancode scancode)
 {
 	for (auto observer: keyObservers)
 	{

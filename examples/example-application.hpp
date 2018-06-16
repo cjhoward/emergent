@@ -37,8 +37,8 @@ public:
 
 	virtual void windowClosed() final;
 	virtual void windowResized(int width, int height);
-	virtual void keyPressed(int scancode);
-	virtual void keyReleased(int scancode);
+	virtual void keyPressed(Scancode scancode);
+	virtual void keyReleased(Scancode scancode);
 	virtual void mouseMoved(int x, int y);
 	virtual void mouseButtonPressed(int button, int x, int y);
 	virtual void mouseButtonReleased(int button, int x, int y);

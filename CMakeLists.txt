@@ -230,6 +230,7 @@ set(emergent_HEADERS
 	include/emergent/input/keyboard.hpp
 	include/emergent/input/mouse.hpp
 	include/emergent/input/observers.hpp
+	include/emergent/input/scancode.hpp
 	include/emergent/math/glm.hpp
 	include/emergent/math/hash.hpp
 	include/emergent/math/math.hpp
