@@ -365,8 +365,8 @@ void SDLInputManager::update()
 					}
 
 					keyboard->press(scancode);
-					break;
 				}
+				break;
 			}
 			
 			case SDL_KEYUP:

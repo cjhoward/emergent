@@ -63,10 +63,20 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	mouse->addMouseMotionObserver(this);
 	mouse->addMouseButtonObserver(this);
 	mouse->addMouseWheelObserver(this);
+
+	closeControl.bindKey(keyboard, Scancode::ESCAPE);
+	fullscreenControl.bindKey(keyboard, Scancode::F11);
+	controlProfile.registerControl("close", &closeControl);
+	controlProfile.registerControl("fullscreen", &fullscreenControl);
 }
 
 ExampleApplication::~ExampleApplication()
 {
+	if (window)
+	{
+		windowManager->destroyWindow(window);
+	}
+
 	WindowManager::deallocate();
 }
 
@@ -99,11 +109,18 @@ int ExampleApplication::execute()
 
 		window->swapBuffers();
 
+
+		controlProfile.update();
 		windowManager->getInputManager()->update();
-		if (windowManager->getInputManager()->wasClosed())
+
+		if (windowManager->getInputManager()->wasClosed() || closeControl.isTriggered())
 		{
-			closed = true;
-			break;
+			close(EXIT_SUCCESS);
+		}
+		if (fullscreenControl.isTriggered() && !fullscreenControl.wasTriggered())
+		{
+			fullscreen = !fullscreen;
+			window->setFullscreen(fullscreen);
 		}
 	}
 
@@ -137,18 +154,7 @@ void ExampleApplication::windowResized(int width, int height)
 {}
 
 void ExampleApplication::keyPressed(Scancode scancode)
-{
-	if (scancode == Scancode::ESCAPE)
-	{
-		close(EXIT_SUCCESS);
-	}
-	else if (scancode == Scancode::F11)
-	{
-		fullscreen = !fullscreen;
-
-		window->setFullscreen(fullscreen);
-	}
-}
+{}
 
 void ExampleApplication::keyReleased(Scancode scancode)
 {}

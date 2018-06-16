@@ -201,8 +201,8 @@ Window* SDLWindowManager::createWindow(const char* title, int x, int y, int widt
 		return nullptr;
 	}
 
-	// Enable v-sync
-	//SDL_GL_SetSwapInterval(1);
+	// Disable v-sync
+	SDL_GL_SetSwapInterval(0);
 
 	// Initialize GL3W
 	if (gl3wInit())

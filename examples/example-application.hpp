@@ -68,6 +68,9 @@ private:
 	bool fullscreen;
 	float framesPerSecond;
 	float dt;
+	Control fullscreenControl;
+	Control closeControl;
+	ControlProfile controlProfile;
 };
 
 #endif // EMERGENT_EXAMPLE_APPLICATION_HPP
