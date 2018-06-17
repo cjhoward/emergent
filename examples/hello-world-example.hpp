@@ -28,16 +28,13 @@ public:
 	HelloWorldExample(int argc, char* argv[]);
 	virtual ~HelloWorldExample();
 
-	virtual void windowResized(int width, int height);
-
 private:
 	virtual void setup();
-	virtual void update(float dt);
+	virtual void update(float t, float dt);
 	virtual void draw();
+	virtual void windowResized(int width, int height);
 
-	float hue;
-	Vector3 hsv;
-	Vector3 rgb;
+	Tween<float> hue;
 };
 
 #endif // EMERGENT_HELLO_WORLD_EXAMPLE_HPP

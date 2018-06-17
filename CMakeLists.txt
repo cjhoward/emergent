@@ -145,6 +145,8 @@ set(emergent_SOURCES
 	src/emergent/input/sdl-input-manager.cpp
 	src/emergent/math/math.cpp
 	src/emergent/math/transform.cpp
+	src/emergent/utility/frame-timer.cpp
+	src/emergent/utility/state-interpolator.cpp
 	src/emergent/utility/timer.cpp
 	src/emergent/window/display.cpp
 	src/emergent/window/sdl-window-manager.cpp
@@ -233,10 +235,14 @@ set(emergent_HEADERS
 	include/emergent/input/scancode.hpp
 	include/emergent/math/glm.hpp
 	include/emergent/math/hash.hpp
+	include/emergent/math/interpolation.hpp
 	include/emergent/math/math.hpp
 	include/emergent/math/transform.hpp
 	include/emergent/math/types.hpp
+	include/emergent/utility/frame-timer.hpp
+	include/emergent/utility/state-interpolator.hpp
 	include/emergent/utility/timer.hpp
+	include/emergent/utility/tween.hpp
 	include/emergent/window/display.hpp
 	include/emergent/window/window-manager.hpp
 	include/emergent/window/window.hpp

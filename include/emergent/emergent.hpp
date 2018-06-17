@@ -128,6 +128,7 @@
  */
 #include <emergent/math/glm.hpp>
 #include <emergent/math/hash.hpp>
+#include <emergent/math/interpolation.hpp>
 #include <emergent/math/math.hpp>
 #include <emergent/math/transform.hpp>
 #include <emergent/math/types.hpp>
@@ -137,7 +138,10 @@
  *
  * Utility classes
  */
+#include <emergent/utility/frame-timer.hpp>
+#include <emergent/utility/state-interpolator.hpp>
 #include <emergent/utility/timer.hpp>
+#include <emergent/utility/tween.hpp>
 
 /**
  * @defgroup font Font

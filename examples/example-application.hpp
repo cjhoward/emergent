@@ -38,8 +38,10 @@ public:
 protected:
 	void close(int status);
 	void setTitle(const char* title);
-	void setFrameRate(float framesPerSecond);
 	void toggleFullscreen();
+
+	FrameTimer frameTimer;
+	StateInterpolator stateInterpolator;
 
 private:
 	virtual void windowClosed() final;
@@ -59,7 +61,7 @@ private:
 	 *
 	 * @param dt Delta-time
 	 */
-	virtual void update(float dt);
+	virtual void update(float t, float dt);
 
 	virtual void draw();
 
@@ -68,9 +70,6 @@ private:
 	WindowManager* windowManager;
 	Window* window;
 	bool fullscreen;
-	float framesPerSecond;
-	float t;
-	float dt;
 	Control fullscreenControl;
 	Control closeControl;
 	ControlProfile controlProfile;

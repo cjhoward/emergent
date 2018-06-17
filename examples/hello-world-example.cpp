@@ -93,19 +93,26 @@ Vector3 hsvToRGB(Vector3 hsv)
 void HelloWorldExample::setup()
 {
 	setTitle("Hello, World!");
-	hue = 0.0f;
+
+	hue.setState1(0.0f);
+
+	stateInterpolator.addVariable(&hue);
+	stateInterpolator.update();
 }
 
-void HelloWorldExample::update(float dt)
+void HelloWorldExample::update(float t, float dt)
 {
-	hue += 0.25f * dt;
-	while (hue >= 1.0f) hue -= 1.0f;
-	hsv = Vector3(hue, 1.0f, 1.0f);
-	rgb = hsvToRGB(hsv);
+	hue.setState1(hue.getState0() + 0.25f * dt);
 }
 
 void HelloWorldExample::draw()
 {
+	float wrappedHue = hue.getSubstate();
+	while (wrappedHue >= 1.0f) wrappedHue -= 1.0f;
+
+	Vector3 hsv = Vector3(wrappedHue, 1.0f, 1.0f);
+	Vector3 rgb = hsvToRGB(hsv);
+
 	glClearColor(rgb.x, rgb.y, rgb.z, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 }

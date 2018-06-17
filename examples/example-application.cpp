@@ -52,7 +52,8 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	window->setVSync(true);
 
 	// Set default frame rate
-	setFrameRate(1.0f);
+	frameTimer.setTimestep(1.0 / 10.0);
+	frameTimer.setMaxFrameDuration(0.25);
 
 	InputManager* inputManager = windowManager->getInputManager();
 	Keyboard* keyboard = (*inputManager->getKeyboards()).front();
@@ -91,22 +92,10 @@ int ExampleApplication::execute()
 		setup();
 	}
 
-	t = 0.0f;
-	double accumulator = 0.0;
-	double maxFrameTime = 0.25;
-	Timer frameTimer;
-
-	frameTimer.start();
+	double t = 0.0;
+	frameTimer.reset();
 	while (!closed)
 	{
-		// Calculate frame time (in milliseconds) then reset frame timer
-		double frameTime = static_cast<double>(frameTimer.microseconds().count()) / 1000.0;
-		t += static_cast<float>(frameTime / 1000.0);
-		frameTimer.reset();
-
-		// Add frame time to accumulator
-		accumulator += std::min<double>(maxFrameTime, frameTime / 1000.0);
-
 		// Input
 		controlProfile.update();
 		windowManager->getInputManager()->update();
@@ -116,15 +105,23 @@ int ExampleApplication::execute()
 		}
 
 		// Logic
-		while (accumulator >= dt)
+		for (std::size_t step = 0; step < frameTimer.getSteps(); ++step)
 		{
-			update(dt);
-			accumulator -= dt;
+			stateInterpolator.update();
+
+			update(t, frameTimer.getTimestep());
+
+			t += frameTimer.getTimestep();
 		}
+
+		// Interpolate between previous step and current step
+		stateInterpolator.interpolate(frameTimer.getSubsteps());
 
 		// Draw
 		draw();
 		window->swapBuffers();
+
+		frameTimer.nextFrame();
 	}
 
 	return status;
@@ -140,12 +137,6 @@ void ExampleApplication::setTitle(const char* title)
 {
 	std::string fullTitle = std::string(title) + std::string(" - Emergent");
 	window->setTitle(fullTitle.c_str());
-}
-
-void ExampleApplication::setFrameRate(float framesPerSecond)
-{
-	this->framesPerSecond = framesPerSecond;
-	dt = 1.0f / framesPerSecond;
 }
 
 void ExampleApplication::toggleFullscreen()
@@ -183,7 +174,7 @@ void ExampleApplication::mouseWheelScrolled(int x, int y)
 void ExampleApplication::setup()
 {}
 
-void ExampleApplication::update(float dt)
+void ExampleApplication::update(float t, float dt)
 {}
 
 void ExampleApplication::draw()
