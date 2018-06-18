@@ -58,9 +58,9 @@ protected:
 	void setTitle(const char* title);
 	void size(int width, int height);
 	void toggleFullscreen();
-	void setTimestep(double timestep);
+	void setUpdateRate(double frequency);
 
-	FrameTimer frameTimer;
+	StepScheduler stepScheduler;
 	StepInterpolator stepInterpolator;
 
 private:
@@ -70,8 +70,8 @@ private:
 	/**
 	 * Called with a frequency determined by the timestep.
 	 *
-	 * @param t Total elapsed time
-	 * @param dt Fixed timestep
+	 * @param t Total elapsed time.
+	 * @param dt Time elapsed since previous update.
 	 */
 	virtual void update(float t, float dt);
 

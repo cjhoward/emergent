@@ -18,6 +18,7 @@
  */
 
 #include "example-application.hpp"
+#include <chrono>
 
 ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	closed(false),
@@ -52,8 +53,8 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	window->setVSync(true);
 
 	// Set default frame rate
-	frameTimer.setTimestep(1.0 / 10.0);
-	frameTimer.setMaxFrameDuration(0.25);
+	stepScheduler.setMaxFrameDuration(0.25);
+	stepScheduler.setStepFrequency(60.0);
 
 	inputManager = windowManager->getInputManager();
 	Keyboard* keyboard = (*inputManager->getKeyboards()).front();
@@ -100,8 +101,13 @@ int ExampleApplication::execute()
 	// Ensure state0 and state1 are equal
 	stepInterpolator.update();
 
-	double t = 0.0;
-	frameTimer.reset();
+	// Start timers
+	double elapsedTime = 0.0;
+	std::chrono::high_resolution_clock::time_point t0;
+	std::chrono::high_resolution_clock::time_point t1;
+	t0 = std::chrono::high_resolution_clock::now();
+
+	// Enter main loop
 	while (!closed)
 	{
 		// Input
@@ -112,24 +118,36 @@ int ExampleApplication::execute()
 			return status;
 		}
 
-		// Logic
-		for (std::size_t step = 0; step < frameTimer.getSteps(); ++step)
+		// Perform scheduled update steps
+		for (std::size_t step = 0; step < stepScheduler.getScheduledSteps(); ++step)
 		{
+			// Set state0 equal to state1
 			stepInterpolator.update();
 
-			update(t, frameTimer.getTimestep());
+			// Perform update
+			update(elapsedTime, stepScheduler.getStepPeriod());
 
-			t += frameTimer.getTimestep();
+			// Add step period to total elapsed time
+			elapsedTime += stepScheduler.getStepPeriod();
 		}
 
 		// Interpolate between previous step and current step
-		stepInterpolator.interpolate(frameTimer.getSubsteps());
+		double interpolatioRatio = stepScheduler.getScheduledSubsteps();
+		stepInterpolator.interpolate(interpolatioRatio);
 
 		// Draw
 		draw();
 		window->swapBuffers();
 
-		frameTimer.nextFrame();
+		// Determine duration of the frame
+		t1 = std::chrono::high_resolution_clock::now();
+		double frameDuration = static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count()) / 1000000.0;
+
+		// Reset frame timer
+		t0 = t1;
+
+		// Schedule steps for the next frame
+		stepScheduler.schedule(frameDuration);
 	}
 
 	exit();
@@ -165,9 +183,9 @@ void ExampleApplication::toggleFullscreen()
 	window->setFullscreen(fullscreen);
 }
 
-void ExampleApplication::setTimestep(double timestep)
+void ExampleApplication::setUpdateRate(double frequency)
 {
-	frameTimer.setTimestep(timestep);
+	stepScheduler.setStepFrequency(frequency);
 }
 
 void ExampleApplication::setup()

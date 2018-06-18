@@ -153,8 +153,8 @@ set(emergent_SOURCES
 	src/emergent/input/sdl-input-manager.cpp
 	src/emergent/math/math.cpp
 	src/emergent/math/transform.cpp
-	src/emergent/utility/frame-timer.cpp
 	src/emergent/utility/step-interpolator.cpp
+	src/emergent/utility/step-scheduler.cpp
 	src/emergent/utility/timer.cpp
 	src/emergent/window/display.cpp
 	src/emergent/window/sdl-window-manager.cpp
@@ -248,8 +248,8 @@ set(emergent_HEADERS
 	include/emergent/math/math.hpp
 	include/emergent/math/transform.hpp
 	include/emergent/math/types.hpp
-	include/emergent/utility/frame-timer.hpp
 	include/emergent/utility/step-interpolator.hpp
+	include/emergent/utility/step-scheduler.hpp
 	include/emergent/utility/timer.hpp
 	include/emergent/utility/tween.hpp
 	include/emergent/window/display.hpp

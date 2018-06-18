@@ -17,59 +17,54 @@
  * along with Emergent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <emergent/utility/frame-timer.hpp>
+#include <emergent/utility/step-scheduler.hpp>
 #include <algorithm>
 #include <cmath>
 
 namespace Emergent
 {
 
-FrameTimer::FrameTimer():
-	timestep(1.0 / 60.0),
-	maxFrameDuration(0.25),
-	frameDuration(0.0),
+StepScheduler::StepScheduler():
+	maxFrameDuration(1.0),
+	frequency(60.0),
+	period(1.0 / 60.0),
 	accumulator(0.0),
 	steps(0.0),
 	substeps(0.0)
 {}
 
-void FrameTimer::reset()
-{
-	frameDuration = 0.0;
-	accumulator = 0.0;
-	steps = 0.0;
-	substeps = 0.0;
-	timer.start();
-	timer.reset();
-}
+StepScheduler::~StepScheduler()
+{}
 
-void FrameTimer::nextFrame()
+void StepScheduler::schedule(double frameDuration)
 {
-	// Calculate the frame duration (in seconds)
-	frameDuration = static_cast<double>(timer.microseconds().count()) / 1000000.0;
-
-	// Reset the timer
-	timer.reset();
-	
 	// Add frame duration to the accumulator
 	accumulator += std::min<double>(maxFrameDuration, frameDuration);
 
-	// Calculate the number of logical steps to be performed
-	steps = std::floor(accumulator / timestep);
-	substeps = accumulator / timestep - steps;
+	// Calculate the number of steps to schedule
+	steps = std::floor(accumulator * frequency);
+	substeps = accumulator * frequency - steps;
 
-	// Subtract duration of steps from accumulator
-	accumulator -= steps * timestep;
+	// Subtract duration of scheduled steps from the accumulator
+	accumulator -= steps * period;
 }
 
-void FrameTimer::setTimestep(double timestep)
+void StepScheduler::reset()
 {
-	this->timestep = timestep;
+	accumulator = 0.0;
+	steps = 0.0;
+	substeps = 0.0;
 }
 
-void FrameTimer::setMaxFrameDuration(double duration)
+void StepScheduler::setMaxFrameDuration(double duration)
 {
 	maxFrameDuration = duration;
+}
+
+void StepScheduler::setStepFrequency(double frequency)
+{
+	this->frequency = frequency;
+	period = 1.0 / frequency;
 }
 
 } // namespace Emergent
