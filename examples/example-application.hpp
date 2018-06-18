@@ -23,7 +23,11 @@
 #include <emergent/emergent.hpp>
 using namespace Emergent;
 
+/**
+ * Abstract base class for framerate-independent real-time graphical applications.
+ */
 class ExampleApplication:
+	public ApplicationObserver,
 	public WindowObserver,
 	public KeyObserver,
 	public MouseMotionObserver,
@@ -31,19 +35,55 @@ class ExampleApplication:
 	public MouseWheelObserver
 {
 public:
+	/**
+	 * Creates an application.
+	 *
+	 * @param argc Argument count
+	 * @param argv Argument list
+	 */
 	ExampleApplication(int argc, char* argv[]);
+
+	/// Destroys an application.
 	virtual ~ExampleApplication();
+
+	/**
+	 * Executes the application.
+	 *
+	 * @return Exit status code.
+	 */
 	int execute();
 
 protected:
 	void close(int status);
 	void setTitle(const char* title);
+	void size(int width, int height);
 	void toggleFullscreen();
+	void setTimestep(double timestep);
 
 	FrameTimer frameTimer;
 	StepInterpolator stepInterpolator;
 
 private:
+	/// Called once at the start of the application.
+	virtual void setup();
+
+	/**
+	 * Called with a frequency determined by the timestep.
+	 *
+	 * @param t Total elapsed time
+	 * @param dt Fixed timestep
+	 */
+	virtual void update(float t, float dt);
+
+	/**
+	 * Called as frequently as possible. If v-sync is enabled, this frequency will be limited to the refresh rate of the display.
+	 */
+	virtual void draw();
+
+	/// Called once when the application is closing.
+	virtual void exit();
+
+	virtual void applicationClosed() final;
 	virtual void windowClosed() final;
 	virtual void windowResized(int width, int height);
 	virtual void keyPressed(Scancode scancode);
@@ -53,21 +93,10 @@ private:
 	virtual void mouseButtonReleased(int button, int x, int y);
 	virtual void mouseWheelScrolled(int x, int y);
 
-	/// Called once at the start of the application.
-	virtual void setup();
-
-	/**
-	 * Called continuously until the application is closed.
-	 *
-	 * @param dt Delta-time
-	 */
-	virtual void update(float t, float dt);
-
-	virtual void draw();
-
 	bool closed;
 	int status;
 	WindowManager* windowManager;
+	InputManager* inputManager;
 	Window* window;
 	bool fullscreen;
 	Control fullscreenControl;

@@ -26,6 +26,42 @@ namespace Emergent
 enum class Scancode;
 
 /**
+ * Abstract base class for application event observers.
+ *
+ * @ingroup input
+ */
+class ApplicationObserver
+{
+public:
+	/**
+	 * Called when the application has been requested to close, or the last window has been closed.
+	 */
+	virtual void applicationClosed() = 0;
+};
+
+/**
+ * Abstract base class for window event observers.
+ *
+ * @ingroup input
+ */
+class WindowObserver
+{
+public:
+	/**
+	 * Called when a window has been closed.
+	 */
+	virtual void windowClosed() = 0;
+
+	/**
+	 * Called when a window has been resized.
+	 *
+	 * @param width New width of the window.
+	 * @param height New height of the window.
+	 */
+	virtual void windowResized(int width, int height) = 0;
+};
+
+/**
  * Abstract base class for keyboard event observers.
  * 
  * @ingroup input
@@ -126,28 +162,6 @@ class GamepadAxisObserver
 {
 public:
 	virtual void gamepadAxisMoved(int axis, bool negative, float value) = 0;
-};
-
-/**
- * Abstract base class for window event observers.
- *
- * @ingroup input
- */
-class WindowObserver
-{
-public:
-	/**
-	 * Called when a window has been closed.
-	 */
-	virtual void windowClosed() = 0;
-
-	/**
-	 * Called when a window has been resized.
-	 *
-	 * @param width New width of the window.
-	 * @param height New height of the window.
-	 */
-	virtual void windowResized(int width, int height) = 0;
 };
 
 } // namespace Emergent

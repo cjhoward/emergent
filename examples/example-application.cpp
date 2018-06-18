@@ -28,7 +28,7 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	windowManager = WindowManager::instance();
 	if (!windowManager)
 	{
-		closed = true;
+		close(EXIT_FAILURE);
 		return;
 	}
 
@@ -44,7 +44,7 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	window = windowManager->createWindow("Emergent", x, y, w, h, fullscreen, flags);
 	if (!window)
 	{
-		closed = true;
+		close(EXIT_FAILURE);
 		return;
 	}
 
@@ -55,10 +55,11 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	frameTimer.setTimestep(1.0 / 10.0);
 	frameTimer.setMaxFrameDuration(0.25);
 
-	InputManager* inputManager = windowManager->getInputManager();
+	inputManager = windowManager->getInputManager();
 	Keyboard* keyboard = (*inputManager->getKeyboards()).front();
 	Mouse* mouse = (*inputManager->getMice()).front();
 
+	inputManager->addApplicationObserver(this);
 	window->addWindowObserver(this);
 	keyboard->addKeyObserver(this);
 	mouse->addMouseMotionObserver(this);
@@ -87,10 +88,14 @@ ExampleApplication::~ExampleApplication()
 
 int ExampleApplication::execute()
 {
-	if (!closed)
+	// If initialization failed
+	if (closed)
 	{
-		setup();
+		// Close application
+		return status;
 	}
+
+	setup();
 
 	double t = 0.0;
 	frameTimer.reset();
@@ -98,10 +103,10 @@ int ExampleApplication::execute()
 	{
 		// Input
 		controlProfile.update();
-		windowManager->getInputManager()->update();
-		if (windowManager->getInputManager()->wasClosed())
+		inputManager->update();
+		if (closed)
 		{
-			close(EXIT_SUCCESS);
+			return status;
 		}
 
 		// Logic
@@ -124,6 +129,8 @@ int ExampleApplication::execute()
 		frameTimer.nextFrame();
 	}
 
+	exit();
+
 	return status;
 }
 
@@ -139,10 +146,42 @@ void ExampleApplication::setTitle(const char* title)
 	window->setTitle(fullTitle.c_str());
 }
 
+void ExampleApplication::size(int width, int height)
+{
+	const Display* display = windowManager->getDisplay(0);
+	int x = std::get<0>(display->getPosition()) + std::get<0>(display->getDimensions()) / 2 - width / 2;
+	int y = std::get<1>(display->getPosition()) + std::get<1>(display->getDimensions()) / 2 - height / 2;
+
+	window->setDimensions(width, height);
+	window->setPosition(x, y);
+}
+
 void ExampleApplication::toggleFullscreen()
 {
 	fullscreen = !fullscreen;
 	window->setFullscreen(fullscreen);
+}
+
+void ExampleApplication::setTimestep(double timestep)
+{
+	frameTimer.setTimestep(timestep);
+}
+
+void ExampleApplication::setup()
+{}
+
+void ExampleApplication::update(float t, float dt)
+{}
+
+void ExampleApplication::draw()
+{}
+
+void ExampleApplication::exit()
+{}
+
+void ExampleApplication::applicationClosed()
+{
+	closed = true;
 }
 
 void ExampleApplication::windowClosed()
@@ -169,14 +208,5 @@ void ExampleApplication::mouseButtonReleased(int button, int x, int y)
 {}
 
 void ExampleApplication::mouseWheelScrolled(int x, int y)
-{}
-
-void ExampleApplication::setup()
-{}
-
-void ExampleApplication::update(float t, float dt)
-{}
-
-void ExampleApplication::draw()
 {}
 

@@ -26,6 +26,7 @@
 namespace Emergent
 {
 
+class ApplicationObserver;
 class Keyboard;
 class Mouse;
 class Gamepad;
@@ -56,9 +57,20 @@ public:
 	 * @param inputEvent Pointer to input event which will be filled with the next event.
 	 */
 	virtual void listen(InputEvent* inputEvent) = 0;
-	
-	/// Returns whether the application has been requested to close.
-	bool wasClosed() const;
+
+	/// Adds an application observer to this input manager.
+	void addApplicationObserver(ApplicationObserver* observer);
+
+	/// Removes an application observer from this input manager.
+	void removeApplicationObserver(ApplicationObserver* observer);
+
+	/// Removes all application observers from this input manager.
+	void removeApplicationObservers();
+
+	/**
+	 * Requests the application to close. Notifies all application observers via ApplicationObserver::applicationClosed().
+	 */
+	void close();
 	
 	/// Registers a keyboard with this input manager.
 	void registerKeyboard(Keyboard* keyboard);
@@ -102,19 +114,12 @@ public:
 	/// Returns the list of registered gamepads.
 	const std::list<Gamepad*>* getGamepads() const;
 	
-protected:
-	bool closed;
-	
 private:
 	std::list<Keyboard*> keyboards;
 	std::list<Mouse*> mice;
 	std::list<Gamepad*> gamepads;
+	std::list<ApplicationObserver*> applicationObservers;
 };
-
-inline bool InputManager::wasClosed() const
-{
-	return closed;
-}
 
 inline const std::list<Keyboard*>* InputManager::getKeyboards() const
 {

@@ -32,6 +32,7 @@ private:
 	virtual void setup();
 	virtual void update(float t, float dt);
 	virtual void draw();
+	virtual void exit();
 	virtual void windowResized(int width, int height);
 
 	Tween<float> hue;

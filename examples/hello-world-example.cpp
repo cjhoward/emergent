@@ -93,11 +93,11 @@ Vector3 hsvToRGB(Vector3 hsv)
 void HelloWorldExample::setup()
 {
 	setTitle("Hello, World!");
+	setTimestep(1.0 / 60.0);
 
 	hue.setState1(0.0f);
 
 	stepInterpolator.addVariable(&hue);
-	stepInterpolator.update();
 }
 
 void HelloWorldExample::update(float t, float dt)
@@ -115,6 +115,11 @@ void HelloWorldExample::draw()
 
 	glClearColor(rgb.x, rgb.y, rgb.z, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void HelloWorldExample::exit()
+{
+
 }
 
 void HelloWorldExample::windowResized(int width, int height)

@@ -28,7 +28,7 @@ namespace Emergent
 class TweenBase;
 
 /**
- * Interpolates variables between two states.
+ * Interpolates variables between steps.
  *
  * @ingroup utility
  */

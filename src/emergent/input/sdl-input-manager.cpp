@@ -579,7 +579,7 @@ void SDLInputManager::update()
 			
 			case SDL_QUIT:
 			{
-				closed = true;
+				close();
 				break;
 			}
 			
