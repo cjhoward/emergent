@@ -41,7 +41,7 @@ protected:
 	void toggleFullscreen();
 
 	FrameTimer frameTimer;
-	StateInterpolator stateInterpolator;
+	StepInterpolator stepInterpolator;
 
 private:
 	virtual void windowClosed() final;

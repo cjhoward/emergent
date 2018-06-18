@@ -59,13 +59,13 @@ class Tween: public TweenBase
 {
 public:
 	/**
-	 * Creates a frame variable.
+	 * Creates a tween.
 	 *
 	 * @param value Initial value of state0 and state1.
 	 */
 	explicit Tween(const T& value);
 
-	/// Creates a frame variable.
+	/// Creates a tween.
 	Tween();
 
 	/// @copydoc TweenBase::update

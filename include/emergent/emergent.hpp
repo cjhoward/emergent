@@ -139,7 +139,7 @@
  * Utility classes
  */
 #include <emergent/utility/frame-timer.hpp>
-#include <emergent/utility/state-interpolator.hpp>
+#include <emergent/utility/step-interpolator.hpp>
 #include <emergent/utility/timer.hpp>
 #include <emergent/utility/tween.hpp>
 

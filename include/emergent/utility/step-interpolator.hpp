@@ -17,8 +17,8 @@
  * along with Emergent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EMERGENT_UTILITY_STATE_INTERPOLATOR_HPP
-#define EMERGENT_UTILITY_STATE_INTERPOLATOR_HPP
+#ifndef EMERGENT_UTILITY_STEP_INTERPOLATOR_HPP
+#define EMERGENT_UTILITY_STEP_INTERPOLATOR_HPP
 
 #include <list>
 
@@ -32,7 +32,7 @@ class TweenBase;
  *
  * @ingroup utility
  */
-class StateInterpolator
+class StepInterpolator
 {
 public:
 	/**
@@ -72,5 +72,5 @@ private:
 
 } // namespace Emergent
 
-#endif // EMERGENT_UTILITY_STATE_INTERPOLATOR_HPP
+#endif // EMERGENT_UTILITY_STEP_INTERPOLATOR_HPP
 

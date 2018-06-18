@@ -96,8 +96,8 @@ void HelloWorldExample::setup()
 
 	hue.setState1(0.0f);
 
-	stateInterpolator.addVariable(&hue);
-	stateInterpolator.update();
+	stepInterpolator.addVariable(&hue);
+	stepInterpolator.update();
 }
 
 void HelloWorldExample::update(float t, float dt)

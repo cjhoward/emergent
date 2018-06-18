@@ -107,7 +107,7 @@ int ExampleApplication::execute()
 		// Logic
 		for (std::size_t step = 0; step < frameTimer.getSteps(); ++step)
 		{
-			stateInterpolator.update();
+			stepInterpolator.update();
 
 			update(t, frameTimer.getTimestep());
 
@@ -115,7 +115,7 @@ int ExampleApplication::execute()
 		}
 
 		// Interpolate between previous step and current step
-		stateInterpolator.interpolate(frameTimer.getSubsteps());
+		stepInterpolator.interpolate(frameTimer.getSubsteps());
 
 		// Draw
 		draw();

@@ -17,13 +17,13 @@
  * along with Emergent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <emergent/utility/state-interpolator.hpp>
+#include <emergent/utility/step-interpolator.hpp>
 #include <emergent/utility/tween.hpp>
 
 namespace Emergent
 {
 
-void StateInterpolator::update()
+void StepInterpolator::update()
 {
 	for (TweenBase* variable: variables)
 	{
@@ -31,7 +31,7 @@ void StateInterpolator::update()
 	}
 }
 
-void StateInterpolator::interpolate(float t)
+void StepInterpolator::interpolate(float t)
 {
 	for (TweenBase* variable: variables)
 	{
@@ -39,17 +39,17 @@ void StateInterpolator::interpolate(float t)
 	}
 }
 
-void StateInterpolator::addVariable(TweenBase* variable)
+void StepInterpolator::addVariable(TweenBase* variable)
 {
 	variables.push_back(variable);
 }
 
-void StateInterpolator::removeVariable(TweenBase* variable)
+void StepInterpolator::removeVariable(TweenBase* variable)
 {
 	variables.remove(variable);
 }
 
-void StateInterpolator::removeVariables()
+void StepInterpolator::removeVariables()
 {
 	variables.clear();
 }
