@@ -107,8 +107,11 @@ void HelloWorldExample::update(float t, float dt)
 
 void HelloWorldExample::draw()
 {
-	float wrappedHue = hue.getSubstate();
-	while (wrappedHue >= 1.0f) wrappedHue -= 1.0f;
+	float wrappedHue = std::fmod(hue.getSubstate(), 1.0f);
+	if (wrappedHue < 0.0f)
+	{
+		wrappedHue += 1.0f;
+	}
 
 	Vector3 hsv = Vector3(wrappedHue, 1.0f, 1.0f);
 	Vector3 rgb = hsvToRGB(hsv);

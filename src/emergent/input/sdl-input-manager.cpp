@@ -18,6 +18,7 @@
  */
 
 #include <emergent/input/sdl-input-manager.hpp>
+#include <emergent/input/sdl-clipboard.hpp>
 #include <emergent/window/sdl-window-manager.hpp>
 #include <emergent/window/sdl-window.hpp>
 #include <emergent/input/keyboard.hpp>
@@ -323,6 +324,8 @@ const Scancode SDLInputManager::scancodeTable[285] =
 SDLInputManager::SDLInputManager(SDLWindowManager* windowManager):
 	windowManager(windowManager)
 {
+	clipboard = new SDLClipboard();
+
 	keyboard = new Keyboard("SDL Default Keyboard");
 	mouse = new Mouse("SDL Default Mouse");
 	
@@ -346,6 +349,7 @@ SDLInputManager::~SDLInputManager()
 	
 	delete keyboard;
 	delete mouse;
+	delete clipboard;
 }
 
 void SDLInputManager::update()
@@ -678,6 +682,16 @@ void SDLInputManager::listen(InputEvent* inputEvent)
 		std::get<2>(inputEvent->gamepadAxis) = negative;
 		return;
 	}
+}
+
+const Clipboard* SDLInputManager::getClipboard() const
+{
+	return clipboard;
+}
+
+Clipboard* SDLInputManager::getClipboard()
+{
+	return clipboard;
 }
 
 } // namespace Emergent

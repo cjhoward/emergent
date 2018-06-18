@@ -42,8 +42,14 @@ ExternalProject_Add(freetype
 set(SDL2_BUILD_DIR ${PROJECT_BINARY_DIR}/deps/build/SDL2)
 set(SDL2_INSTALL_DIR ${PROJECT_BINARY_DIR}/deps/install/SDL2)
 set(SDL2_INCLUDE_DIR ${SDL2_INSTALL_DIR}/include)
-set(SDL2_LIBRARY SDL2)
-set(SDL2main_LIBRARY SDL2main)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+	set(SDL2main_LIBRARY ${CMAKE_STATIC_LIBRARY_PREFIX}SDL2maind${CMAKE_STATIC_LIBRARY_SUFFIX})
+	set(SDL2_LIBRARY ${CMAKE_STATIC_LIBRARY_PREFIX}SDL2d${CMAKE_STATIC_LIBRARY_SUFFIX})
+else()
+	set(SDL2main_LIBRARY ${CMAKE_STATIC_LIBRARY_PREFIX}SDL2main${CMAKE_STATIC_LIBRARY_SUFFIX})
+	set(SDL2_LIBRARY ${CMAKE_STATIC_LIBRARY_PREFIX}SDL2${CMAKE_STATIC_LIBRARY_SUFFIX})
+endif()
+
 set(SDL2_LIBRARIES
 	${SDL2main_LIBRARY}
 	${SDL2_LIBRARY}
@@ -134,6 +140,7 @@ set(emergent_SOURCES
 	src/emergent/graphics/texture-cube.cpp
 	src/emergent/graphics/texture-loader.cpp
 	src/emergent/input/arcball.cpp
+	src/emergent/input/clipboard.cpp
 	src/emergent/input/control-profile.cpp
 	src/emergent/input/control.cpp
 	src/emergent/input/gamepad.cpp
@@ -142,6 +149,7 @@ set(emergent_SOURCES
 	src/emergent/input/input-manager.cpp
 	src/emergent/input/keyboard.cpp
 	src/emergent/input/mouse.cpp
+	src/emergent/input/sdl-clipboard.cpp
 	src/emergent/input/sdl-input-manager.cpp
 	src/emergent/math/math.cpp
 	src/emergent/math/transform.cpp
@@ -223,6 +231,7 @@ set(emergent_HEADERS
 	include/emergent/graphics/texture-loader.hpp
 	include/emergent/graphics/vertex-format.hpp
 	include/emergent/input/arcball.hpp
+	include/emergent/input/clipboard.hpp
 	include/emergent/input/control-profile.hpp
 	include/emergent/input/control.hpp
 	include/emergent/input/gamepad.hpp

@@ -97,6 +97,9 @@ int ExampleApplication::execute()
 
 	setup();
 
+	// Ensure state0 and state1 are equal
+	stepInterpolator.update();
+
 	double t = 0.0;
 	frameTimer.reset();
 	while (!closed)

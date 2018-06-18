@@ -27,6 +27,7 @@ namespace Emergent
 {
 
 class ApplicationObserver;
+class Clipboard;
 class Keyboard;
 class Mouse;
 class Gamepad;
@@ -104,6 +105,12 @@ public:
 
 	/// @copydoc InputManager::getGamepad() const
 	Gamepad* getGamepad(const std::string& name);
+
+	/// Returns the clipboard.
+	virtual const Clipboard* getClipboard() const = 0;
+
+	/// @copydoc InputManager::getClipboard() const
+	virtual Clipboard* getClipboard() = 0;
 	
 	/// Returns the list of registered keyboard.
 	const std::list<Keyboard*>* getKeyboards() const;

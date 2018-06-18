@@ -110,6 +110,7 @@
  * Input devices and events
  */
 #include <emergent/input/arcball.hpp>
+#include <emergent/input/clipboard.hpp>
 #include <emergent/input/control-profile.hpp>
 #include <emergent/input/control.hpp>
 #include <emergent/input/gamepad.hpp>
