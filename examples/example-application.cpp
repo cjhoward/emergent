@@ -60,6 +60,7 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	Keyboard* keyboard = (*inputManager->getKeyboards()).front();
 	Mouse* mouse = (*inputManager->getMice()).front();
 
+	// Add input observers
 	inputManager->addApplicationObserver(this);
 	window->addWindowObserver(this);
 	keyboard->addKeyObserver(this);
@@ -67,12 +68,12 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	mouse->addMouseButtonObserver(this);
 	mouse->addMouseWheelObserver(this);
 
+	// Setup control profile
 	closeControl.bindKey(keyboard, Scancode::ESCAPE);
 	closeControl.setActivatedCallback(std::bind(&ExampleApplication::close, this, EXIT_SUCCESS));
 
 	fullscreenControl.bindKey(keyboard, Scancode::F11);
 	fullscreenControl.setActivatedCallback(std::bind(&ExampleApplication::toggleFullscreen, this));
-
 	controlProfile.registerControl("close", &closeControl);
 	controlProfile.registerControl("fullscreen", &fullscreenControl);
 }
@@ -101,7 +102,7 @@ int ExampleApplication::execute()
 	// Ensure state0 and state1 are equal
 	stepInterpolator.update();
 
-	// Start timers
+	// Start frame timer
 	double elapsedTime = 0.0;
 	std::chrono::high_resolution_clock::time_point t0;
 	std::chrono::high_resolution_clock::time_point t1;
@@ -110,13 +111,14 @@ int ExampleApplication::execute()
 	// Enter main loop
 	while (!closed)
 	{
-		// Input
-		controlProfile.update();
+		// Process input
 		inputManager->update();
 		if (closed)
 		{
-			return status;
+			break;
 		}
+		input();
+		controlProfile.update();
 
 		// Perform scheduled update steps
 		for (std::size_t step = 0; step < stepScheduler.getScheduledSteps(); ++step)
@@ -189,6 +191,9 @@ void ExampleApplication::setUpdateRate(double frequency)
 }
 
 void ExampleApplication::setup()
+{}
+
+void ExampleApplication::input()
 {}
 
 void ExampleApplication::update(float t, float dt)

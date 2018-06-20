@@ -22,7 +22,36 @@
 
 #include "example-application.hpp"
 
-class HelloWorldExample: public ExampleApplication
+class TestEvent: public Event<1>
+{
+public:
+	int x;
+
+	inline virtual EventBase* clone() const
+	{
+		TestEvent* event = new TestEvent();
+		event->x = x;
+		return event;
+	}
+};
+
+class TestEvent2: public Event<2>
+{
+public:
+	int x;
+
+	inline virtual EventBase* clone() const
+	{
+		TestEvent* event = new TestEvent();
+		event->x = x;
+		return event;
+	}
+};
+
+class HelloWorldExample:
+	public ExampleApplication,
+	public EventHandler<TestEvent>,
+	public EventHandler<TestEvent2>
 {
 public:
 	HelloWorldExample(int argc, char* argv[]);
@@ -30,10 +59,16 @@ public:
 
 private:
 	virtual void setup();
+	virtual void input();
 	virtual void update(float t, float dt);
 	virtual void draw();
 	virtual void exit();
 	virtual void windowResized(int width, int height);
+
+	virtual void handleEvent(const TestEvent& event);
+	virtual void handleEvent(const TestEvent2& event);
+
+	EventDispatcher eventDispatcher;
 
 	Tween<float> hue;
 };

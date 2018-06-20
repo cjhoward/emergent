@@ -68,7 +68,12 @@ private:
 	virtual void setup();
 
 	/**
-	 * Called with a frequency determined by the timestep.
+	 * Called each time the input manager has been updated.
+	 */
+	virtual void input();
+
+	/**
+	 * Called with a frequency determined by the update rate.
 	 *
 	 * @param t Total elapsed time.
 	 * @param dt Time elapsed since previous update.
