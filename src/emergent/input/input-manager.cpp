@@ -19,7 +19,6 @@
 
 #include <emergent/input/input-manager.hpp>
 #include <emergent/input/gamepad.hpp>
-#include <emergent/input/observers.hpp>
 
 namespace Emergent
 {
@@ -47,10 +46,8 @@ void InputManager::removeApplicationObservers()
 
 void InputManager::close()
 {
-	for (auto observer: applicationObservers)
-	{
-		observer->applicationClosed();
-	}
+	ApplicationClosedEvent event;
+	queue(event);
 }
 
 void InputManager::registerKeyboard(Keyboard* keyboard)

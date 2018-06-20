@@ -18,7 +18,6 @@
  */
 
 #include <emergent/window/window.hpp>
-#include <emergent/input/observers.hpp>
 #include <SDL2/SDL.h>
 
 namespace Emergent
@@ -29,36 +28,5 @@ Window::Window()
 
 Window::~Window()
 {}
-
-void Window::addWindowObserver(WindowObserver* observer)
-{
-	windowObservers.push_back(observer);
-}
-
-void Window::removeWindowObserver(WindowObserver* observer)
-{
-	windowObservers.remove(observer);
-}
-
-void Window::removeWindowObservers()
-{
-	windowObservers.clear();
-}
-
-void Window::close()
-{
-	for (auto observer: windowObservers)
-	{
-		observer->windowClosed();
-	}
-}
-
-void Window::resize(int width, int height)
-{
-	for (auto observer: windowObservers)
-	{
-		observer->windowResized(width, height);
-	}
-}
 
 } // namespace Emergent

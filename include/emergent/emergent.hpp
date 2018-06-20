@@ -111,6 +111,7 @@
  */
 #include <emergent/input/arcball.hpp>
 #include <emergent/input/clipboard.hpp>
+#include <emergent/input/control-binder.hpp>
 #include <emergent/input/control-profile.hpp>
 #include <emergent/input/control.hpp>
 #include <emergent/input/gamepad.hpp>
@@ -119,7 +120,6 @@
 #include <emergent/input/input-manager.hpp>
 #include <emergent/input/keyboard.hpp>
 #include <emergent/input/mouse.hpp>
-#include <emergent/input/observers.hpp>
 #include <emergent/input/scancode.hpp>
 
 /**

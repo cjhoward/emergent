@@ -21,15 +21,10 @@
 #define EMERGENT_INPUT_MOUSE_HPP
 
 #include <emergent/input/input-device.hpp>
-#include <list>
 #include <tuple>
 
 namespace Emergent
 {
-
-class MouseMotionObserver;
-class MouseButtonObserver;
-class MouseWheelObserver;
 
 /**
  * Enumerates the mouse wheel axes.
@@ -62,42 +57,16 @@ public:
 	/**
 	 * Creates a mouse input device.
 	 *
+	 * @param inputManager The parent input manager.
 	 * @param name Name of the mouse.
 	 */
-	Mouse(const std::string& name);
+	Mouse(InputManager* inputManager, const std::string& name);
 
 	/// Destroys a mouse input device.
 	virtual ~Mouse();
 	
 	/// Returns InputDevice::Type::MOUSE.
 	InputDevice::Type getType() const;
-	
-	/// Adds a mouse motion observer to this mouse.
-	void addMouseMotionObserver(MouseMotionObserver* observer);
-
-	/// Adds a mouse button observer to this mouse.
-	void addMouseButtonObserver(MouseButtonObserver* observer);
-
-	/// Adds a mouse wheel observer to this mouse.
-	void addMouseWheelObserver(MouseWheelObserver* observer);
-
-	/// Removes a mouse motion observer from this mouse.
-	void removeMouseMotionObserver(MouseMotionObserver* observer);
-
-	/// Removes a mouse button observer from this mouse.
-	void removeMouseButtonObserver(MouseButtonObserver* observer);
-
-	/// Removes a mouse wheel observer from this mouse.
-	void removeMouseWheelObserver(MouseWheelObserver* observer);
-
-	/// Removes all mouse motion observers from this mouse.
-	void removeMouseMotionObservers();
-
-	/// Removes all mouse button observers from this mouse.
-	void removeMouseButtonObservers();
-
-	/// Removes all mouse wheel observers from this mouse.
-	void removeMouseWheelObservers();
 	
 	/**
 	 * Simulates a mouse button press. Notifies all mouse button observers via MouseButtonObserver::mouseButtonPressed().
@@ -137,24 +106,8 @@ public:
 	const std::tuple<int, int>& getPreviousPosition() const;
 	
 private:
-	void processFlaggedMotionObservers();
-	void processFlaggedButtonObservers();
-	void processFlaggedWheelObservers();
-
 	std::tuple<int, int> currentPosition;
 	std::tuple<int, int> previousPosition;
-	std::list<MouseMotionObserver*> motionObservers;
-	std::list<MouseButtonObserver*> buttonObservers;
-	std::list<MouseWheelObserver*> wheelObservers;
-	bool notifyingMotionObservers;
-	bool notifyingButtonObservers;
-	bool notifyingWheelObservers;
-	std::list<MouseMotionObserver*> additionFlaggedMotionObservers;
-	std::list<MouseButtonObserver*> additionFlaggedButtonObservers;
-	std::list<MouseWheelObserver*> additionFlaggedWheelObservers;
-	std::list<MouseMotionObserver*> removalFlaggedMotionObservers;
-	std::list<MouseButtonObserver*> removalFlaggedButtonObservers;
-	std::list<MouseWheelObserver*> removalFlaggedWheelObservers;
 };
 
 inline InputDevice::Type Mouse::getType() const

@@ -18,70 +18,46 @@
  */
 
 #include <emergent/input/gamepad.hpp>
-#include <emergent/input/observers.hpp>
+#include <emergent/input/input-event.hpp>
+#include <emergent/input/input-manager.hpp>
 
 namespace Emergent
 {
 
-Gamepad::Gamepad(const std::string& name):
-	InputDevice(name)
+Gamepad::Gamepad(InputManager* inputManager, const std::string& name):
+	InputDevice(inputManager, name)
 {}
 
 Gamepad::~Gamepad()
 {}
 
-void Gamepad::addGamepadButtonObserver(GamepadButtonObserver* observer)
-{
-	buttonObservers.push_back(observer);
-}
-
-void Gamepad::removeGamepadButtonObserver(GamepadButtonObserver* observer)
-{
-	buttonObservers.remove(observer);
-}
-
-void Gamepad::removeGamepadButtonObservers()
-{
-	buttonObservers.clear();
-}
-
-void Gamepad::addGamepadAxisObserver(GamepadAxisObserver* observer)
-{
-	axisObservers.push_back(observer);
-}
-
-void Gamepad::removeGamepadAxisObserver(GamepadAxisObserver* observer)
-{
-	axisObservers.remove(observer);
-}
-
-void Gamepad::removeGamepadAxisObservers()
-{
-	axisObservers.clear();
-}
-
 void Gamepad::press(int button)
 {
-	for (auto observer: buttonObservers)
-	{
-		observer->gamepadButtonPressed(button);
-	}
+	GamepadButtonPressedEvent event;
+	event.gamepad = this;
+	event.button = button;
+
+	getInputManager()->queue(event);
 }
 
 void Gamepad::release(int button)
 {
-	for (auto observer: buttonObservers)
-	{
-		observer->gamepadButtonReleased(button);
-	}
+	GamepadButtonReleasedEvent event;
+	event.gamepad = this;
+	event.button = button;
+
+	getInputManager()->queue(event);
 }
 
 void Gamepad::move(int axis, bool negative, float value)
 {
-	for (auto observer: axisObservers)
-	{
-		observer->gamepadAxisMoved(axis, negative, value);
-	}
+	GamepadAxisMovedEvent event;
+	event.gamepad = this;
+	event.axis = axis;
+	event.negative = negative;
+	event.value = value;
+
+	getInputManager()->queue(event);
 }
 
 } // namespace Emergent

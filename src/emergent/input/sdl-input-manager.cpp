@@ -24,7 +24,6 @@
 #include <emergent/input/keyboard.hpp>
 #include <emergent/input/mouse.hpp>
 #include <emergent/input/gamepad.hpp>
-#include <emergent/input/observers.hpp>
 #include <emergent/input/input-event.hpp>
 #include <emergent/input/scancode.hpp>
 #include <iostream>
@@ -326,8 +325,8 @@ SDLInputManager::SDLInputManager(SDLWindowManager* windowManager):
 {
 	clipboard = new SDLClipboard();
 
-	keyboard = new Keyboard("SDL Default Keyboard");
-	mouse = new Mouse("SDL Default Mouse");
+	keyboard = new Keyboard(this, "SDL Default Keyboard");
+	mouse = new Mouse(this, "SDL Default Mouse");
 	
 	registerKeyboard(keyboard);
 	registerMouse(mouse);
@@ -354,135 +353,157 @@ SDLInputManager::~SDLInputManager()
 
 void SDLInputManager::update()
 {
-	while (SDL_PollEvent(&event))
+	dispatch();
+
+	while (SDL_PollEvent(&sdlEvent))
 	{
-		switch (event.type)
+		switch (sdlEvent.type)
 		{
 			case SDL_KEYDOWN:
 			{
-				if (event.key.repeat == 0)
+				if (sdlEvent.key.repeat == 0)
 				{
-					Scancode scancode = Scancode::UNKNOWN;
-					if (event.key.keysym.scancode <= SDL_SCANCODE_APP2)
+					KeyPressedEvent event;
+					event.keyboard = keyboard;
+					event.scancode = Scancode::UNKNOWN;
+					if (sdlEvent.key.keysym.scancode <= SDL_SCANCODE_APP2)
 					{
-						scancode = scancodeTable[event.key.keysym.scancode];
+						event.scancode = scancodeTable[sdlEvent.key.keysym.scancode];
 					}
 
-					keyboard->press(scancode);
+					dispatch(event);
 				}
 				break;
 			}
 			
 			case SDL_KEYUP:
 			{
-				if (event.key.repeat == 0)
+				if (sdlEvent.key.repeat == 0)
 				{
-					Scancode scancode = Scancode::UNKNOWN;
-					if (event.key.keysym.scancode <= SDL_SCANCODE_APP2)
+
+					KeyReleasedEvent event;
+					event.keyboard = keyboard;
+					event.scancode = Scancode::UNKNOWN;
+					if (sdlEvent.key.keysym.scancode <= SDL_SCANCODE_APP2)
 					{
-						scancode = scancodeTable[event.key.keysym.scancode];
+						event.scancode = scancodeTable[sdlEvent.key.keysym.scancode];
 					}
 
-					keyboard->release(scancode);
+					dispatch(event);
 				}
 				break;
 			}
 			
 			case SDL_MOUSEMOTION:
 			{
-				int x = event.motion.x;
-				int y = event.motion.y;
-				mouse->move(x, y);
+				MouseMovedEvent event;
+				event.mouse = mouse;
+				event.x = sdlEvent.motion.x;
+				event.y = sdlEvent.motion.y;
+
+				dispatch(event);
 				break;
 			}
 			
 			case SDL_MOUSEBUTTONDOWN:
 			{
-				int button = event.button.button;
-				mouse->press(button, event.button.x, event.button.y);
+				MouseButtonPressedEvent event;
+				event.mouse = mouse;
+				event.button = sdlEvent.button.button;
+
+				dispatch(event);
 				break;
 			}
 			
 			case SDL_MOUSEBUTTONUP:
 			{
-				int button = event.button.button;
-				mouse->release(button, event.button.x, event.button.y);
+				MouseButtonReleasedEvent event;
+				event.mouse = mouse;
+				event.button = sdlEvent.button.button;
+
+				dispatch(event);
 				break;
 			}
 			
 			case SDL_MOUSEWHEEL:
 			{
-				int direction = (event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED) ? -1 : 1;
-				int x = event.wheel.x * direction;
-				int y = event.wheel.y * direction;
-				mouse->scroll(x, y);
+				MouseWheelScrolledEvent event;
+				event.mouse = mouse;
+				int direction = (sdlEvent.wheel.direction == SDL_MOUSEWHEEL_FLIPPED) ? -1 : 1;
+				event.x = sdlEvent.wheel.x * direction;
+				event.y = sdlEvent.wheel.y * direction;
+
+				dispatch(event);
 				break;
 			}
 			
 			case SDL_CONTROLLERBUTTONDOWN:
 			{
-				int instanceID = event.cbutton.which;
+				int instanceID = sdlEvent.cbutton.which;
 				auto it = gamepadMap.find(instanceID);
 				if (it == gamepadMap.end())
 				{
-					std::cerr << std::string("Received event from invalid gamepad") << std::endl;
+					std::cerr << std::string("Received sdlEvent from invalid gamepad") << std::endl;
 					break;
 				}
-				
-				Gamepad* gamepad = it->second;
-				int button = event.cbutton.button;
-				gamepad->press(button);
+
+				GamepadButtonPressedEvent event;
+				event.gamepad = it->second;
+				event.button = sdlEvent.cbutton.button;
+
+				dispatch(event);
 				break;
 			}
 			
 			case SDL_CONTROLLERBUTTONUP:
 			{
-				int instanceID = event.cbutton.which;
+				int instanceID = sdlEvent.cbutton.which;
 				auto it = gamepadMap.find(instanceID);
 				if (it == gamepadMap.end())
 				{
-					std::cerr << std::string("Received event from invalid gamepad") << std::endl;
+					std::cerr << std::string("Received sdlEvent from invalid gamepad") << std::endl;
 					break;
 				}
 				
-				Gamepad* gamepad = it->second;
-				int button = event.cbutton.button;
-				gamepad->release(button);
+				GamepadButtonReleasedEvent event;
+				event.gamepad = it->second;
+				event.button = sdlEvent.cbutton.button;
+
+				dispatch(event);
 				break;
 			}
 			
 			case SDL_CONTROLLERAXISMOTION:
 			{
-				int instanceID = event.caxis.which;
+				int instanceID = sdlEvent.caxis.which;
 				auto it = gamepadMap.find(instanceID);
 				if (it == gamepadMap.end())
 				{
-					std::cerr << std::string("Received event from invalid gamepad") << std::endl;
+					std::cerr << std::string("Received sdlEvent from invalid gamepad") << std::endl;
 					break;
 				}
-				
-				Gamepad* gamepad = it->second;
-				int axis = event.caxis.axis;
-				bool negative;
-				float value;
-				if (event.caxis.value < 0)
+
+				GamepadAxisMovedEvent event;
+				event.gamepad = it->second;			
+				event.axis = sdlEvent.caxis.axis;
+				if (sdlEvent.caxis.value < 0)
 				{
-					negative = true;
-					value = (float)event.caxis.value / -32768.0f;
+					event.negative = true;
+					event.value = (float)sdlEvent.caxis.value / -32768.0f;
 				}
 				else
 				{
-					negative = false;
-					value = (float)event.caxis.value / 32767.0f;
+					event.negative = false;
+					event.value = (float)sdlEvent.caxis.value / 32767.0f;
 				}
-				
-				gamepad->move(axis, negative, value);
+
+				dispatch(event);
 				break;
 			}
 			
 			case SDL_CONTROLLERDEVICEADDED:
 			{
-				SDL_GameController* controller = SDL_GameControllerOpen(event.cdevice.which);
+				SDL_GameController* controller = SDL_GameControllerOpen(sdlEvent.cdevice.which);
 				if (controller != nullptr)
 				{
 					// Find controller's joystick instance ID
@@ -517,7 +538,7 @@ void SDLInputManager::update()
 					if (!reconnected)
 					{
 						// Create new gamepad
-						Gamepad* gamepad = new Gamepad(name);
+						Gamepad* gamepad = new Gamepad(this, name);
 						
 						// Add to list of allocated gamepads
 						allocatedGamepads.push_back(gamepad);
@@ -539,7 +560,7 @@ void SDLInputManager::update()
 			
 			case SDL_CONTROLLERDEVICEREMOVED:
 			{
-				int instanceID = event.cdevice.which;
+				int instanceID = sdlEvent.cdevice.which;
 				
 				// Find gamepad
 				auto mapIt = gamepadMap.find(instanceID);
@@ -562,28 +583,37 @@ void SDLInputManager::update()
 			
 			case SDL_WINDOWEVENT:
 			{
-				auto it = windowManager->windowMap.find(event.window.windowID);
+				auto it = windowManager->windowMap.find(sdlEvent.window.windowID);
 				if (it == windowManager->windowMap.end())
 				{
 					break;
 				}
 				SDLWindow* window = it->second;
 
+				if (sdlEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+				{
+					WindowResizedEvent event;
+					event.window = window;
+					event.width = sdlEvent.window.data1;
+					event.height = sdlEvent.window.data2;
 
-				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
-				{
-					window->resize(event.window.data1, event.window.data2);
+					dispatch(event);
 				}
-				else if (event.window.event == SDL_WINDOWEVENT_CLOSE)
+				else if (sdlEvent.window.event == SDL_WINDOWEVENT_CLOSE)
 				{
-					window->close();
+					WindowClosedEvent event;
+					event.window = window;
+
+					dispatch(event);
 				}
 				break;
 			}
 			
 			case SDL_QUIT:
 			{
-				close();
+				ApplicationClosedEvent event;
+
+				dispatch(event);
 				break;
 			}
 			
@@ -591,97 +621,7 @@ void SDLInputManager::update()
 				break;
 		}
 	}
-}
 
-void SDLInputManager::listen(InputEvent* inputEvent)
-{
-	int eventCount;
-	
-	// Gather events
-	SDL_PumpEvents();
-	
-	// Check for key events
-	eventCount = SDL_PeepEvents(&event, 1, SDL_PEEKEVENT, SDL_KEYDOWN, SDL_KEYDOWN);
-	if (eventCount)
-	{
-		Scancode scancode = Scancode::UNKNOWN;
-		if (event.key.keysym.scancode <= SDL_SCANCODE_APP2)
-		{
-			scancode = scancodeTable[event.key.keysym.scancode];
-		}
-
-		inputEvent->type = InputEvent::Type::KEY;
-		inputEvent->key.first = keyboard;
-		inputEvent->key.second = scancode;
-		return;
-	}
-	
-	// Check for mouse button events
-	eventCount = SDL_PeepEvents(&event, 1, SDL_PEEKEVENT, SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONDOWN);
-	if (eventCount)
-	{
-		int button = event.button.button;
-		inputEvent->type = InputEvent::Type::MOUSE_BUTTON;
-		inputEvent->mouseButton.first = mouse;
-		inputEvent->mouseButton.second = button;
-		return;
-	}
-	
-	// Check for mouse wheel events
-	eventCount = SDL_PeepEvents(&event, 1, SDL_PEEKEVENT, SDL_MOUSEWHEEL, SDL_MOUSEWHEEL);
-	if (eventCount)
-	{
-		int direction = (event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED) ? -1 : 1;
-		int x = event.wheel.x * direction;
-		int y = event.wheel.y * direction;
-		inputEvent->type = InputEvent::Type::MOUSE_WHEEL;
-		std::get<0>(inputEvent->mouseWheel) = mouse;
-		std::get<1>(inputEvent->mouseWheel) = x;
-		std::get<2>(inputEvent->mouseWheel) = y;
-		return;
-	}
-	
-	// Check for gamepad button events
-	eventCount = SDL_PeepEvents(&event, 1, SDL_PEEKEVENT, SDL_CONTROLLERBUTTONDOWN, SDL_CONTROLLERBUTTONDOWN);
-	if (eventCount)
-	{
-		int instanceID = event.cbutton.which;
-		auto it = gamepadMap.find(instanceID);
-		if (it == gamepadMap.end())
-		{
-			std::cerr << std::string("Received event from invalid gamepad") << std::endl;
-			return;
-		}
-		
-		Gamepad* gamepad = it->second;
-		int button = event.cbutton.button;
-		inputEvent->type = InputEvent::Type::GAMEPAD_BUTTON;
-		inputEvent->gamepadButton.first = gamepad;
-		inputEvent->gamepadButton.second = button;
-		return;
-	}
-	
-	// Check for gamepad axis events
-	eventCount = SDL_PeepEvents(&event, 1, SDL_PEEKEVENT, SDL_CONTROLLERAXISMOTION, SDL_CONTROLLERAXISMOTION);
-	if (eventCount)
-	{
-		int instanceID = event.caxis.which;
-		auto it = gamepadMap.find(instanceID);
-		if (it == gamepadMap.end())
-		{
-			std::cerr << std::string("Received event from invalid gamepad") << std::endl;
-			return;
-		}
-		
-		Gamepad* gamepad = it->second;
-		int axis = event.caxis.axis;
-		bool negative = event.caxis.value < 0;
-		inputEvent->type = InputEvent::Type::GAMEPAD_AXIS;
-		std::get<0>(inputEvent->gamepadAxis) = gamepad;
-		std::get<1>(inputEvent->gamepadAxis) = axis;
-		std::get<2>(inputEvent->gamepadAxis) = negative;
-		return;
-	}
 }
 
 const Clipboard* SDLInputManager::getClipboard() const

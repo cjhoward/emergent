@@ -18,7 +18,6 @@
  */
 
 #include <emergent/input/clipboard.hpp>
-#include <emergent/input/observers.hpp>
 
 namespace Emergent
 {

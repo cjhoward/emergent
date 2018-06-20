@@ -27,12 +27,15 @@ using namespace Emergent;
  * Abstract base class for framerate-independent real-time graphical applications.
  */
 class ExampleApplication:
-	public ApplicationObserver,
-	public WindowObserver,
-	public KeyObserver,
-	public MouseMotionObserver,
-	public MouseButtonObserver,
-	public MouseWheelObserver
+	public EventHandler<ApplicationClosedEvent>,
+	public EventHandler<WindowClosedEvent>,
+	public EventHandler<WindowResizedEvent>,
+	public EventHandler<KeyPressedEvent>,
+	public EventHandler<KeyReleasedEvent>,
+	public EventHandler<MouseMovedEvent>,
+	public EventHandler<MouseButtonPressedEvent>,
+	public EventHandler<MouseButtonReleasedEvent>,
+	public EventHandler<MouseWheelScrolledEvent>
 {
 public:
 	/**
@@ -88,15 +91,15 @@ private:
 	/// Called once when the application is closing.
 	virtual void exit();
 
-	virtual void applicationClosed() final;
-	virtual void windowClosed() final;
-	virtual void windowResized(int width, int height);
-	virtual void keyPressed(Scancode scancode);
-	virtual void keyReleased(Scancode scancode);
-	virtual void mouseMoved(int x, int y);
-	virtual void mouseButtonPressed(int button, int x, int y);
-	virtual void mouseButtonReleased(int button, int x, int y);
-	virtual void mouseWheelScrolled(int x, int y);
+	virtual void handleEvent(const ApplicationClosedEvent& event) final;
+	virtual void handleEvent(const WindowClosedEvent& event) final;
+	virtual void handleEvent(const WindowResizedEvent& event);
+	virtual void handleEvent(const KeyPressedEvent& event);
+	virtual void handleEvent(const KeyReleasedEvent& event);
+	virtual void handleEvent(const MouseMovedEvent& event);
+	virtual void handleEvent(const MouseButtonPressedEvent& event);
+	virtual void handleEvent(const MouseButtonReleasedEvent& event);
+	virtual void handleEvent(const MouseWheelScrolledEvent& event);
 
 	bool closed;
 	int status;

@@ -66,6 +66,9 @@ public:
 	/// @copydoc Window::swapBuffers
 	virtual void swapBuffers();
 
+	/// @copydoc Window::close
+	virtual void close();
+
 private:
 	friend class SDLWindowManager;
 

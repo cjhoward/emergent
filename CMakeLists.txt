@@ -141,6 +141,7 @@ set(emergent_SOURCES
 	src/emergent/graphics/texture-loader.cpp
 	src/emergent/input/arcball.cpp
 	src/emergent/input/clipboard.cpp
+	src/emergent/input/control-binder.cpp
 	src/emergent/input/control-profile.cpp
 	src/emergent/input/control.cpp
 	src/emergent/input/gamepad.cpp
@@ -233,6 +234,7 @@ set(emergent_HEADERS
 	include/emergent/graphics/vertex-format.hpp
 	include/emergent/input/arcball.hpp
 	include/emergent/input/clipboard.hpp
+	include/emergent/input/control-binder.hpp
 	include/emergent/input/control-profile.hpp
 	include/emergent/input/control.hpp
 	include/emergent/input/gamepad.hpp
@@ -241,7 +243,6 @@ set(emergent_HEADERS
 	include/emergent/input/input-manager.hpp
 	include/emergent/input/keyboard.hpp
 	include/emergent/input/mouse.hpp
-	include/emergent/input/observers.hpp
 	include/emergent/input/scancode.hpp
 	include/emergent/math/glm.hpp
 	include/emergent/math/hash.hpp

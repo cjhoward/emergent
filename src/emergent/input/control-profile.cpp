@@ -218,7 +218,7 @@ bool ControlProfile::load(const std::string& filename, InputManager* inputManage
 				Gamepad* gamepad = inputManager->getGamepad(tokens[3]);
 				if (!gamepad)
 				{
-					gamepad = new Gamepad(tokens[3]);
+					gamepad = new Gamepad(inputManager, tokens[3]);
 					gamepad->setDisconnected(true);
 					inputManager->registerGamepad(gamepad);
 				}

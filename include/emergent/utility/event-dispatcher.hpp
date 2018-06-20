@@ -69,10 +69,19 @@ public:
 	/// Dispatches all queued events and removes them from the queue.
 	void dispatch();
 
+	/**
+	 * Dispatches a single event immediately without adding it to the queue.
+	 *
+	 * @param event Event to dispatch.
+	 */
+	void dispatch(const EventBase& event);
+
 	/// Removes all events from the queue without notifying handlers.
 	void clear();
 
 private:
+	std::list<std::tuple<std::size_t, EventHandlerBase*>> toSubscribe;
+	std::list<std::tuple<std::size_t, EventHandlerBase*>> toUnsubscribe;
 	std::map<std::size_t, std::list<EventHandlerBase*>> handlers;
 	std::map<std::size_t, std::list<EventBase*>> events;
 };
@@ -80,13 +89,13 @@ private:
 template <typename T>
 void EventDispatcher::subscribe(EventHandler<T>* handler)
 {
-	handlers[handler->getHandledEventTypeID()].push_back(handler);
+	toSubscribe.push_back(std::make_tuple(handler->getHandledEventTypeID(), handler));
 }
 
 template <typename T>
 void EventDispatcher::unsubscribe(EventHandler<T>* handler)
 {
-	handlers[handler->getHandledEventTypeID()].remove(handler);
+	toUnsubscribe.push_back(std::make_tuple(handler->getHandledEventTypeID(), handler));
 }
 
 inline void EventDispatcher::queue(const EventBase& event)

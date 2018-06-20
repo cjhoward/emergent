@@ -19,7 +19,6 @@
 
 #include <emergent/window/sdl-window.hpp>
 #include <emergent/window/sdl-window-manager.hpp>
-
 #include <iostream>
 
 namespace Emergent
@@ -181,6 +180,11 @@ void SDLWindow::makeCurrent()
 void SDLWindow::swapBuffers()
 {
 	SDL_GL_SwapWindow(window);
+}
+
+void SDLWindow::close()
+{
+	SDL_DestroyWindow(window);
 }
 
 } // namespace Emergent

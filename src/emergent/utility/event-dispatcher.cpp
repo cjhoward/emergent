@@ -32,6 +32,20 @@ EventDispatcher::~EventDispatcher()
 
 void EventDispatcher::dispatch()
 {
+	// Process pending subscriptions
+	for (auto it = toSubscribe.begin(); it != toSubscribe.end(); ++it)
+	{
+		handlers[std::get<0>(*it)].push_back(std::get<1>(*it));
+	}
+	toSubscribe.clear();
+
+	// Process pending unsubscriptions
+	for (auto it = toUnsubscribe.begin(); it != toUnsubscribe.end(); ++it)
+	{
+		handlers[std::get<0>(*it)].remove(std::get<1>(*it));
+	}
+	toUnsubscribe.clear();
+
 	// For each type of event
 	for (auto eventQueue = events.begin(); eventQueue != events.end(); ++eventQueue)
 	{
@@ -59,6 +73,19 @@ void EventDispatcher::dispatch()
 
 		// Clear event queue
 		eventQueue->second.clear();
+	}
+}
+
+void EventDispatcher::dispatch(const EventBase& event)
+{
+	// Get list of handlers for this type of event
+	const std::list<EventHandlerBase*>& handlerList = handlers[event.getEventTypeID()];
+
+	// For each handler
+	for (auto handler = handlerList.begin(); handler != handlerList.end(); ++handler)
+	{
+		// Pass event to the handler
+		(*handler)->routeEvent(event);
 	}
 }
 

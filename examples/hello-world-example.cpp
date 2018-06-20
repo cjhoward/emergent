@@ -98,10 +98,6 @@ void HelloWorldExample::setup()
 	hue.setState1(0.0f);
 
 	stepInterpolator.addVariable(&hue);
-
-
-	eventDispatcher.subscribe<TestEvent>(this);
-	eventDispatcher.subscribe<TestEvent2>(this);
 }
 
 void HelloWorldExample::input()
@@ -111,7 +107,6 @@ void HelloWorldExample::input()
 
 void HelloWorldExample::update(float t, float dt)
 {
-	eventDispatcher.dispatch();
 	hue.setState1(hue.getState0() + 0.25f * dt);
 }
 
@@ -135,28 +130,9 @@ void HelloWorldExample::exit()
 
 }
 
-void HelloWorldExample::windowResized(int width, int height)
+void HelloWorldExample::handleEvent(const WindowResizedEvent& event)
 {
-	glViewport(0, 0, width, height);
-
-	TestEvent event;
-	event.x = width;
-	eventDispatcher.queue(event);
-
-	TestEvent2 event2;
-	event2.x = height;
-	eventDispatcher.queue(event2);
-}
-
-void HelloWorldExample::handleEvent(const TestEvent& event)
-{
-	std::cout << "TestEvent received. x = " << event.x << std::endl;
-}
-
-
-void HelloWorldExample::handleEvent(const TestEvent2& event)
-{
-	std::cout << "TestEvent2 received. x = " << event.x << std::endl;
+	glViewport(0, 0, event.width, event.height);
 }
 
 int main(int argc, char* argv[])

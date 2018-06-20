@@ -21,13 +21,9 @@
 #define EMERGENT_INPUT_GAMEPAD_HPP
 
 #include <emergent/input/input-device.hpp>
-#include <list>
 
 namespace Emergent
 {
-
-class GamepadButtonObserver;
-class GamepadAxisObserver;
 
 /**
  * Gamepad input device.
@@ -40,33 +36,16 @@ public:
 	/**
 	 * Creates a gamepad input device.
 	 *
+	 * @param inputManager The parent input manager.
 	 * @param name Name of the gamepad.
 	 */
-	Gamepad(const std::string& name);
+	Gamepad(InputManager* inputManager, const std::string& name);
 
 	/// Destroys a gamepad input device.
 	virtual ~Gamepad();
 	
 	/// Returns InputDevice::Type::GAMEPAD.
 	InputDevice::Type getType() const;
-	
-	/// Adds a gamepad button observer to this gamepad.
-	void addGamepadButtonObserver(GamepadButtonObserver* observer);
-
-	/// Removes a gamepad button observer from this gamepad.
-	void removeGamepadButtonObserver(GamepadButtonObserver* observer);
-
-	/// Removes all gamepad button observers from this gamepad.
-	void removeGamepadButtonObservers();
-	
-	/// Adds a gamepad axis observer to this gamepad.
-	void addGamepadAxisObserver(GamepadAxisObserver* observer);
-
-	/// Removes a gamepad axis observer from this gamepad.
-	void removeGamepadAxisObserver(GamepadAxisObserver* observer);
-
-	/// Removes all gamepad axis observers from this gamepad.
-	void removeGamepadAxisObservers();
 	
 	/**
 	 * Simulates a gamepad button press. Notifies all gamepad button observers via GamepadButtonObserver::gamepadButtonPressed().
@@ -90,10 +69,6 @@ public:
 	 * @param value Normalized degree of movement.
 	 */
 	void move(int axis, bool negative, float value);
-	
-private:
-	std::list<GamepadButtonObserver*> buttonObservers;
-	std::list<GamepadAxisObserver*> axisObservers;
 };
 
 inline InputDevice::Type Gamepad::getType() const

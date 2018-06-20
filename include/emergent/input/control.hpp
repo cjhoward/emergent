@@ -20,7 +20,8 @@
 #ifndef EMERGENT_INPUT_CONTROL_HPP
 #define EMERGENT_INPUT_CONTROL_HPP
 
-#include <emergent/input/observers.hpp>
+#include <emergent/input/input-event.hpp>
+#include <emergent/utility/event-handler.hpp>
 #include <functional>
 #include <list>
 #include <tuple>
@@ -31,7 +32,6 @@ namespace Emergent
 
 enum class MouseWheelAxis;
 enum class Scancode;
-class InputEvent;
 class Keyboard;
 class Mouse;
 class Gamepad;
@@ -42,11 +42,14 @@ class Gamepad;
  * @ingroup input
  */
 class Control:
-	public KeyObserver,
-	public MouseButtonObserver,
-	public MouseWheelObserver,
-	public GamepadButtonObserver,
-	public GamepadAxisObserver
+	private EventHandler<KeyPressedEvent>,
+	private EventHandler<KeyReleasedEvent>,
+	private EventHandler<MouseButtonPressedEvent>,
+	private EventHandler<MouseButtonReleasedEvent>,
+	private EventHandler<MouseWheelScrolledEvent>,
+	private EventHandler<GamepadButtonPressedEvent>,
+	private EventHandler<GamepadButtonReleasedEvent>,
+	private EventHandler<GamepadAxisMovedEvent>
 {
 public:
 	/// Creates a control.
@@ -141,42 +144,11 @@ public:
 	 * @param negative Indicates whether the axis is negative or positive.
 	 */
 	void bindGamepadAxis(Gamepad* gamepad, int axis, bool negative);
-
-	/**
-	 * Binds the control to an input event.
-	 *
-	 * @param event Input event to which the control will be bound.
-	 */
-	void bind(const InputEvent& event);
 	
 	/**
 	 * Unbinds the control from all input events.
 	 */
 	void unbind();
-	
-	/// @copydoc KeyObserver::keyPressed()
-	virtual void keyPressed(Scancode scancode);
-
-	/// @copydoc KeyObserver::keyReleased()
-	virtual void keyReleased(Scancode scancode);
-
-	/// @copdoc MouseButtonObserver::mouseButtonPressed()
-	virtual void mouseButtonPressed(int button, int x, int y);
-
-	/// @copdoc MouseButtonObserver::mouseButtonReleased()
-	virtual void mouseButtonReleased(int button, int x, int y);
-
-	/// @copydoc MouseWheelObserver::mouseWheelScrolled()
-	virtual void mouseWheelScrolled(int x, int y);
-
-	/// @copydoc GamepadButtonObserver::gamepadButtonPressed()
-	virtual void gamepadButtonPressed(int button);
-
-	/// @copydoc GamepadButtonObserver::gamepadButtonReleased()
-	virtual void gamepadButtonReleased(int button);
-
-	/// @copydoc GamepadAxisObserver::gamepadAxisMoved()
-	virtual void gamepadAxisMoved(int axis, bool negative, float value);
 	
 	/// Returns a list of bound keys.
 	const std::list<std::pair<Keyboard*, Scancode>>* getBoundKeys() const;
@@ -194,10 +166,18 @@ public:
 	const std::list<std::tuple<Gamepad*, int, bool>>* getBoundGamepadAxes() const;
 	
 private:
+	virtual void handleEvent(const KeyPressedEvent& event);
+	virtual void handleEvent(const KeyReleasedEvent& event);
+	virtual void handleEvent(const MouseButtonPressedEvent& event);
+	virtual void handleEvent(const MouseButtonReleasedEvent& event);
+	virtual void handleEvent(const MouseWheelScrolledEvent& event);
+	virtual void handleEvent(const GamepadButtonPressedEvent& event);
+	virtual void handleEvent(const GamepadButtonReleasedEvent& event);
+	virtual void handleEvent(const GamepadAxisMovedEvent& event);
+
 	float deadzone;
 	float currentValue;
 	float previousValue;
-	
 	std::list<std::pair<Keyboard*, Scancode>> boundKeys;
 	std::list<std::pair<Mouse*, int>> boundMouseButtons;
 	std::list<std::pair<Mouse*, MouseWheelAxis>> boundMouseWheelAxes;

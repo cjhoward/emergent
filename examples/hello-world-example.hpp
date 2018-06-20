@@ -22,36 +22,8 @@
 
 #include "example-application.hpp"
 
-class TestEvent: public Event<1>
-{
-public:
-	int x;
-
-	inline virtual EventBase* clone() const
-	{
-		TestEvent* event = new TestEvent();
-		event->x = x;
-		return event;
-	}
-};
-
-class TestEvent2: public Event<2>
-{
-public:
-	int x;
-
-	inline virtual EventBase* clone() const
-	{
-		TestEvent* event = new TestEvent();
-		event->x = x;
-		return event;
-	}
-};
-
 class HelloWorldExample:
-	public ExampleApplication,
-	public EventHandler<TestEvent>,
-	public EventHandler<TestEvent2>
+	public ExampleApplication
 {
 public:
 	HelloWorldExample(int argc, char* argv[]);
@@ -63,12 +35,7 @@ private:
 	virtual void update(float t, float dt);
 	virtual void draw();
 	virtual void exit();
-	virtual void windowResized(int width, int height);
-
-	virtual void handleEvent(const TestEvent& event);
-	virtual void handleEvent(const TestEvent2& event);
-
-	EventDispatcher eventDispatcher;
+	virtual void handleEvent(const WindowResizedEvent& event);
 
 	Tween<float> hue;
 };

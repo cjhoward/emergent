@@ -20,12 +20,8 @@
 #ifndef EMERGENT_WINDOW_WINDOW_HPP
 #define EMERGENT_WINDOW_WINDOW_HPP
 
-#include <list>
-
 namespace Emergent
 {
-
-class WindowObserver;
 
 /**
  * Abstract base class for windows.
@@ -109,26 +105,10 @@ public:
 	 */
 	virtual void swapBuffers() = 0;
 
-	/// Adds a window observer to this window.
-	void addWindowObserver(WindowObserver* observer);
-
-	/// Removes a window observer from this window.
-	void removeWindowObserver(WindowObserver* observer);
-
-	/// Removes all window observers from this window.
-	void removeWindowObservers();
-
-protected:
-	friend class SDLInputManager;
-
-	/// Called by the input manager when the window is requested to close. Notifies all window observers via WindowObserver::windowClosed().
-	void close();
-
-	/// Called by the input manager when the window is resized. Notifies all window observers via WindowObserver::windowResized().
-	void resize(int width, int height);
-
-private:
-	std::list<WindowObserver*> windowObservers;
+	/**
+	 * Closes the window.
+	 */
+	virtual void close() = 0;
 };
 
 } // namespace Emergent

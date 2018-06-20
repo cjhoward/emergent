@@ -60,16 +60,16 @@ public:
 	/// Returns the unique event type identifier for the event type handled by this event handler.
 	std::size_t getHandledEventTypeID() const;
 
-private:
-	/// @copydoc EventHandlerBase::routeEvent()
-	virtual void routeEvent(const EventBase& event) final;
-
 	/**
 	 * Handles an event of type T.
 	 *
 	 * @param event Event to handle.
 	 */
 	virtual void handleEvent(const T& event) = 0;
+
+private:
+	/// @copydoc EventHandlerBase::routeEvent()
+	virtual void routeEvent(const EventBase& event) final;
 };
 
 template <typename T>

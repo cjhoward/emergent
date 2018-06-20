@@ -18,47 +18,35 @@
  */
 
 #include <emergent/input/keyboard.hpp>
-#include <emergent/input/observers.hpp>
+#include <emergent/input/input-event.hpp>
+#include <emergent/input/input-manager.hpp>
 
 namespace Emergent
 {
 
-Keyboard::Keyboard(const std::string& name):
-	InputDevice(name)
+Keyboard::Keyboard(InputManager* inputManager, const std::string& name):
+	InputDevice(inputManager, name)
 {}
 
 Keyboard::~Keyboard()
 {}
 
-void Keyboard::addKeyObserver(KeyObserver* observer)
-{
-	keyObservers.push_back(observer);
-}
-
-void Keyboard::removeKeyObserver(KeyObserver* observer)
-{
-	keyObservers.remove(observer);
-}
-
-void Keyboard::removeKeyObservers()
-{
-	keyObservers.clear();
-}
-
 void Keyboard::press(Scancode scancode)
 {
-	for (auto observer: keyObservers)
-	{
-		observer->keyPressed(scancode);
-	}
+	KeyPressedEvent event;
+	event.keyboard = this;
+	event.scancode = scancode;
+
+	getInputManager()->queue(event);
 }
 
 void Keyboard::release(Scancode scancode)
 {
-	for (auto observer: keyObservers)
-	{
-		observer->keyReleased(scancode);
-	}
+	KeyReleasedEvent event;
+	event.keyboard = this;
+	event.scancode = scancode;
+
+	getInputManager()->queue(event);
 }
 
 } // namespace Emergent

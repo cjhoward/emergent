@@ -53,9 +53,6 @@ public:
 	/// @copydoc InputManager::update()
 	virtual void update();
 
-	/// @copydoc InputManager::listen()
-	virtual void listen(InputEvent* event);
-
 	/// Returns the clipboard.
 	virtual const Clipboard* getClipboard() const;
 
@@ -71,7 +68,7 @@ private:
 	Mouse* mouse;
 	std::map<int, Gamepad*> gamepadMap;
 	std::list<Gamepad*> allocatedGamepads;
-	SDL_Event event;
+	SDL_Event sdlEvent;
 };
 
 } // namespace Emergent

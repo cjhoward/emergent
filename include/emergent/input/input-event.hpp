@@ -20,56 +20,224 @@
 #ifndef EMERGENT_INPUT_INPUT_EVENT_HPP
 #define EMERGENT_INPUT_INPUT_EVENT_HPP
 
-#include <tuple>
-#include <utility>
+#include <emergent/utility/event.hpp>
 
 namespace Emergent
 {
 
 enum class Scancode;
+class Window;
 class Keyboard;
 class Mouse;
 class Gamepad;
 
 /**
- * An input event which can be used for binding controls.
+ * Enumerates all possible input event type identifiers.
  *
- * @ingroup input.
+ * @ingroup input
  */
-class InputEvent
+enum class InputEventType
+{
+	APPLICATION_CLOSED,
+	WINDOW_CLOSED,
+	WINDOW_RESIZED,
+	KEY_PRESSED,
+	KEY_RELEASED,
+	MOUSE_MOVED,
+	MOUSE_BUTTON_PRESSED,
+	MOUSE_BUTTON_RELEASED,
+	MOUSE_WHEEL_SCROLLED,
+	GAMEPAD_BUTTON_PRESSED,
+	GAMEPAD_BUTTON_RELEASED,
+	GAMEPAD_AXIS_MOVED
+};
+
+/**
+ * Abstract base class for input events.
+ *
+ * @ingroup input
+ */
+template <InputEventType inputEventType>
+class InputEvent: public Event<static_cast<std::size_t>(inputEventType)>
 {
 public:
-	/// Enumerates the types of input events.
-	enum class Type
-	{
-		/// Indicates a null event.
-		NONE,
-
-		/// Indicates key press or release event.
-		KEY,
-
-		/// Indicates a mouse button press or release event.
-		MOUSE_BUTTON,
-
-		/// Indicates a mouse wheel scroll event.
-		MOUSE_WHEEL,
-
-		/// Indicates a gamepad button press or release event.
-		GAMEPAD_BUTTON,
-
-		/// Indicates a gamepad axis movement event.
-		GAMEPAD_AXIS
-	};
+	/// Flag to indicate this class is an input event
+	static const bool IS_INPUT_EVENT = true;
 	
-	/// Creates an input event.
-	InputEvent();
-	
-	InputEvent::Type type;
-	std::pair<Keyboard*, Scancode> key;
-	std::pair<Mouse*, int> mouseButton;
-	std::tuple<Mouse*, int, int> mouseWheel;
-	std::pair<Gamepad*, int> gamepadButton;
-	std::tuple<Gamepad*, int, int> gamepadAxis;
+	virtual EventBase* clone() const = 0;
+};
+
+/**
+ * Input event which indicates the application has been requested to close.
+ *
+ * @ingroup input
+ */
+class ApplicationClosedEvent: public InputEvent<InputEventType::APPLICATION_CLOSED>
+{
+public:
+	virtual EventBase* clone() const;
+};
+
+/**
+ * Input event which indicates a window has been closed.
+ *
+ * @ingroup input
+ */
+class WindowClosedEvent: public InputEvent<InputEventType::WINDOW_CLOSED>
+{
+public:
+	virtual EventBase* clone() const;
+
+	Window* window;
+};
+
+/**
+ * Input event which indicates a window has been resized.
+ *
+ * @ingroup input
+ */
+class WindowResizedEvent: public InputEvent<InputEventType::WINDOW_RESIZED>
+{
+public:
+	virtual EventBase* clone() const;
+
+	Window* window;
+	int width;
+	int height;
+};
+
+/**
+ * Input event which indicates a keyboard key has been pressed.
+ *
+ * @ingroup input
+ */
+class KeyPressedEvent: public InputEvent<InputEventType::KEY_PRESSED>
+{
+public:
+	virtual EventBase* clone() const;
+
+	Keyboard* keyboard;
+	Scancode scancode;
+};
+
+/**
+ * Input event which indicates a keyboard key has been released.
+ *
+ * @ingroup input
+ */
+class KeyReleasedEvent: public InputEvent<InputEventType::KEY_RELEASED>
+{
+public:
+	virtual EventBase* clone() const;
+
+	Keyboard* keyboard;
+	Scancode scancode;
+};
+
+/**
+ * Input event which indicates a mouse has been moved.
+ *
+ * @ingroup input
+ */
+class MouseMovedEvent: public InputEvent<InputEventType::MOUSE_MOVED>
+{
+public:
+	virtual EventBase* clone() const;
+
+	Mouse* mouse;
+	int x;
+	int y;
+};
+
+/**
+ * Input event which indicates a mouse button has been pressed.
+ *
+ * @ingroup input
+ */
+class MouseButtonPressedEvent: public InputEvent<InputEventType::MOUSE_BUTTON_PRESSED>
+{
+public:
+	virtual EventBase* clone() const;
+
+	Mouse* mouse;
+	int button;
+	int x;
+	int y;
+};
+
+/**
+ * Input event which indicates a mouse button has been released.
+ *
+ * @ingroup input
+ */
+class MouseButtonReleasedEvent: public InputEvent<InputEventType::MOUSE_BUTTON_RELEASED>
+{
+public:
+	virtual EventBase* clone() const;
+
+	Mouse* mouse;
+	int button;
+	int x;
+	int y;
+};
+
+/**
+ * Input event which indicates a mouse wheel has been scrolled.
+ *
+ * @ingroup input
+ */
+class MouseWheelScrolledEvent: public InputEvent<InputEventType::MOUSE_WHEEL_SCROLLED>
+{
+public:
+	virtual EventBase* clone() const;
+
+	Mouse* mouse;
+	int x;
+	int y;
+};
+
+/**
+ * Input event which indicates a gamepad button has been pressed.
+ *
+ * @ingroup input
+ */
+class GamepadButtonPressedEvent: public InputEvent<InputEventType::GAMEPAD_BUTTON_PRESSED>
+{
+public:
+	virtual EventBase* clone() const;
+
+	Gamepad* gamepad;
+	int button;
+};
+
+/**
+ * Input event which indicates a gamepad button has been released.
+ *
+ * @ingroup input
+ */
+class GamepadButtonReleasedEvent: public InputEvent<InputEventType::GAMEPAD_BUTTON_RELEASED>
+{
+public:
+	virtual EventBase* clone() const;
+
+	Gamepad* gamepad;
+	int button;
+};
+
+/**
+ * Input event which indicates a gamepad axis has been moved.
+ *
+ * @ingroup input
+ */
+class GamepadAxisMovedEvent: public InputEvent<InputEventType::GAMEPAD_AXIS_MOVED>
+{
+public:
+	virtual EventBase* clone() const;
+
+	Gamepad* gamepad;
+	int axis;
+	bool negative;
+	float value;
 };
 
 } // namespace Emergent

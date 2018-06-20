@@ -21,12 +21,10 @@
 #define EMERGENT_INPUT_KEYBOARD_HPP
 
 #include <emergent/input/input-device.hpp>
-#include <list>
 
 namespace Emergent
 {
 
-class KeyObserver;
 enum class Scancode;
 
 /**
@@ -40,24 +38,16 @@ public:
 	/**
 	 * Creates a keyboard input device.
 	 *
-	 * @param name Name of the keyboard
+	 * @param inputManager The parent input manager.
+	 * @param name Name of the keyboard.
 	 */
-	Keyboard(const std::string& name);
+	Keyboard(InputManager* inputManager, const std::string& name);
 
 	/// Destroys a keyboard input device.
 	virtual ~Keyboard();
 	
 	/// Returns InputDevice::Type::KEYBOARD
 	InputDevice::Type getType() const;
-	
-	/// Adds a key observer to this keyboard.
-	void addKeyObserver(KeyObserver* observer);
-
-	/// Removes a key observer from this keyboard.
-	void removeKeyObserver(KeyObserver* observer);
-
-	/// Removes all key observers from this keyboard.
-	void removeKeyObservers();
 	
 	/**
 	 * Simulates a key press. Notifies all key observers via KeyObserver::keyPressed().
@@ -72,9 +62,6 @@ public:
 	 * @param scancode Scancode of the simulated key release.
 	 */
 	void release(Scancode scancode);
-	
-private:
-	std::list<KeyObserver*> keyObservers;
 };
 
 inline InputDevice::Type Keyboard::getType() const

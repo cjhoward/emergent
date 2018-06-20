@@ -22,9 +22,107 @@
 namespace Emergent
 {
 
-InputEvent::InputEvent():
-	type(InputEvent::Type::NONE)
-{}
+EventBase* ApplicationClosedEvent::clone() const
+{
+	ApplicationClosedEvent* event = new ApplicationClosedEvent();
+	return event;
+}
+
+EventBase* WindowClosedEvent::clone() const
+{
+	WindowClosedEvent* event = new WindowClosedEvent();
+	event->window = window;
+	return event;
+}
+
+EventBase* WindowResizedEvent::clone() const
+{
+	WindowResizedEvent* event = new WindowResizedEvent();
+	event->window = window;
+	event->width = width;
+	event->height = height;
+	return event;
+}
+
+EventBase* KeyPressedEvent::clone() const
+{
+	KeyPressedEvent* event = new KeyPressedEvent();
+	event->keyboard = keyboard;
+	event->scancode = scancode;
+	return event;
+}
+
+EventBase* KeyReleasedEvent::clone() const
+{
+	KeyReleasedEvent* event = new KeyReleasedEvent();
+	event->keyboard = keyboard;
+	event->scancode = scancode;
+	return event;
+}
+
+EventBase* MouseMovedEvent::clone() const
+{
+	MouseMovedEvent* event = new MouseMovedEvent();
+	event->mouse = mouse;
+	event->x = x;
+	event->y = y;
+	return event;
+}
+
+EventBase* MouseButtonPressedEvent::clone() const
+{
+	MouseButtonPressedEvent* event = new MouseButtonPressedEvent();
+	event->mouse = mouse;
+	event->button = button;
+	event->x = x;
+	event->y = y;
+	return event;
+}
+
+EventBase* MouseButtonReleasedEvent::clone() const
+{
+	MouseButtonReleasedEvent* event = new MouseButtonReleasedEvent();
+	event->mouse = mouse;
+	event->button = button;
+	event->x = x;
+	event->y = y;
+	return event;
+}
+
+EventBase* MouseWheelScrolledEvent::clone() const
+{
+	MouseWheelScrolledEvent* event = new MouseWheelScrolledEvent();
+	event->mouse = mouse;
+	event->x = x;
+	event->y = y;
+	return event;
+}
+
+EventBase* GamepadButtonPressedEvent::clone() const
+{
+	GamepadButtonPressedEvent* event = new GamepadButtonPressedEvent();
+	event->gamepad = gamepad;
+	event->button = button;
+	return event;
+}
+
+EventBase* GamepadButtonReleasedEvent::clone() const
+{
+	GamepadButtonReleasedEvent* event = new GamepadButtonReleasedEvent();
+	event->gamepad = gamepad;
+	event->button = button;
+	return event;
+}
+
+EventBase* GamepadAxisMovedEvent::clone() const
+{
+	GamepadAxisMovedEvent* event = new GamepadAxisMovedEvent();
+	event->gamepad = gamepad;
+	event->axis = axis;
+	event->negative = negative;
+	event->value = value;
+	return event;
+}
 
 } // namespace Emergent
 

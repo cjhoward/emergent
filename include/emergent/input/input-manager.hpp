@@ -20,6 +20,8 @@
 #ifndef EMERGENT_INPUT_INPUT_MANAGER_HPP
 #define EMERGENT_INPUT_INPUT_MANAGER_HPP
 
+#include <emergent/input/input-event.hpp>
+#include <emergent/utility/event-dispatcher.hpp>
 #include <list>
 #include <string>
 
@@ -31,14 +33,13 @@ class Clipboard;
 class Keyboard;
 class Mouse;
 class Gamepad;
-class InputEvent;
 
 /**
  * Abstract base class for input managers.
  *
  * @ingroup input
  */
-class InputManager
+class InputManager: protected EventDispatcher
 {
 public:
 	/// Creates an input manager.
@@ -51,13 +52,12 @@ public:
 	 * Processes input events.
 	 */
 	virtual void update() = 0;
-	
-	/**
-	 * Listens for the next input event. Should be called before InputManager::update().
-	 *
-	 * @param inputEvent Pointer to input event which will be filled with the next event.
-	 */
-	virtual void listen(InputEvent* inputEvent) = 0;
+
+	template <typename T>
+	void subscribe(EventHandler<T>* handler);
+
+	template <typename T>
+	void unsubscribe(EventHandler<T>* handler);
 
 	/// Adds an application observer to this input manager.
 	void addApplicationObserver(ApplicationObserver* observer);
@@ -122,11 +122,30 @@ public:
 	const std::list<Gamepad*>* getGamepads() const;
 	
 private:
+	friend class Keyboard;
+	friend class Mouse;
+	friend class Gamepad;
+
 	std::list<Keyboard*> keyboards;
 	std::list<Mouse*> mice;
 	std::list<Gamepad*> gamepads;
 	std::list<ApplicationObserver*> applicationObservers;
 };
+
+template <typename T>
+void InputManager::subscribe(EventHandler<T>* handler)
+{
+	static_assert(T::IS_INPUT_EVENT, "T must be derived from InputEvent.");
+	EventDispatcher::subscribe(handler);
+}
+
+template <typename T>
+void InputManager::unsubscribe(EventHandler<T>* handler)
+{
+	static_assert(T::IS_INPUT_EVENT, "T must be derived from InputEvent.");
+	EventDispatcher::unsubscribe(handler);
+}
+
 
 inline const std::list<Keyboard*>* InputManager::getKeyboards() const
 {

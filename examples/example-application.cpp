@@ -56,17 +56,20 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	stepScheduler.setMaxFrameDuration(0.25);
 	stepScheduler.setStepFrequency(60.0);
 
+	// Setup application event handling
 	inputManager = windowManager->getInputManager();
+	inputManager->subscribe<ApplicationClosedEvent>(this);
+	inputManager->subscribe<WindowClosedEvent>(this);
+	inputManager->subscribe<WindowResizedEvent>(this);
+	inputManager->subscribe<KeyPressedEvent>(this);
+	inputManager->subscribe<KeyReleasedEvent>(this);
+	inputManager->subscribe<MouseMovedEvent>(this);
+	inputManager->subscribe<MouseButtonPressedEvent>(this);
+	inputManager->subscribe<MouseButtonReleasedEvent>(this);
+	inputManager->subscribe<MouseWheelScrolledEvent>(this);
+
 	Keyboard* keyboard = (*inputManager->getKeyboards()).front();
 	Mouse* mouse = (*inputManager->getMice()).front();
-
-	// Add input observers
-	inputManager->addApplicationObserver(this);
-	window->addWindowObserver(this);
-	keyboard->addKeyObserver(this);
-	mouse->addMouseMotionObserver(this);
-	mouse->addMouseButtonObserver(this);
-	mouse->addMouseWheelObserver(this);
 
 	// Setup control profile
 	closeControl.bindKey(keyboard, Scancode::ESCAPE);
@@ -205,34 +208,34 @@ void ExampleApplication::draw()
 void ExampleApplication::exit()
 {}
 
-void ExampleApplication::applicationClosed()
+void ExampleApplication::handleEvent(const ApplicationClosedEvent& event)
 {
 	closed = true;
 }
 
-void ExampleApplication::windowClosed()
+void ExampleApplication::handleEvent(const WindowClosedEvent& event)
 {
 	closed = true;
 }
 
-void ExampleApplication::windowResized(int width, int height)
+void ExampleApplication::handleEvent(const WindowResizedEvent& event)
 {}
 
-void ExampleApplication::keyPressed(Scancode scancode)
+void ExampleApplication::handleEvent(const KeyPressedEvent& event)
 {}
 
-void ExampleApplication::keyReleased(Scancode scancode)
+void ExampleApplication::handleEvent(const KeyReleasedEvent& event)
 {}
 
-void ExampleApplication::mouseMoved(int x, int y)
+void ExampleApplication::handleEvent(const MouseMovedEvent& event)
 {}
 
-void ExampleApplication::mouseButtonPressed(int button, int x, int y)
+void ExampleApplication::handleEvent(const MouseButtonPressedEvent& event)
 {}
 
-void ExampleApplication::mouseButtonReleased(int button, int x, int y)
+void ExampleApplication::handleEvent(const MouseButtonReleasedEvent& event)
 {}
 
-void ExampleApplication::mouseWheelScrolled(int x, int y)
+void ExampleApplication::handleEvent(const MouseWheelScrolledEvent& event)
 {}
 
