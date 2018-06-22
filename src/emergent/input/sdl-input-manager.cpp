@@ -353,7 +353,7 @@ SDLInputManager::~SDLInputManager()
 
 void SDLInputManager::update()
 {
-	dispatch();
+	EventDispatcher::update(0.0);
 
 	while (SDL_PollEvent(&sdlEvent))
 	{

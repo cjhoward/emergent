@@ -30,7 +30,7 @@ EventDispatcher::~EventDispatcher()
 	clear();
 }
 
-void EventDispatcher::dispatch()
+void EventDispatcher::update(double time)
 {
 	// Process pending subscriptions
 	for (auto it = toSubscribe.begin(); it != toSubscribe.end(); ++it)
@@ -46,28 +46,30 @@ void EventDispatcher::dispatch()
 	}
 	toUnsubscribe.clear();
 
-	// For each event in the queue
-	for (auto event = events.begin(); event != events.end(); ++event)
+	// Dispatch queued events
+	flush();
+
+	// For each scheduled event
+	for (auto event = scheduledEvents.begin(); event != scheduledEvents.end();)
 	{
-		// Get list of handlers for this event type
-		const std::list<EventHandlerBase*>& handlers = handlerMap[(*event)->getEventTypeID()];
-
-		// For each handler
-		for (auto handler = handlers.begin(); handler != handlers.end(); ++handler)
+		// If the event is due
+		if (time >= event->first)
 		{
-			// Pass event to handler
-			(*handler)->routeEvent(**event);
+			// Dispatch event
+			dispatch(*(event->second));
+
+			// Delete event
+			delete event->second;
+			event = scheduledEvents.erase(event);
 		}
-
-		// Delete event
-		delete (*event);
+		else
+		{
+			break;
+		}
 	}
-
-	// Clear event queue
-	events.clear();
 }
 
-void EventDispatcher::dispatch(const EventBase& event)
+inline void EventDispatcher::dispatch(const EventBase& event)
 {
 	// Get list of handlers for this type of event
 	const std::list<EventHandlerBase*>& handlers = handlerMap[event.getEventTypeID()];
@@ -80,17 +82,43 @@ void EventDispatcher::dispatch(const EventBase& event)
 	}
 }
 
+void EventDispatcher::flush()
+{
+	// For each event in the queue
+	for (auto event = queuedEvents.begin(); event != queuedEvents.end(); ++event)
+	{
+		// Dispatch event
+		dispatch(**event);
+
+		// Delete event
+		delete (*event);
+	}
+
+	// Clear event queue
+	queuedEvents.clear();
+}
+
 void EventDispatcher::clear()
 {
 	// For each event in the queue
-	for (auto event = events.begin(); event != events.end(); ++event)
+	for (auto event = queuedEvents.begin(); event != queuedEvents.end(); ++event)
 	{
 		// Delete event
 		delete (*event);
 	}
 
 	// Clear event queue
-	events.clear();
+	queuedEvents.clear();
+
+	// For each scheduled event
+	for (auto event = scheduledEvents.begin(); event != scheduledEvents.end(); ++event)
+	{
+		// Delete event
+		delete event->second;
+	}
+
+	// Clear scheduled events
+	scheduledEvents.clear();
 }
 
 } // namespace Emergent

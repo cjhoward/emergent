@@ -44,6 +44,13 @@ public:
 	~EventDispatcher();
 
 	/**
+	 * Processes all pending subscriptions and unsubscriptions, dispatches queued events, then dispatches due scheduled events.
+	 *
+	 * @param time The current time.
+	 */
+	void update(double time);
+
+	/**
 	 * Subscribes an event handler to event dispatches.
 	 *
 	 * @param handler Handler to subscribe.
@@ -66,24 +73,35 @@ public:
 	 */
 	void queue(const EventBase& event);
 
-	/// Dispatches all queued events and removes them from the queue.
-	void dispatch();
+	/**
+	 * Schedules an event to be dispatched at a specific time.
+	 *
+	 * @param event Event to schedule.
+	 * @param time Time that the event should be dispatched.
+	 */
+	void schedule(const EventBase& event, double time);
 
 	/**
-	 * Dispatches a single event immediately without adding it to the queue.
+	 * Dispatches a single event.
 	 *
 	 * @param event Event to dispatch.
 	 */
 	void dispatch(const EventBase& event);
 
-	/// Removes all events from the queue without notifying handlers.
+	/**
+	 * Dispatches all events in the queue.
+	 */
+	void flush();
+
+	/// Removes all queued and scheduled events from the queue without notifying handlers.
 	void clear();
 
 private:
 	std::list<std::tuple<std::size_t, EventHandlerBase*>> toSubscribe;
 	std::list<std::tuple<std::size_t, EventHandlerBase*>> toUnsubscribe;
 	std::map<std::size_t, std::list<EventHandlerBase*>> handlerMap;
-	std::list<EventBase*> events;
+	std::list<EventBase*> queuedEvents;
+	std::multimap<double, EventBase*> scheduledEvents;
 };
 
 template <typename T>
@@ -100,7 +118,12 @@ void EventDispatcher::unsubscribe(EventHandler<T>* handler)
 
 inline void EventDispatcher::queue(const EventBase& event)
 {
-	events.push_back(event.clone());
+	queuedEvents.push_back(event.clone());
+}
+
+inline void EventDispatcher::schedule(const EventBase& event, double time)
+{
+	scheduledEvents.insert(std::pair<double, EventBase*>(time, event.clone()));
 }
 
 } // namespace Emergent

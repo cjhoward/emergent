@@ -34,7 +34,7 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	int y = std::get<1>(display->getPosition()) + std::get<1>(display->getDimensions()) / 2 - h / 2;
 	unsigned int flags = WindowFlag::RESIZABLE;
 	fullscreen = false;
-	bool vsync = false;
+	bool vsync = true;
 	double maxFrameDuration = 0.25;
 	double stepFrequency = 60.0;
 

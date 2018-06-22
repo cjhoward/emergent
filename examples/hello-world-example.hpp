@@ -22,8 +22,22 @@
 
 #include "example-application.hpp"
 
+class TestEvent: public Event<0>
+{
+	public:
+		inline EventBase* clone() const
+		{
+			TestEvent* event = new TestEvent();
+			event->id = id;
+			return event;
+		}
+
+		int id;
+};
+
 class HelloWorldExample:
-	public ExampleApplication
+	public ExampleApplication,
+	public EventHandler<TestEvent>
 {
 public:
 	HelloWorldExample(int argc, char* argv[]);
@@ -37,8 +51,13 @@ private:
 	virtual void exit();
 	virtual void handleEvent(const WindowResizedEvent& event);
 
+	virtual void handleEvent(const TestEvent& event);
+
 	Tween<float> hue;
 	double lastFrameDuration;
+
+	EventDispatcher eventDispatcher;
+
 };
 
 #endif // EMERGENT_HELLO_WORLD_EXAMPLE_HPP

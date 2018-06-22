@@ -103,6 +103,17 @@ void HelloWorldExample::setup()
 	lastFrameDuration = 0.0;
 
 	window->setVSync(false);
+
+	TestEvent event1, event2, event3;
+	event1.id = 1;
+	event2.id = 2;
+	event3.id = 3;
+
+
+	eventDispatcher.subscribe<TestEvent>(this);
+	eventDispatcher.schedule(event1, 1.0);
+	eventDispatcher.schedule(event2, 10.0);
+	eventDispatcher.schedule(event3, 2.0);
 }
 
 void HelloWorldExample::input()
@@ -112,6 +123,8 @@ void HelloWorldExample::input()
 
 void HelloWorldExample::update(float t, float dt)
 {
+	eventDispatcher.update(t);
+
 	hue.setState1(hue.getState0() + 0.25f * dt);
 }
 
@@ -140,6 +153,11 @@ void HelloWorldExample::exit()
 void HelloWorldExample::handleEvent(const WindowResizedEvent& event)
 {
 	glViewport(0, 0, event.width, event.height);
+}
+
+void HelloWorldExample::handleEvent(const TestEvent& event)
+{
+	std::cout << "Event received!!! ID: " << event.id << std::endl;
 }
 
 int main(int argc, char* argv[])
