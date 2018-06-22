@@ -82,8 +82,8 @@ public:
 private:
 	std::list<std::tuple<std::size_t, EventHandlerBase*>> toSubscribe;
 	std::list<std::tuple<std::size_t, EventHandlerBase*>> toUnsubscribe;
-	std::map<std::size_t, std::list<EventHandlerBase*>> handlers;
-	std::map<std::size_t, std::list<EventBase*>> events;
+	std::map<std::size_t, std::list<EventHandlerBase*>> handlerMap;
+	std::list<EventBase*> events;
 };
 
 template <typename T>
@@ -100,7 +100,7 @@ void EventDispatcher::unsubscribe(EventHandler<T>* handler)
 
 inline void EventDispatcher::queue(const EventBase& event)
 {
-	events[event.getEventTypeID()].push_back(event.clone());
+	events.push_back(event.clone());
 }
 
 } // namespace Emergent

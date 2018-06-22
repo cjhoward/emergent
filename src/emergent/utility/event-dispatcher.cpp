@@ -35,54 +35,45 @@ void EventDispatcher::dispatch()
 	// Process pending subscriptions
 	for (auto it = toSubscribe.begin(); it != toSubscribe.end(); ++it)
 	{
-		handlers[std::get<0>(*it)].push_back(std::get<1>(*it));
+		handlerMap[std::get<0>(*it)].push_back(std::get<1>(*it));
 	}
 	toSubscribe.clear();
 
 	// Process pending unsubscriptions
 	for (auto it = toUnsubscribe.begin(); it != toUnsubscribe.end(); ++it)
 	{
-		handlers[std::get<0>(*it)].remove(std::get<1>(*it));
+		handlerMap[std::get<0>(*it)].remove(std::get<1>(*it));
 	}
 	toUnsubscribe.clear();
 
-	// For each type of event
-	for (auto eventQueue = events.begin(); eventQueue != events.end(); ++eventQueue)
+	// For each event in the queue
+	for (auto event = events.begin(); event != events.end(); ++event)
 	{
-		if (eventQueue->second.empty())
+		// Get list of handlers for this event type
+		const std::list<EventHandlerBase*>& handlers = handlerMap[(*event)->getEventTypeID()];
+
+		// For each handler
+		for (auto handler = handlers.begin(); handler != handlers.end(); ++handler)
 		{
-			continue;
+			// Pass event to handler
+			(*handler)->routeEvent(**event);
 		}
 
-		// Get list of handlers for this type of event
-		const std::list<EventHandlerBase*>& handlerList = handlers[eventQueue->first];
-
-		// For each event in the queue
-		for (auto event = eventQueue->second.begin(); event != eventQueue->second.end(); ++event)
-		{
-			// For each handler
-			for (auto handler = handlerList.begin(); handler != handlerList.end(); ++handler)
-			{
-				// Pass event to the handler
-				(*handler)->routeEvent(**event);
-			}
-
-			// Delete event
-			delete (*event);
-		}
-
-		// Clear event queue
-		eventQueue->second.clear();
+		// Delete event
+		delete (*event);
 	}
+
+	// Clear event queue
+	events.clear();
 }
 
 void EventDispatcher::dispatch(const EventBase& event)
 {
 	// Get list of handlers for this type of event
-	const std::list<EventHandlerBase*>& handlerList = handlers[event.getEventTypeID()];
+	const std::list<EventHandlerBase*>& handlers = handlerMap[event.getEventTypeID()];
 
 	// For each handler
-	for (auto handler = handlerList.begin(); handler != handlerList.end(); ++handler)
+	for (auto handler = handlers.begin(); handler != handlers.end(); ++handler)
 	{
 		// Pass event to the handler
 		(*handler)->routeEvent(event);
@@ -91,19 +82,15 @@ void EventDispatcher::dispatch(const EventBase& event)
 
 void EventDispatcher::clear()
 {
-	// For each type of event
-	for (auto eventQueue = events.begin(); eventQueue != events.end(); ++eventQueue)
+	// For each event in the queue
+	for (auto event = events.begin(); event != events.end(); ++event)
 	{
-		// For each event in the queue
-		for (auto event = eventQueue->second.begin(); event != eventQueue->second.end(); ++event)
-		{
-			// Delete event
-			delete (*event);
-		}
-
-		// Clear event queue
-		eventQueue->second.clear();
+		// Delete event
+		delete (*event);
 	}
+
+	// Clear event queue
+	events.clear();
 }
 
 } // namespace Emergent
