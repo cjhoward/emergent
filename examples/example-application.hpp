@@ -21,95 +21,42 @@
 #define EMERGENT_EXAMPLE_APPLICATION_HPP
 
 #include <emergent/emergent.hpp>
+#include <string>
+
 using namespace Emergent;
 
 /**
- * Abstract base class for framerate-independent real-time graphical applications.
+ * Base class for example applications.
  */
-class ExampleApplication:
-	public EventHandler<ApplicationClosedEvent>,
-	public EventHandler<WindowClosedEvent>,
-	public EventHandler<WindowResizedEvent>,
-	public EventHandler<KeyPressedEvent>,
-	public EventHandler<KeyReleasedEvent>,
-	public EventHandler<MouseMovedEvent>,
-	public EventHandler<MouseButtonPressedEvent>,
-	public EventHandler<MouseButtonReleasedEvent>,
-	public EventHandler<MouseWheelScrolledEvent>
+class ExampleApplication: public Application
 {
 public:
 	/**
-	 * Creates an application.
+	 * Creates an example application.
 	 *
 	 * @param argc Argument count
 	 * @param argv Argument list
 	 */
 	ExampleApplication(int argc, char* argv[]);
 
-	/// Destroys an application.
+	/// Destroys an example application.
 	virtual ~ExampleApplication();
 
-	/**
-	 * Executes the application.
-	 *
-	 * @return Exit status code.
-	 */
-	int execute();
-
 protected:
-	void close(int status);
 	void setTitle(const char* title);
-	void size(int width, int height);
 	void toggleFullscreen();
 	void setUpdateRate(double frequency);
-
-	StepScheduler stepScheduler;
-	StepInterpolator stepInterpolator;
+	
+	Window* window;
+	ControlProfile controlProfile;
 
 private:
-	/// Called once at the start of the application.
-	virtual void setup();
-
-	/**
-	 * Called each time the input manager has been updated.
-	 */
 	virtual void input();
 
-	/**
-	 * Called with a frequency determined by the update rate.
-	 *
-	 * @param t Total elapsed time.
-	 * @param dt Time elapsed since previous update.
-	 */
-	virtual void update(float t, float dt);
-
-	/**
-	 * Called as frequently as possible. If v-sync is enabled, this frequency will be limited to the refresh rate of the display.
-	 */
-	virtual void draw();
-
-	/// Called once when the application is closing.
-	virtual void exit();
-
-	virtual void handleEvent(const ApplicationClosedEvent& event) final;
-	virtual void handleEvent(const WindowClosedEvent& event) final;
-	virtual void handleEvent(const WindowResizedEvent& event);
-	virtual void handleEvent(const KeyPressedEvent& event);
-	virtual void handleEvent(const KeyReleasedEvent& event);
-	virtual void handleEvent(const MouseMovedEvent& event);
-	virtual void handleEvent(const MouseButtonPressedEvent& event);
-	virtual void handleEvent(const MouseButtonReleasedEvent& event);
-	virtual void handleEvent(const MouseWheelScrolledEvent& event);
-
-	bool closed;
-	int status;
-	WindowManager* windowManager;
-	InputManager* inputManager;
-	Window* window;
 	bool fullscreen;
 	Control fullscreenControl;
 	Control closeControl;
-	ControlProfile controlProfile;
+	std::string title;
 };
 
 #endif // EMERGENT_EXAMPLE_APPLICATION_HPP

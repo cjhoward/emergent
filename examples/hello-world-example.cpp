@@ -102,7 +102,7 @@ void HelloWorldExample::setup()
 
 void HelloWorldExample::input()
 {
-
+	controlProfile.update();
 }
 
 void HelloWorldExample::update(float t, float dt)
@@ -110,7 +110,7 @@ void HelloWorldExample::update(float t, float dt)
 	hue.setState1(hue.getState0() + 0.25f * dt);
 }
 
-void HelloWorldExample::draw()
+void HelloWorldExample::render()
 {
 	float wrappedHue = std::fmod(hue.getSubstate(), 1.0f);
 	if (wrappedHue < 0.0f)
@@ -123,6 +123,8 @@ void HelloWorldExample::draw()
 
 	glClearColor(rgb.x, rgb.y, rgb.z, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	window->swapBuffers();
 }
 
 void HelloWorldExample::exit()
@@ -137,6 +139,15 @@ void HelloWorldExample::handleEvent(const WindowResizedEvent& event)
 
 int main(int argc, char* argv[])
 {
-	return HelloWorldExample(argc, argv).execute();
+	try
+	{
+		return HelloWorldExample(argc, argv).execute();
+	}
+	catch (std::exception& e)
+	{
+		std::cerr << "Exception caught: \"" << e.what() << "\"" << std::endl;
+	}
+
+	return EXIT_FAILURE;
 }
 

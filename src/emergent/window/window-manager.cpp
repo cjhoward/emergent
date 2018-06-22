@@ -23,27 +23,6 @@
 namespace Emergent
 {
 
-WindowManager* WindowManager::wm = nullptr;
-
-void WindowManager::allocate()
-{
-	if (wm == nullptr)
-	{
-		wm = new SDLWindowManager();
-	}
-}
-
-void WindowManager::deallocate()
-{
-	delete wm;
-	wm = nullptr;
-}
-
-WindowManager* WindowManager::instance()
-{
-	return wm;
-}
-
 WindowManager::WindowManager():
 	inputManager(nullptr)
 {}

@@ -27,6 +27,7 @@
 namespace Emergent
 {
 
+class Application;
 class SDLWindow;
 
 /**
@@ -44,7 +45,7 @@ public:
 	virtual void destroyWindow(Window* window);
 
 private:
-	friend class WindowManager;
+	friend class Application;
 	friend class SDLWindow;
 	friend class SDLInputManager;
 

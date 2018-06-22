@@ -621,7 +621,6 @@ void SDLInputManager::update()
 				break;
 		}
 	}
-
 }
 
 const Clipboard* SDLInputManager::getClipboard() const

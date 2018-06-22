@@ -25,6 +25,7 @@
 namespace Emergent
 {
 
+class Application;
 class Display;
 class InputManager;
 class Window;
@@ -60,21 +61,6 @@ namespace WindowFlag
 class WindowManager
 {
 public:
-	/**
-	 * Allocates the window manager singleton instance if it has not been allocated.
-	 */
-	static void allocate();
-
-	/**
-	 * Deallocates the window manager singleton instance.
-	 */
-	static void deallocate();
-
-	/**
-	 * Returns a pointer to the window manager singleton instance.
-	 */
-	static WindowManager* instance();
-	
 	/**
 	 * Creates a window.
 	 *
@@ -153,6 +139,7 @@ protected:
 	std::vector<Window*> windows;
 
 private:
+	friend class Application;
 	friend class SDLWindowManager;
 
 	/**
@@ -164,8 +151,6 @@ private:
 	 * Destroys a window manager.
 	 */
 	virtual ~WindowManager();
-
-	static WindowManager* wm;
 };
 
 inline const InputManager* WindowManager::getInputManager() const

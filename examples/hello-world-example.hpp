@@ -33,7 +33,7 @@ private:
 	virtual void setup();
 	virtual void input();
 	virtual void update(float t, float dt);
-	virtual void draw();
+	virtual void render();
 	virtual void exit();
 	virtual void handleEvent(const WindowResizedEvent& event);
 

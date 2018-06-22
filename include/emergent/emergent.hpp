@@ -139,6 +139,7 @@
  *
  * Utility classes
  */
+#include <emergent/utility/application.hpp>
 #include <emergent/utility/event-dispatcher.hpp>
 #include <emergent/utility/event-handler.hpp>
 #include <emergent/utility/event.hpp>
