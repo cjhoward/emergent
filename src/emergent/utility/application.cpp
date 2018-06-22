@@ -39,9 +39,12 @@ Application::Application():
 		throw std::runtime_error("Application::Application(): Failed to initialize SDL window manager.");
 	}
 
-	// Set default frame rate
+	// Setup step scheduling
 	stepScheduler.setMaxFrameDuration(0.25);
 	stepScheduler.setStepFrequency(60.0);
+	
+	// Setup performance sampling
+	performanceSampler.setSampleSize(1);
 
 	// Setup input event handling
 	inputManager = windowManager->getInputManager();
@@ -58,6 +61,7 @@ Application::Application():
 
 Application::~Application()
 {
+	// Free window manager
 	delete windowManager;
 }
 
@@ -119,7 +123,10 @@ int Application::execute()
 		// Reset frame timer
 		t0 = t1;
 
-		// Schedule steps for the next frame
+		// Use frame duration to sample performance
+		performanceSampler.sample(frameDuration);
+
+		// Schedule steps for the next frame according to the duration of this frame
 		stepScheduler.schedule(frameDuration);
 	}
 

@@ -38,6 +38,7 @@ private:
 	virtual void handleEvent(const WindowResizedEvent& event);
 
 	Tween<float> hue;
+	double lastFrameDuration;
 };
 
 #endif // EMERGENT_HELLO_WORLD_EXAMPLE_HPP

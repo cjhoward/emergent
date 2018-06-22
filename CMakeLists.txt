@@ -156,6 +156,7 @@ set(emergent_SOURCES
 	src/emergent/math/transform.cpp
 	src/emergent/utility/application.cpp
 	src/emergent/utility/event-dispatcher.cpp
+	src/emergent/utility/performance-sampler.cpp
 	src/emergent/utility/step-interpolator.cpp
 	src/emergent/utility/step-scheduler.cpp
 	src/emergent/utility/timer.cpp
@@ -255,6 +256,7 @@ set(emergent_HEADERS
 	include/emergent/utility/event-dispatcher.hpp
 	include/emergent/utility/event-handler.hpp
 	include/emergent/utility/event.hpp
+	include/emergent/utility/performance-sampler.hpp
 	include/emergent/utility/step-interpolator.hpp
 	include/emergent/utility/step-scheduler.hpp
 	include/emergent/utility/timer.hpp

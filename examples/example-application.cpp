@@ -34,7 +34,7 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	int y = std::get<1>(display->getPosition()) + std::get<1>(display->getDimensions()) / 2 - h / 2;
 	unsigned int flags = WindowFlag::RESIZABLE;
 	fullscreen = false;
-	bool vsync = true;
+	bool vsync = false;
 	double maxFrameDuration = 0.25;
 	double stepFrequency = 60.0;
 
@@ -53,6 +53,9 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	// Setup step scheduler
 	stepScheduler.setMaxFrameDuration(maxFrameDuration);
 	stepScheduler.setStepFrequency(stepFrequency);
+
+	// Setup performance sampling
+	performanceSampler.setSampleSize(15);
 	
 	// Setup control profile
 	Keyboard* keyboard = (*inputManager->getKeyboards()).front();

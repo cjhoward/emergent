@@ -143,6 +143,7 @@
 #include <emergent/utility/event-dispatcher.hpp>
 #include <emergent/utility/event-handler.hpp>
 #include <emergent/utility/event.hpp>
+#include <emergent/utility/performance-sampler.hpp>
 #include <emergent/utility/step-interpolator.hpp>
 #include <emergent/utility/step-scheduler.hpp>
 #include <emergent/utility/timer.hpp>

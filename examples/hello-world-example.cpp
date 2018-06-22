@@ -18,6 +18,7 @@
  */
 
 #include "hello-world-example.hpp"
+#include <sstream>
 
 HelloWorldExample::HelloWorldExample(int argc, char* argv[]):
 	ExampleApplication(argc, argv)
@@ -98,6 +99,10 @@ void HelloWorldExample::setup()
 	hue.setState1(0.0f);
 
 	stepInterpolator.addVariable(&hue);
+
+	lastFrameDuration = 0.0;
+
+	window->setVSync(false);
 }
 
 void HelloWorldExample::input()

@@ -24,6 +24,7 @@
 #include <emergent/utility/event-handler.hpp>
 #include <emergent/utility/step-scheduler.hpp>
 #include <emergent/utility/step-interpolator.hpp>
+#include <emergent/utility/performance-sampler.hpp>
 
 namespace Emergent
 {
@@ -77,6 +78,7 @@ protected:
 	InputManager* inputManager;
 	StepScheduler stepScheduler;
 	StepInterpolator stepInterpolator;
+	PerformanceSampler performanceSampler;
 
 private:
 	/// Called once at the start of the application.
