@@ -91,6 +91,11 @@ Vector3 hsvToRGB(Vector3 hsv)
 	return rgb;
 }
 
+float wrapInterpolate(float x, float y, float a)
+{
+	return x * (1.0f - a) + y * a;
+}
+
 void HelloWorldExample::setup()
 {
 	setTitle("Hello, World!");
@@ -113,7 +118,36 @@ void HelloWorldExample::setup()
 	eventDispatcher.subscribe<TestEvent>(this);
 	eventDispatcher.schedule(event1, 1.0);
 	eventDispatcher.schedule(event2, 10.0);
-	eventDispatcher.schedule(event3, 2.0);
+	eventDispatcher.schedule(event3, 1.0);
+
+	clip.setInterpolationFunction(lerp<Vector4>);
+	AnimationChannel<Vector4>* channel = clip.addChannel(0);
+	channel->insertKeyframe(0.0f, Vector4(0.0f, 0.0f, 0.0f, 0.0f));
+	channel->insertKeyframe(10.0f, Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+
+
+	screenAnimation.setClip(&clip);
+	screenAnimation.setAnimateCallback(
+		[this](std::size_t id, const Vector4& frame)
+		{
+			this->hue.setState1(frame.w);
+		}
+	);
+	screenAnimation.setLoopCallback(
+		[this]()
+		{
+			this->hue.setState0(this->hue.getState0() - 1.0f);
+		}
+	);
+	screenAnimation.setSpeed(1.0f);
+	screenAnimation.setLoop(true);
+	screenAnimation.setTimeFrame(clip.getTimeFrame());
+
+	// Add animations to animator
+	animator.addAnimation(&screenAnimation);
+
+	// Play animations
+	screenAnimation.play();
 }
 
 void HelloWorldExample::input()
@@ -125,7 +159,7 @@ void HelloWorldExample::update(float t, float dt)
 {
 	eventDispatcher.update(t);
 
-	hue.setState1(hue.getState0() + 0.25f * dt);
+	animator.animate(dt);
 }
 
 void HelloWorldExample::render()
@@ -159,6 +193,34 @@ void HelloWorldExample::handleEvent(const TestEvent& event)
 {
 	std::cout << "Event received!!! ID: " << event.id << std::endl;
 }
+
+/*
+{
+	AnimationClip<Vector4> clip;
+	AnimationChannel<Vector4>* channel = clip.addChannel(0);
+	channel->insertKeyframe(0.0f, Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+	channel->insertKeyframe(1.0f, Vector4(0.0f, 0.0f, 0.0f, 0.0f));
+	clip.setTimeFrame(0.0f, 1.0f);
+	clip.setSpeed(1.0f);
+	clip.setRepeat(false);
+
+	Animation<Vector4> fadeAnimation;
+	fadeAnimation.setClip(&clip);
+	fadeAnimation.setAnimateCallback(std::bind(asdjflask));
+	fadeAnimation.setStartCallback(std::bind(dsfjhasdj));
+	fadeAnimation.setEndCallback(std::bind(dsfjhasdj));
+
+	Animator animator;
+	animator.addAnimation(&fadeAnimation);
+
+	fadeAnimation.play();
+
+	while (1)
+	{
+		animator.animate(1.0f / 60.0f);
+	}
+}
+*/
 
 int main(int argc, char* argv[])
 {

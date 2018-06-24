@@ -104,6 +104,8 @@ configure_file(${PROJECT_SOURCE_DIR}/include/emergent/configuration.hpp.in ${PRO
 
 # Collect source files
 set(emergent_SOURCES
+	src/emergent/animation/animation.cpp
+	src/emergent/animation/animator.cpp
 	src/emergent/entity/component-manager.cpp
 	src/emergent/entity/component-observer.cpp
 	src/emergent/entity/entity-id-pool.cpp
@@ -117,8 +119,6 @@ set(emergent_SOURCES
 	src/emergent/geometry/split-view-frustum.cpp
 	src/emergent/geometry/winged-edge.cpp
 	src/emergent/graphics/ambient-light.cpp
-	src/emergent/graphics/animation.cpp
-	src/emergent/graphics/animation-channel.cpp
 	src/emergent/graphics/billboard.cpp
 	src/emergent/graphics/bind-pose.cpp
 	src/emergent/graphics/bone.cpp
@@ -175,6 +175,10 @@ set(emergent_SOURCES
 # Collect header files
 set(emergent_HEADERS
 	include/emergent/configuration.hpp
+	include/emergent/animation/animation-channel.hpp
+	include/emergent/animation/animation-clip.hpp
+	include/emergent/animation/animation.hpp
+	include/emergent/animation/animator.hpp
 	include/emergent/behavior/action-node.hpp
 	include/emergent/behavior/composite-node.hpp
 	include/emergent/behavior/conditional-node.hpp
@@ -208,9 +212,6 @@ set(emergent_HEADERS
 	include/emergent/geometry/split-view-frustum.hpp
 	include/emergent/geometry/winged-edge.hpp
 	include/emergent/graphics/ambient-light.hpp
-	include/emergent/graphics/animation.hpp
-	include/emergent/graphics/animation-channel.hpp
-	include/emergent/graphics/key-frame.hpp
 	include/emergent/graphics/billboard.hpp
 	include/emergent/graphics/bind-pose.hpp
 	include/emergent/graphics/bone.hpp

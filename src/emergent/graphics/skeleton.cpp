@@ -18,9 +18,9 @@
  */
 
 #include <emergent/graphics/skeleton.hpp>
-#include <emergent/graphics/animation.hpp>
 #include <emergent/graphics/bone.hpp>
 #include <emergent/graphics/bind-pose.hpp>
+#include <emergent/animation/animation-clip.hpp>
 #include <iostream>
 
 namespace Emergent
@@ -41,9 +41,9 @@ Skeleton::~Skeleton()
 		delete bone;
 	}
 	
-	for (Animation* animation: animations)
+	for (AnimationClip<Transform>* clip: animationClips)
 	{
-		delete animation;
+		delete clip;
 	}
 }
 
@@ -58,20 +58,21 @@ void Skeleton::calculateBindPose()
 	bindPose->concatenate();
 }
 
-void Skeleton::addAnimation(Animation* animation)
+void Skeleton::addAnimationClip(const std::string& name, AnimationClip<Transform>* clip)
 {
-	animations.push_back(animation);
-	
-	if (!animation->getName().empty())
-	{
-		animationMap[animation->getName()] = animation;
-	}
+	animationClips.push_back(clip);
+	animationClipMap[name] = clip;
 }
 
-const Animation* Skeleton::getAnimation(const std::string& name) const
+void Skeleton::addAnimationClip(AnimationClip<Transform>* clip)
 {
-	auto it = animationMap.find(name);
-	if (it != animationMap.end())
+	animationClips.push_back(clip);
+}
+
+const AnimationClip<Transform>* Skeleton::getAnimationClip(const std::string& name) const
+{
+	auto it = animationClipMap.find(name);
+	if (it != animationClipMap.end())
 	{
 		return it->second;
 	}

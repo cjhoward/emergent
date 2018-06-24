@@ -56,8 +56,11 @@ private:
 	Tween<float> hue;
 	double lastFrameDuration;
 
+	Animator animator;
 	EventDispatcher eventDispatcher;
-
+	
+	AnimationClip<Vector4> clip;
+	Animation<Vector4> screenAnimation;
 };
 
 #endif // EMERGENT_HELLO_WORLD_EXAMPLE_HPP

@@ -20,6 +20,7 @@
 #ifndef EMERGENT_GRAPHICS_SKELETON_HPP
 #define EMERGENT_GRAPHICS_SKELETON_HPP
 
+#include <emergent/math/transform.hpp>
 #include <cstdlib>
 #include <string>
 #include <vector>
@@ -28,7 +29,8 @@
 namespace Emergent
 {
 
-class Animation;
+template <typename T>
+class AnimationClip;
 class Bone;
 class BindPose;
 
@@ -56,30 +58,38 @@ public:
 	void calculateBindPose();
 	
 	/**
-	 * Adds an animation to the skeleton.
+	 * Adds an animation clip to the skeleton.
 	 *
-	 * @param animation Animation to add. This animation will be deleted when the skeleton is deleted.
+	 * @param name Name of the animation clip.
+	 * @param clip Animation clip to add. This animation clip will be deleted when the skeleton is deleted.
 	 */
-	void addAnimation(Animation* animation);
+	void addAnimationClip(const std::string& name, AnimationClip<Transform>* clip);
+
+	/**
+	 * Adds an animation clip to the skeleton.
+	 *
+	 * @param clip Animation clip to add. This animation clip will be deleted when the skeleton is deleted.
+	 */
+	void addAnimationClip(AnimationClip<Transform>* clip);
 	
 	/**
-	 * Returns the number of animations in the skeleton.
+	 * Returns the number of animation clips in the skeleton.
 	 */
-	std::size_t getAnimationCount() const;
+	std::size_t getAnimationClipCount() const;
 	
 	/**
-	 * Returns the animation at the specified index.
+	 * Returns the animation clip at the specified index.
 	 *
-	 * @param index Index of an animation.
+	 * @param index Index of an animation clip.
 	 */
-	const Animation* getAnimation(std::size_t index) const;
+	const AnimationClip<Transform>* getAnimationClip(std::size_t index) const;
 	
 	/**
-	 * Returns the animation with the specified name.
+	 * Returns the animation clip with the specified name.
 	 *
-	 * @param name Name of an animation.
+	 * @param name Name of an animation clip.
 	 */
-	const Animation* getAnimation(const std::string& name) const;
+	const AnimationClip<Transform>* getAnimationClip(const std::string& name) const;
 	
 	/**
 	 * Returns the number of bones in the skeleton.
@@ -151,18 +161,18 @@ private:
 	std::vector<Bone*> bones;
 	std::map<std::string, Bone*> boneMap;
 	BindPose* bindPose;
-	std::map<std::string, Animation*> animationMap;
-	std::vector<Animation*> animations;
+	std::map<std::string, AnimationClip<Transform>*> animationClipMap;
+	std::vector<AnimationClip<Transform>*> animationClips;
 };
 
-inline std::size_t Skeleton::getAnimationCount() const
+inline std::size_t Skeleton::getAnimationClipCount() const
 {
-	return animations.size();
+	return animationClips.size();
 }
 
-inline const Animation* Skeleton::getAnimation(std::size_t index) const
+inline const AnimationClip<Transform>* Skeleton::getAnimationClip(std::size_t index) const
 {
-	return animations[index];
+	return animationClips[index];
 }
 
 inline std::size_t Skeleton::getBoneCount() const

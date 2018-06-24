@@ -21,6 +21,16 @@
 #define EMERGENT_HPP
 
 #include <emergent/configuration.hpp>
+
+/**
+ * @defgroup animation Animation
+ *
+ * Animation-related classes.
+ */
+#include <emergent/animation/animation-channel.hpp>
+#include <emergent/animation/animation-clip.hpp>
+#include <emergent/animation/animation.hpp>
+#include <emergent/animation/animator.hpp>
  
  /**
  * @defgroup behavior Behavior
@@ -77,14 +87,11 @@
  * High-level hardware-accelerated 3D graphics
  */
 #include <emergent/graphics/ambient-light.hpp>
-#include <emergent/graphics/animation.hpp>
-#include <emergent/graphics/animation-channel.hpp>
 #include <emergent/graphics/billboard.hpp>
 #include <emergent/graphics/bind-pose.hpp>
 #include <emergent/graphics/bone.hpp>
 #include <emergent/graphics/camera.hpp>
 #include <emergent/graphics/gl3w.hpp>
-#include <emergent/graphics/key-frame.hpp>
 #include <emergent/graphics/light.hpp>
 #include <emergent/graphics/material.hpp>
 #include <emergent/graphics/model.hpp>
