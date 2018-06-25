@@ -31,7 +31,7 @@
 namespace Emergent
 {
 
-const Scancode SDLInputManager::scancodeTable[285] =
+const Scancode SDLInputManager::scancodeTable[287] =
 {
 	Scancode::UNKNOWN, // SDL_SCANCODE_UNKNOWN = 0,
 	Scancode::UNKNOWN, // Unassigned = 1
@@ -82,7 +82,7 @@ const Scancode SDLInputManager::scancodeTable[285] =
 	Scancode::EQUALS, // SDL_SCANCODE_EQUALS = 46,
 	Scancode::LEFTBRACKET, // SDL_SCANCODE_LEFTBRACKET = 47,
 	Scancode::RIGHTBRACKET, // SDL_SCANCODE_RIGHTBRACKET = 48,
-	Scancode::UNKNOWN, // Unassigned = 49
+	Scancode::BACKSLASH, // SDL_SCANCODE_BACKSLASH = 49,
 	Scancode::NONUSHASH, // SDL_SCANCODE_NONUSHASH = 50,
 	Scancode::SEMICOLON, // SDL_SCANCODE_SEMICOLON = 51,
 	Scancode::APOSTROPHE, // SDL_SCANCODE_APOSTROPHE = 52,
@@ -163,9 +163,9 @@ const Scancode SDLInputManager::scancodeTable[285] =
 	Scancode::MUTE, // SDL_SCANCODE_MUTE = 127,
 	Scancode::VOLUMEUP, // SDL_SCANCODE_VOLUMEUP = 128,
 	Scancode::VOLUMEDOWN, // SDL_SCANCODE_VOLUMEDOWN = 129,
-	Scancode::UNKNOWN, // Unassigned = 130
-	Scancode::UNKNOWN, // Unassigned = 131
-	Scancode::UNKNOWN, // Unassigned = 132
+	Scancode::LOCKINGCAPSLOCK, // Unassigned = 130
+	Scancode::LOCKINGNUMLOCK, // Unassigned = 131
+	Scancode::LOCKINGSCROLLLOCK, // Unassigned = 132
 	Scancode::KP_COMMA, // SDL_SCANCODE_KP_COMMA = 133,
 	Scancode::KP_EQUALSAS400, // SDL_SCANCODE_KP_EQUALSAS400 = 134,
 	Scancode::INTERNATIONAL1, // SDL_SCANCODE_INTERNATIONAL1 = 135,
@@ -318,6 +318,8 @@ const Scancode SDLInputManager::scancodeTable[285] =
 	Scancode::SLEEP, // SDL_SCANCODE_SLEEP = 282,
 	Scancode::APP1, // SDL_SCANCODE_APP1 = 283,
 	Scancode::APP2, // SDL_SCANCODE_APP2 = 284,
+	Scancode::AUDIOREWIND, // SDL_SCANCODE_AUDIOREWIND = 285,
+	Scancode::AUDIOFASTFORWARD, // SDL_SCANCODE_AUDIOFASTFORWARD = 286,
 };
 
 SDLInputManager::SDLInputManager(SDLWindowManager* windowManager):

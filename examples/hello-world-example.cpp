@@ -35,7 +35,6 @@ Vector3 hsvToRGB(Vector3 hsv)
 	hsv.y = std::max<float>(0.0f, std::min<float>(1.0f, hsv.y));
 	hsv.z = std::max<float>(0.0f, std::min<float>(1.0f, hsv.z));
 
-	// Achromatic
 	if (!hsv.z)
 	{
 		rgb.x = rgb.y = rgb.z = hsv.z;
@@ -91,11 +90,6 @@ Vector3 hsvToRGB(Vector3 hsv)
 	return rgb;
 }
 
-float wrapInterpolate(float x, float y, float a)
-{
-	return x * (1.0f - a) + y * a;
-}
-
 void HelloWorldExample::setup()
 {
 	setTitle("Hello, World!");
@@ -148,6 +142,27 @@ void HelloWorldExample::setup()
 
 	// Play animations
 	screenAnimation.play();
+
+/*
+   VertexFormat format;
+   format.addAttribute<Vector4>(0);
+   format.addAttribute<Vector3>(1);
+   format.addAttribute<Vector3>(2);
+
+   VertexBuffer* vb = graphicsContext->createVertexBuffer(format);
+   vb->resize(1000);
+   vb->setData(bla, 0, 1000);
+
+   IndexBuffer* ib = graphicsContext->createIndexBuffer();
+   ib->resize(300);
+   ib->setData(bla, 0, 300);
+
+   graphicsContext->bind(framebuffer);
+   graphicsContext->bind(shader);
+   graphicsContext->bind(vb);
+   graphicsContext->bind(ib);
+   graphicsContext->draw(100, TRIANGLES);
+*/
 }
 
 void HelloWorldExample::input()
@@ -189,38 +204,19 @@ void HelloWorldExample::handleEvent(const WindowResizedEvent& event)
 	glViewport(0, 0, event.width, event.height);
 }
 
+void HelloWorldExample::handleEvent(const KeyPressedEvent& event)
+{
+	const char* name = Keyboard::getScancodeName(event.scancode);
+	if (name != nullptr)
+	{
+		std::cout << name << std::endl;
+	}
+}
+
 void HelloWorldExample::handleEvent(const TestEvent& event)
 {
 	std::cout << "Event received!!! ID: " << event.id << std::endl;
 }
-
-/*
-{
-	AnimationClip<Vector4> clip;
-	AnimationChannel<Vector4>* channel = clip.addChannel(0);
-	channel->insertKeyframe(0.0f, Vector4(0.0f, 0.0f, 0.0f, 1.0f));
-	channel->insertKeyframe(1.0f, Vector4(0.0f, 0.0f, 0.0f, 0.0f));
-	clip.setTimeFrame(0.0f, 1.0f);
-	clip.setSpeed(1.0f);
-	clip.setRepeat(false);
-
-	Animation<Vector4> fadeAnimation;
-	fadeAnimation.setClip(&clip);
-	fadeAnimation.setAnimateCallback(std::bind(asdjflask));
-	fadeAnimation.setStartCallback(std::bind(dsfjhasdj));
-	fadeAnimation.setEndCallback(std::bind(dsfjhasdj));
-
-	Animator animator;
-	animator.addAnimation(&fadeAnimation);
-
-	fadeAnimation.play();
-
-	while (1)
-	{
-		animator.animate(1.0f / 60.0f);
-	}
-}
-*/
 
 int main(int argc, char* argv[])
 {

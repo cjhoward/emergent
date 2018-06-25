@@ -50,7 +50,7 @@ private:
 	virtual void render();
 	virtual void exit();
 	virtual void handleEvent(const WindowResizedEvent& event);
-
+	virtual void handleEvent(const KeyPressedEvent& event);
 	virtual void handleEvent(const TestEvent& event);
 
 	Tween<float> hue;

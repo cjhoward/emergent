@@ -36,6 +36,11 @@ class Keyboard: public InputDevice
 {
 public:
 	/**
+	 * Returns the UTF-8 encoded name of a scancode.
+	 */
+	static const char* getScancodeName(Scancode scancode);
+
+	/**
 	 * Creates a keyboard input device.
 	 *
 	 * @param inputManager The parent input manager.

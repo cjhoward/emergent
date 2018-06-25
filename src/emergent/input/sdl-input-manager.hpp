@@ -60,7 +60,7 @@ public:
 	virtual Clipboard* getClipboard();
 	
 private:
-	static const Scancode scancodeTable[285];
+	static const Scancode scancodeTable[287];
 
 	SDLWindowManager* windowManager;
 	SDLClipboard* clipboard;
