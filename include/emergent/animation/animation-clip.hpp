@@ -22,6 +22,7 @@
 
 #include <emergent/animation/animation-channel.hpp>
 #include <emergent/math/interpolation.hpp>
+#include <algorithm>
 #include <cstdlib>
 #include <functional>
 #include <map>
