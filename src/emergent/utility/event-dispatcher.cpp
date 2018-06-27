@@ -69,19 +69,6 @@ void EventDispatcher::update(double time)
 	}
 }
 
-inline void EventDispatcher::dispatch(const EventBase& event)
-{
-	// Get list of handlers for this type of event
-	const std::list<EventHandlerBase*>& handlers = handlerMap[event.getEventTypeID()];
-
-	// For each handler
-	for (auto handler = handlers.begin(); handler != handlers.end(); ++handler)
-	{
-		// Pass event to the handler
-		(*handler)->routeEvent(event);
-	}
-}
-
 void EventDispatcher::flush()
 {
 	// For each event in the queue

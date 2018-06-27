@@ -126,6 +126,19 @@ inline void EventDispatcher::schedule(const EventBase& event, double time)
 	scheduledEvents.insert(std::pair<double, EventBase*>(time, event.clone()));
 }
 
+inline void EventDispatcher::dispatch(const EventBase& event)
+{
+	// Get list of handlers for this type of event
+	const std::list<EventHandlerBase*>& handlers = handlerMap[event.getEventTypeID()];
+
+	// For each handler
+	for (auto handler = handlers.begin(); handler != handlers.end(); ++handler)
+	{
+		// Pass event to the handler
+		(*handler)->routeEvent(event);
+	}
+}
+
 } // namespace Emergent
 
 #endif // EMERGENT_UTILITY_EVENT_DISPATCHER_HPP

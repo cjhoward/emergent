@@ -21,7 +21,7 @@
 #define EMERGENT_WINDOW_SDL_WINDOW_HPP
 
 #include <emergent/window/window.hpp>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 namespace Emergent
 {

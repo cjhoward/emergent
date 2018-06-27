@@ -1,6 +1,6 @@
 [submodule "lib/freetype"]
-	path = lib/freetype
+	path = cmake/projects/freetype
 	url = https://github.com/cjhoward/freetype.git
 [submodule "lib/SDL2"]
-	path = lib/SDL2
+	path = cmake/projects/SDL2
 	url = https://github.com/cjhoward/SDL2.git

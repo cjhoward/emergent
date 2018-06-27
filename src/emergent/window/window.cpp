@@ -18,7 +18,6 @@
  */
 
 #include <emergent/window/window.hpp>
-#include <SDL2/SDL.h>
 
 namespace Emergent
 {

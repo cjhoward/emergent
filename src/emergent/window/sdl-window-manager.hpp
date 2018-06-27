@@ -21,7 +21,7 @@
 #define EMERGENT_WINDOW_SDL_WINDOW_MANAGER_HPP
 
 #include <emergent/window/window-manager.hpp>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <map>
 
 namespace Emergent

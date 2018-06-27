@@ -18,7 +18,7 @@
  */
 
 #include <emergent/input/sdl-clipboard.hpp>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 namespace Emergent
 {

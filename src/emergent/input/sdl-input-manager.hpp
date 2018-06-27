@@ -23,7 +23,7 @@
 #include <emergent/input/input-manager.hpp>
 #include <list>
 #include <map>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 namespace Emergent
 {
