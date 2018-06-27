@@ -16,12 +16,12 @@ Emergent uses a CMake build system to configure, build, and install Emergent and
 
 The following basic CMake configuration options are available:
 
-| Option                     | Description                                                                     |
-| ---------------------------|-------------------------------------------------------------------------------- |
-| BUILD_DOCS:BOOL=OFF        | Build the API reference docs.                                                   |
-| BUILD_EXAMPLES:BOOL=ON     | Build the example programs.                                                     |
-| CMAKE_BUILD_TYPE:STRING=   | Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel. |
-| CMAKE_INSTALL_PREFIX:PATH= | Install path prefix, prepended onto install directories.                        |
+| Option                       | Description                                                                     |
+| -----------------------------|-------------------------------------------------------------------------------- |
+| `BUILD_DOCS:BOOL=OFF`        | Build the API reference docs.                                                   |
+| `BUILD_EXAMPLES:BOOL=ON`     | Build the example programs.                                                     |
+| `CMAKE_BUILD_TYPE:STRING=`   | Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel. |
+| `CMAKE_INSTALL_PREFIX:PATH=` | Install path prefix, prepended onto install directories.                        |
 
 For a full list of advanced CMake configuration options, run the command `cmake .. -LAH` from the `build` directory.
 
@@ -58,6 +58,6 @@ To use Emergent in a CMake-built application, add the following to its `CMakeLis
 
 ## License
 
-The source code for Emergent is licensed under the GNU General Public License, version 3. See [COPYING](./COPYING) for details.
+The source code for Emergent is licensed under the GNU General Public License, version 3. See [`COPYING`](./COPYING) for details.
 
 Documentation text and assets for Emergent are licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/).
