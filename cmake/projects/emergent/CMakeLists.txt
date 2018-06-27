@@ -78,28 +78,32 @@ install(EXPORT emergent-targets
 	FILE emergent-config.cmake
 	DESTINATION lib/cmake/emergent)
 
-# Build examples
-add_executable(hello-world-example
-	${EMERGENT_SOURCE_DIR}/src/examples/example-application.cpp
-	${EMERGENT_SOURCE_DIR}/src/examples/hello-world-example.cpp)
-target_link_libraries(hello-world-example emergent)
+if(BUILD_EXAMPLES)
+	# Build examples
+	add_executable(hello-world-example
+		${EMERGENT_SOURCE_DIR}/src/examples/example-application.cpp
+		${EMERGENT_SOURCE_DIR}/src/examples/hello-world-example.cpp)
+	target_link_libraries(hello-world-example emergent)
 
-# Install examples
-install(TARGETS hello-world-example RUNTIME DESTINATION bin)
+	# Install examples
+	install(TARGETS hello-world-example RUNTIME DESTINATION bin/emergent)
+endif(BUILD_EXAMPLES)
 
-# Configure Doxygen
-set(EMERGENT_DOXYFILE ${PROJECT_BINARY_DIR}/docs/Doxyfile)
-set(DOXYGEN_INPUT_DIR ${EMERGENT_SOURCE_DIR}/include)
-set(DOXYGEN_OUTPUT_DIR ${PROJECT_BINARY_DIR}/docs)
-configure_file(${EMERGENT_SOURCE_DIR}/docs/Doxyfile.in ${EMERGENT_DOXYFILE})
+if(BUILD_DOCS)
+	# Configure Doxygen
+	set(EMERGENT_DOXYFILE ${PROJECT_BINARY_DIR}/docs/Doxyfile)
+	set(DOXYGEN_INPUT_DIR ${EMERGENT_SOURCE_DIR}/include)
+	set(DOXYGEN_OUTPUT_DIR ${PROJECT_BINARY_DIR}/docs)
+	configure_file(${EMERGENT_SOURCE_DIR}/docs/Doxyfile.in ${EMERGENT_DOXYFILE})
 
-# Build documentation
-add_custom_command(TARGET emergent
-	POST_BUILD
-	COMMAND doxygen
-	WORKING_DIRECTORY ${DOXYGEN_OUTPUT_DIR})
+	# Build documentation
+	add_custom_command(TARGET emergent
+		POST_BUILD
+		COMMAND doxygen
+		WORKING_DIRECTORY ${DOXYGEN_OUTPUT_DIR})
 
-# Install documentation
-install(DIRECTORY ${DOXYGEN_OUTPUT_DIR}/api-reference
-	DESTINATION docs)
+	# Install documentation
+	install(DIRECTORY ${DOXYGEN_OUTPUT_DIR}/api-reference
+		DESTINATION docs/emergent)
+endif(BUILD_DOCS)
 
