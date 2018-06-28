@@ -1,17 +1,27 @@
 cmake_minimum_required(VERSION 3.7)
 project(emergent VERSION "0.0.0")
 
-# Find submodule packages
-find_package(SDL2 REQUIRED CONFIG)
+# Find dependency packages
 find_package(freetype REQUIRED CONFIG)
+find_package(OpenGL REQUIRED)
+find_package(SDL2 REQUIRED CONFIG)
 
-# 
+# Set compiler options
 set(EMERGENT_DEBUG_OPTIONS "")
 set(EMERGENT_RELEASE_OPTIONS "")
-set(EMERGENT_EXTRA_LIBS
+
+# Determine dependencies
+set(EMERGENT_STATIC_LIBS
+	freetype
+	${OPENGL_gl_LIBRARY}
 	SDL2::SDL2-static
 	SDL2::SDL2main
 	freetype)
+set(EMERGENT_SHARED_LIBS
+	freetype
+	${OPENGL_gl_LIBRARY}
+	SDL2::SDL2
+	SDL2::SDL2main)
 
 # Setup configuration variables
 set(EMERGENT_VERSION ${PROJECT_VERSION})
@@ -38,7 +48,13 @@ file(GLOB_RECURSE EMERGENT_SOURCE_FILES
 	${EMERGENT_SOURCE_DIR}/src/stb/stb_image.c)
 
 # Build emergent
-add_library(emergent STATIC ${EMERGENT_SOURCE_FILES})
+if(BUILD_STATIC)
+	add_library(emergent STATIC ${EMERGENT_SOURCE_FILES})
+	set(EMERGENT_EXTRA_LIBS ${EMERGENT_STATIC_LIBS})
+else()
+	add_library(emergent SHARED ${EMERGENT_SOURCE_FILES})
+	set(EMERGENT_EXTRA_LIBS ${EMERGENT_SHARED_LIBS})
+endif(BUILD_STATIC)
 set_target_properties(emergent
 	PROPERTIES
 		VERSION ${PROJECT_VERSION}

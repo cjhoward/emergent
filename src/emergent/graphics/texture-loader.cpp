@@ -20,7 +20,7 @@
 #include <emergent/graphics/texture-loader.hpp>
 #include <emergent/graphics/texture-2d.hpp>
 #include <emergent/graphics/texture-cube.hpp>
-#include <emergent/graphics/stb-image.hpp>
+#include <stb/stb_image.h>
 #include <algorithm>
 #include <cmath>
 #include <cstdio>

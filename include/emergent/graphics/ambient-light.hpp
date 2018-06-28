@@ -36,7 +36,7 @@ class AmbientLight: public Light
 {
 public:
 	/// Destroys an instance of AmbientLight.
-	virtual ~AmbientLight() = 0;
+	virtual ~AmbientLight() = default;
 };
 
 /**
@@ -55,7 +55,7 @@ public:
 	/**
 	 * Destroys an instance of AmbientCube.
 	 */
-	~AmbientCube();
+	virtual ~AmbientCube();
 	
 	/// Returns LightType::AMBIENT_CUBE
 	virtual LightType getLightType() const;
