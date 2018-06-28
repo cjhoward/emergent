@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.7)
 project(emergent-superbuild)
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
+# Setup configuration options
 option(BUILD_DOCS "Build the API reference docs." OFF)
 option(BUILD_EXAMPLES "Build the example programs." ON)
 option(BUILD_STATIC "Build a static version of the library." OFF)
@@ -11,14 +12,10 @@ else()
 	set(BUILD_SHARED TRUE)
 endif(BUILD_STATIC)
 
+# Setup external project directories
 set(EXTERNAL_PROJECT_SOURCE_DIR "${PROJECT_SOURCE_DIR}/projects")
 set(EXTERNAL_PROJECT_BUILD_DIR "${PROJECT_BINARY_DIR}/projects")
 set(EXTERNAL_PROJECT_INSTALL_DIR "${CMAKE_BINARY_DIR}/install")
-if(WINDOWS)
-	set(EXTERNAL_PROJECT_CONFIG_DIR "${EXTERNAL_PROJECT_INSTALL_DIR}/cmake")
-else()
-	set(EXTERNAL_PROJECT_CONFIG_DIR "${EXTERNAL_PROJECT_INSTALL_DIR}/lib/cmake")
-endif()
 
 # Build SDL2 project
 ExternalProject_Add(project-SDL2
@@ -82,10 +79,11 @@ ExternalProject_Add_Step(project-emergent forcebuild
 	ALWAYS 1)
 
 # Install projects
+install(DIRECTORY "${EXTERNAL_PROJECT_INSTALL_DIR}/bin" DESTINATION .)
+install(DIRECTORY "${EXTERNAL_PROJECT_INSTALL_DIR}/cmake" DESTINATION .)
 install(DIRECTORY "${EXTERNAL_PROJECT_INSTALL_DIR}/include" DESTINATION .)
 install(DIRECTORY "${EXTERNAL_PROJECT_INSTALL_DIR}/lib" DESTINATION .)
 install(DIRECTORY "${EXTERNAL_PROJECT_INSTALL_DIR}/share" DESTINATION .)
-install(DIRECTORY "${EXTERNAL_PROJECT_INSTALL_DIR}/bin" DESTINATION .)
 
 # Add clean target
 add_custom_target(clean-build
