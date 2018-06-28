@@ -47,7 +47,7 @@ file(GLOB_RECURSE EMERGENT_SOURCE_FILES
 	${EMERGENT_SOURCE_DIR}/src/gl3w/src/gl3w.c
 	${EMERGENT_SOURCE_DIR}/src/stb/stb_image.c)
 
-# Build emergent
+# Build emergent library
 if(BUILD_STATIC)
 	add_library(emergent STATIC ${EMERGENT_SOURCE_FILES})
 	set(EMERGENT_EXTRA_LIBS ${EMERGENT_STATIC_LIBS})
@@ -95,6 +95,7 @@ install(EXPORT emergent-targets
 	FILE emergent-config.cmake
 	DESTINATION lib/cmake/emergent)
 
+# Build example programs
 if(BUILD_EXAMPLES)
 	# Build examples
 	add_executable(hello-world-example
@@ -106,6 +107,7 @@ if(BUILD_EXAMPLES)
 	install(TARGETS hello-world-example RUNTIME DESTINATION bin/emergent)
 endif(BUILD_EXAMPLES)
 
+# Generate documentation
 if(BUILD_DOCS)
 	# Configure Doxygen
 	set(EMERGENT_DOXYFILE ${PROJECT_BINARY_DIR}/docs/Doxyfile)
