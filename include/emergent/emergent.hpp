@@ -31,38 +31,6 @@
 #include <emergent/animation/animation-clip.hpp>
 #include <emergent/animation/animation.hpp>
 #include <emergent/animation/animator.hpp>
- 
- /**
- * @defgroup behavior Behavior
- *
- * Behavior tree nodes
- */
-#include <emergent/behavior/action-node.hpp>
-#include <emergent/behavior/composite-node.hpp>
-#include <emergent/behavior/conditional-node.hpp>
-#include <emergent/behavior/counter-node.hpp>
-#include <emergent/behavior/decorator-node.hpp>
-#include <emergent/behavior/exit-status.hpp>
-#include <emergent/behavior/inverter-node.hpp>
-#include <emergent/behavior/loop-node.hpp>
-#include <emergent/behavior/node.hpp>
-#include <emergent/behavior/parallel-node.hpp>
-#include <emergent/behavior/selector-node.hpp>
-#include <emergent/behavior/sequence-node.hpp>
-#include <emergent/behavior/timer-node.hpp>
-
-/**
- * @defgroup entity Entity
- *
- * Entity-component-system (ECS) pattern implementation
- */
-#include <emergent/entity/component.hpp>
-#include <emergent/entity/component-manager.hpp>
-#include <emergent/entity/component-observer.hpp>
-#include <emergent/entity/entity-context.hpp>
-#include <emergent/entity/entity-id.hpp>
-#include <emergent/entity/entity-id-pool.hpp>
-#include <emergent/entity/entity-manager.hpp>
 
 /**
  * @defgroup geometry Geometry

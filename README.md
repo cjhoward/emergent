@@ -1,6 +1,6 @@
 # Emergent
 
-Emergent is a C++ framework for real-time 3D applications.
+Emergent is a cross-platform compatible C++ framework for real-time 3D applications. It facilitates rapid development of framerate-independent applications with hardware-accelerated graphics.
 
 ## Download
 
@@ -11,7 +11,7 @@ Use Git to download the Emergent repository and its submodules:
 ## Building and Installation
 
 Emergent uses a CMake build system to configure, build, and install Emergent and its dependencies. Ensure CMake is installed before proceeding.
-
+ 
 ### Configuration
 
 The following basic CMake configuration options are available:
