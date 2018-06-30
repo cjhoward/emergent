@@ -202,6 +202,7 @@ void HelloWorldExample::exit()
 void HelloWorldExample::handleEvent(const WindowResizedEvent& event)
 {
 	glViewport(0, 0, event.width, event.height);
+	std::cout << event.width << "x" << event.height << std::endl;
 }
 
 void HelloWorldExample::handleEvent(const KeyPressedEvent& event)

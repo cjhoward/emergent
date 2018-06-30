@@ -123,13 +123,12 @@ void SDLWindow::setFullscreen(bool fullscreen)
 
 	if (!fullscreen)
 	{
-
-		SDL_SetWindowFullscreen(window, SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
 		SDL_HideWindow(window);
-		SDL_SetWindowResizable(window, (resizable) ? SDL_TRUE : SDL_FALSE);
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
 		SDL_SetWindowSize(window, windowedWidth, windowedHeight);
-		SDL_SetWindowPosition(window, windowedX, windowedY);
+		SDL_SetWindowResizable(window, (resizable) ? SDL_TRUE : SDL_FALSE);
 		SDL_SetWindowBordered(window, (bordered) ? SDL_TRUE : SDL_FALSE);
+		SDL_SetWindowPosition(window, windowedX, windowedY);
 		SDL_RaiseWindow(window);
 
 	}
@@ -149,8 +148,8 @@ void SDLWindow::setFullscreen(bool fullscreen)
 
 		SDL_HideWindow(window);
 		SDL_SetWindowBordered(window, SDL_FALSE);
-		SDL_SetWindowResizable(window, SDL_TRUE);
-		//SDL_SetWindowPosition(window, bounds.x, bounds.y);
+		SDL_SetWindowResizable(window, SDL_FALSE);
+		SDL_SetWindowPosition(window, bounds.x, bounds.y);
 		SDL_SetWindowSize(window, mode.w, mode.h);
 		SDL_SetWindowFullscreen(window, flags);
 		SDL_ShowWindow(window);
