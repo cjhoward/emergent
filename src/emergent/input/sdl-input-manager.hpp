@@ -29,6 +29,7 @@ namespace Emergent
 {
 
 enum class Scancode;
+class EventDispatcher;
 class SDLWindowManager;
 class SDLClipboard;
 
@@ -45,7 +46,7 @@ public:
 	 *
 	 * @param windowManager Parent SDL window manager.
 	 */
-	SDLInputManager(SDLWindowManager* windowManager);
+	SDLInputManager(EventDispatcher* eventDispatcher, SDLWindowManager* windowManager);
 
 	/// Destroys an SDL input manager.
 	~SDLInputManager();

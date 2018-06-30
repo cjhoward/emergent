@@ -5,7 +5,7 @@ include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 # Setup configuration options
 option(BUILD_DOCS "Build the API reference docs." OFF)
 option(BUILD_EXAMPLES "Build the example programs." ON)
-option(BUILD_STATIC "Build a static version of the library." OFF)
+option(BUILD_STATIC "Build a static version of the library." ON)
 if(BUILD_STATIC)
 	set(BUILD_SHARED FALSE)
 else()
@@ -26,7 +26,7 @@ ExternalProject_Add(project-SDL2
 	"-DSDL_ATOMIC=OFF"
 	"-DSDL_AUDIO=OFF"
 	"-DSDL_CPUINFO=ON"
-	"-DSDL_DLOPEN=OFF"
+	"-DSDL_DLOPEN=ON"
 	"-DSDL_EVENTS=ON"
 	"-DSDL_FILE=OFF"
 	"-DSDL_FILESYSTEM=OFF"
@@ -40,18 +40,23 @@ ExternalProject_Add(project-SDL2
 	"-DSDL_STATIC_PIC=OFF"
 	"-DSDL_TEST=OFF"
 	"-DSDL_THREADS=OFF"
-	"-DSDL_TIMERS=OFF"
+	"-DSDL_TIMERS=ON"
 	"-DSDL_VIDEO=ON"
+	"-DVIDEO_VULKAN=OFF"
 	BINARY_DIR ${EXTERNAL_PROJECT_BUILD_DIR}/SDL2
 	INSTALL_DIR ${EXTERNAL_PROJECT_INSTALL_DIR})
 
 # Build freetype project
+set(BUILD_FREETYPE_SHARED ${BUILD_SHARED})
+if(BUILD_SHARED AND WINDOWS)
+	set(BUILD_FREETYPE_SHARED OFF)
+endif()
 ExternalProject_Add(project-freetype
 	SOURCE_DIR ${EXTERNAL_PROJECT_SOURCE_DIR}/freetype
 	CMAKE_ARGS
 		"-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
 		"-DCMAKE_INSTALL_PREFIX=${EXTERNAL_PROJECT_INSTALL_DIR}"
-		"-DBUILD_SHARED_LIBS=OFF"
+		"-DBUILD_SHARED_LIBS=${BUILD_FREETYPE_SHARED}"
 	BINARY_DIR ${EXTERNAL_PROJECT_BUILD_DIR}/freetype
 	INSTALL_DIR ${EXTERNAL_PROJECT_INSTALL_DIR})
 

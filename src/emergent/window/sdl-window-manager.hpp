@@ -28,6 +28,7 @@ namespace Emergent
 {
 
 class Application;
+class EventDispatcher;
 class SDLWindow;
 
 /**
@@ -52,7 +53,7 @@ private:
 	/**
 	 * Creates an SDL window manager, thereby initializing SDL.
 	 */
-	SDLWindowManager();
+	SDLWindowManager(EventDispatcher* eventDispatcher);
 
 	/**
 	 * Destroys an SDL window manager, thereby quitting SDL.

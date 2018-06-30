@@ -20,6 +20,7 @@
 #include <emergent/input/gamepad.hpp>
 #include <emergent/input/input-event.hpp>
 #include <emergent/input/input-manager.hpp>
+#include <emergent/utility/event-dispatcher.hpp>
 
 namespace Emergent
 {
@@ -37,7 +38,7 @@ void Gamepad::press(int button)
 	event.gamepad = this;
 	event.button = button;
 
-	getInputManager()->queue(event);
+	getInputManager()->getEventDispatcher()->queue(event);
 }
 
 void Gamepad::release(int button)
@@ -46,7 +47,7 @@ void Gamepad::release(int button)
 	event.gamepad = this;
 	event.button = button;
 
-	getInputManager()->queue(event);
+	getInputManager()->getEventDispatcher()->queue(event);
 }
 
 void Gamepad::move(int axis, bool negative, float value)
@@ -57,7 +58,7 @@ void Gamepad::move(int axis, bool negative, float value)
 	event.negative = negative;
 	event.value = value;
 
-	getInputManager()->queue(event);
+	getInputManager()->getEventDispatcher()->queue(event);
 }
 
 } // namespace Emergent

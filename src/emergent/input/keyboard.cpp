@@ -20,6 +20,7 @@
 #include <emergent/input/keyboard.hpp>
 #include <emergent/input/input-event.hpp>
 #include <emergent/input/input-manager.hpp>
+#include <emergent/utility/event-dispatcher.hpp>
 
 namespace Emergent
 {
@@ -292,7 +293,7 @@ void Keyboard::press(Scancode scancode)
 	event.keyboard = this;
 	event.scancode = scancode;
 
-	getInputManager()->queue(event);
+	getInputManager()->getEventDispatcher()->queue(event);
 }
 
 void Keyboard::release(Scancode scancode)
@@ -301,7 +302,7 @@ void Keyboard::release(Scancode scancode)
 	event.keyboard = this;
 	event.scancode = scancode;
 
-	getInputManager()->queue(event);
+	getInputManager()->getEventDispatcher()->queue(event);
 }
 
 } // namespace Emergent

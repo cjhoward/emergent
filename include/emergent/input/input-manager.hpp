@@ -21,29 +21,32 @@
 #define EMERGENT_INPUT_INPUT_MANAGER_HPP
 
 #include <emergent/input/input-event.hpp>
-#include <emergent/utility/event-dispatcher.hpp>
 #include <list>
 #include <string>
 
 namespace Emergent
 {
 
-class ApplicationObserver;
 class Clipboard;
+class EventDispatcher;
+class Gamepad;
 class Keyboard;
 class Mouse;
-class Gamepad;
 
 /**
  * Abstract base class for input managers.
  *
  * @ingroup input
  */
-class InputManager: protected EventDispatcher
+class InputManager
 {
 public:
-	/// Creates an input manager.
-	InputManager();
+	/**
+	 * Creates an input manager.
+	 *
+	 * @param eventDispatcher Event dispatcher which will dispatch input events.
+	 */
+	InputManager(EventDispatcher* eventDispatcher);
 
 	/// Destroys an input manager.
 	virtual ~InputManager();
@@ -53,26 +56,6 @@ public:
 	 */
 	virtual void update() = 0;
 
-	template <typename T>
-	void subscribe(EventHandler<T>* handler);
-
-	template <typename T>
-	void unsubscribe(EventHandler<T>* handler);
-
-	/// Adds an application observer to this input manager.
-	void addApplicationObserver(ApplicationObserver* observer);
-
-	/// Removes an application observer from this input manager.
-	void removeApplicationObserver(ApplicationObserver* observer);
-
-	/// Removes all application observers from this input manager.
-	void removeApplicationObservers();
-
-	/**
-	 * Requests the application to close. Notifies all application observers via ApplicationObserver::applicationClosed().
-	 */
-	void close();
-	
 	/// Registers a keyboard with this input manager.
 	void registerKeyboard(Keyboard* keyboard);
 
@@ -120,6 +103,15 @@ public:
 
 	/// Returns the list of registered gamepads.
 	const std::list<Gamepad*>* getGamepads() const;
+
+	/// Returns the event dispatcher used to dispatch input events.
+	const EventDispatcher* getEventDispatcher() const;
+
+	/// @copydoc InputManager::getEventDispatcher() const
+	EventDispatcher* getEventDispatcher();
+
+protected:
+	EventDispatcher* eventDispatcher;
 	
 private:
 	friend class Keyboard;
@@ -129,23 +121,7 @@ private:
 	std::list<Keyboard*> keyboards;
 	std::list<Mouse*> mice;
 	std::list<Gamepad*> gamepads;
-	std::list<ApplicationObserver*> applicationObservers;
 };
-
-template <typename T>
-void InputManager::subscribe(EventHandler<T>* handler)
-{
-	static_assert(T::IS_INPUT_EVENT, "T must be derived from InputEvent.");
-	EventDispatcher::subscribe(handler);
-}
-
-template <typename T>
-void InputManager::unsubscribe(EventHandler<T>* handler)
-{
-	static_assert(T::IS_INPUT_EVENT, "T must be derived from InputEvent.");
-	EventDispatcher::unsubscribe(handler);
-}
-
 
 inline const std::list<Keyboard*>* InputManager::getKeyboards() const
 {
@@ -160,6 +136,16 @@ inline const std::list<Mouse*>* InputManager::getMice() const
 inline const std::list<Gamepad*>* InputManager::getGamepads() const
 {
 	return &gamepads;
+}
+
+inline const EventDispatcher* InputManager::getEventDispatcher() const
+{
+	return eventDispatcher;
+}
+
+inline EventDispatcher* InputManager::getEventDispatcher()
+{
+	return eventDispatcher;
 }
 
 } // namespace Emergent

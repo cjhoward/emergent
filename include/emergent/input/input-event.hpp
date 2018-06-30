@@ -32,47 +32,11 @@ class Mouse;
 class Gamepad;
 
 /**
- * Enumerates all possible input event type identifiers.
- *
- * @ingroup input
- */
-enum class InputEventType
-{
-	APPLICATION_CLOSED,
-	WINDOW_CLOSED,
-	WINDOW_RESIZED,
-	KEY_PRESSED,
-	KEY_RELEASED,
-	MOUSE_MOVED,
-	MOUSE_BUTTON_PRESSED,
-	MOUSE_BUTTON_RELEASED,
-	MOUSE_WHEEL_SCROLLED,
-	GAMEPAD_BUTTON_PRESSED,
-	GAMEPAD_BUTTON_RELEASED,
-	GAMEPAD_AXIS_MOVED
-};
-
-/**
- * Abstract base class for input events.
- *
- * @ingroup input
- */
-template <InputEventType inputEventType>
-class InputEvent: public Event<static_cast<std::size_t>(inputEventType)>
-{
-public:
-	/// Flag to indicate this class is an input event
-	static const bool IS_INPUT_EVENT = true;
-	
-	virtual EventBase* clone() const = 0;
-};
-
-/**
  * Input event which indicates the application has been requested to close.
  *
  * @ingroup input
  */
-class ApplicationClosedEvent: public InputEvent<InputEventType::APPLICATION_CLOSED>
+class ApplicationClosedEvent: public Event<ApplicationClosedEvent>
 {
 public:
 	virtual EventBase* clone() const;
@@ -83,7 +47,7 @@ public:
  *
  * @ingroup input
  */
-class WindowClosedEvent: public InputEvent<InputEventType::WINDOW_CLOSED>
+class WindowClosedEvent: public Event<WindowClosedEvent>
 {
 public:
 	virtual EventBase* clone() const;
@@ -96,7 +60,7 @@ public:
  *
  * @ingroup input
  */
-class WindowResizedEvent: public InputEvent<InputEventType::WINDOW_RESIZED>
+class WindowResizedEvent: public Event<WindowResizedEvent>
 {
 public:
 	virtual EventBase* clone() const;
@@ -111,7 +75,7 @@ public:
  *
  * @ingroup input
  */
-class KeyPressedEvent: public InputEvent<InputEventType::KEY_PRESSED>
+class KeyPressedEvent: public Event<KeyPressedEvent>
 {
 public:
 	virtual EventBase* clone() const;
@@ -125,7 +89,7 @@ public:
  *
  * @ingroup input
  */
-class KeyReleasedEvent: public InputEvent<InputEventType::KEY_RELEASED>
+class KeyReleasedEvent: public Event<KeyReleasedEvent>
 {
 public:
 	virtual EventBase* clone() const;
@@ -139,7 +103,7 @@ public:
  *
  * @ingroup input
  */
-class MouseMovedEvent: public InputEvent<InputEventType::MOUSE_MOVED>
+class MouseMovedEvent: public Event<MouseMovedEvent>
 {
 public:
 	virtual EventBase* clone() const;
@@ -154,7 +118,7 @@ public:
  *
  * @ingroup input
  */
-class MouseButtonPressedEvent: public InputEvent<InputEventType::MOUSE_BUTTON_PRESSED>
+class MouseButtonPressedEvent: public Event<MouseButtonPressedEvent>
 {
 public:
 	virtual EventBase* clone() const;
@@ -170,7 +134,7 @@ public:
  *
  * @ingroup input
  */
-class MouseButtonReleasedEvent: public InputEvent<InputEventType::MOUSE_BUTTON_RELEASED>
+class MouseButtonReleasedEvent: public Event<MouseButtonReleasedEvent>
 {
 public:
 	virtual EventBase* clone() const;
@@ -186,7 +150,7 @@ public:
  *
  * @ingroup input
  */
-class MouseWheelScrolledEvent: public InputEvent<InputEventType::MOUSE_WHEEL_SCROLLED>
+class MouseWheelScrolledEvent: public Event<MouseWheelScrolledEvent>
 {
 public:
 	virtual EventBase* clone() const;
@@ -201,7 +165,7 @@ public:
  *
  * @ingroup input
  */
-class GamepadButtonPressedEvent: public InputEvent<InputEventType::GAMEPAD_BUTTON_PRESSED>
+class GamepadButtonPressedEvent: public Event<GamepadButtonPressedEvent>
 {
 public:
 	virtual EventBase* clone() const;
@@ -215,7 +179,7 @@ public:
  *
  * @ingroup input
  */
-class GamepadButtonReleasedEvent: public InputEvent<InputEventType::GAMEPAD_BUTTON_RELEASED>
+class GamepadButtonReleasedEvent: public Event<GamepadButtonReleasedEvent>
 {
 public:
 	virtual EventBase* clone() const;
@@ -229,7 +193,7 @@ public:
  *
  * @ingroup input
  */
-class GamepadAxisMovedEvent: public InputEvent<InputEventType::GAMEPAD_AXIS_MOVED>
+class GamepadAxisMovedEvent: public Event<GamepadAxisMovedEvent>
 {
 public:
 	virtual EventBase* clone() const;

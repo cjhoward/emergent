@@ -20,6 +20,7 @@
 #ifndef EMERGENT_UTILITY_EVENT_HPP
 #define EMERGENT_UTILITY_EVENT_HPP
 
+#include <atomic>
 #include <cstdlib>
 
 namespace Emergent
@@ -36,8 +37,8 @@ public:
 	/// Destroys an event base.
 	virtual ~EventBase() = default;
 
-	/// Returns the unique event type identifier for this event.
-	virtual std::size_t getEventTypeID() const = 0;
+	/// Returns the unique event type identifier for this event type.
+	virtual const std::size_t getEventTypeID() const = 0;
 
 	/**
 	 * Allocates a copy of this event.
@@ -45,33 +46,46 @@ public:
 	 * @return Newly allocated copy of this event.
 	 */
 	virtual EventBase* clone() const = 0;
+
+protected:
+	/// Returns the next available event type ID.
+	static std::size_t getNextEventTypeID();
 };
+
+inline std::size_t EventBase::getNextEventTypeID()
+{
+	static std::atomic<std::size_t> nextEventTypeID{0};
+	return nextEventTypeID++;
+}
 
 /**
  * Templated abstract base class for events.
  *
- * @tparam eventType Unique event type identifier.
+ * @tparam T The derived class.
  *
  * @ingroup utility
  */
-template <std::size_t eventTypeID>
+template <typename T>
 class Event: public EventBase
 {
 public:
-	/// Unique event type identifier.
-	static const std::size_t EVENT_TYPE_ID = eventTypeID;
+	/// The unique event type identifier for this event type.
+	static const std::atomic<std::size_t> EVENT_TYPE_ID;
 
 	/// Destroys an event
 	virtual ~Event() = default;
 
-	virtual std::size_t getEventTypeID() const final;
+	virtual const std::size_t getEventTypeID() const final;
 	virtual EventBase* clone() const = 0;
 };
 
-template <std::size_t eventTypeID>
-inline std::size_t Event<eventTypeID>::getEventTypeID() const
+template <typename T>
+const std::atomic<std::size_t> Event<T>::EVENT_TYPE_ID{EventBase::getNextEventTypeID()};
+
+template <typename T>
+inline const std::size_t Event<T>::getEventTypeID() const
 {
-	return eventTypeID;
+	return EVENT_TYPE_ID;
 }
 
 } // namespace Emergent

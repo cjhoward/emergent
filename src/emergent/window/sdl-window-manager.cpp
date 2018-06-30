@@ -26,7 +26,7 @@
 namespace Emergent
 {
 
-SDLWindowManager::SDLWindowManager():
+SDLWindowManager::SDLWindowManager(EventDispatcher* eventDispatcher):
 	grabbedWindow(nullptr)
 {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_GAMECONTROLLER) < 0)
@@ -98,7 +98,7 @@ SDLWindowManager::SDLWindowManager():
 	}
 
 	// Allocate input manager
-	inputManager = new SDLInputManager(this);
+	inputManager = new SDLInputManager(eventDispatcher, this);
 }
 
 SDLWindowManager::~SDLWindowManager()

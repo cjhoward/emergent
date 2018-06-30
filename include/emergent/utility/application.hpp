@@ -21,6 +21,7 @@
 #define EMERGENT_UTILITY_APPLICATION_HPP
 
 #include <emergent/input/input-event.hpp>
+#include <emergent/utility/event-dispatcher.hpp>
 #include <emergent/utility/event-handler.hpp>
 #include <emergent/utility/step-scheduler.hpp>
 #include <emergent/utility/step-interpolator.hpp>
@@ -74,6 +75,7 @@ public:
 	void close(int status);
 
 protected:
+	EventDispatcher eventDispatcher;
 	WindowManager* windowManager;
 	InputManager* inputManager;
 	StepScheduler stepScheduler;

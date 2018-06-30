@@ -57,8 +57,9 @@ class EventHandler: public EventHandlerBase
 {
 public:
 	static_assert(std::is_base_of<EventBase, T>::value, "T must be a descendant of EventBase.");
+
 	/// Returns the unique event type identifier for the event type handled by this event handler.
-	std::size_t getHandledEventTypeID() const;
+	const std::size_t getHandledEventTypeID() const;
 
 	/**
 	 * Handles an event of type T.
@@ -73,7 +74,7 @@ private:
 };
 
 template <typename T>
-inline std::size_t EventHandler<T>::getHandledEventTypeID() const
+inline const std::size_t EventHandler<T>::getHandledEventTypeID() const
 {
 	return T::EVENT_TYPE_ID;
 }

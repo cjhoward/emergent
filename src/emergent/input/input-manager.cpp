@@ -23,32 +23,12 @@
 namespace Emergent
 {
 
-InputManager::InputManager()
+InputManager::InputManager(EventDispatcher* eventDispatcher):
+	eventDispatcher(eventDispatcher)
 {}
 
 InputManager::~InputManager()
 {}
-
-void InputManager::addApplicationObserver(ApplicationObserver* observer)
-{
-	applicationObservers.push_back(observer);
-}
-
-void InputManager::removeApplicationObserver(ApplicationObserver* observer)
-{
-	applicationObservers.remove(observer);
-}
-
-void InputManager::removeApplicationObservers()
-{
-	applicationObservers.clear();
-}
-
-void InputManager::close()
-{
-	ApplicationClosedEvent event;
-	queue(event);
-}
 
 void InputManager::registerKeyboard(Keyboard* keyboard)
 {

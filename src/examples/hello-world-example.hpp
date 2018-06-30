@@ -22,7 +22,7 @@
 
 #include "example-application.hpp"
 
-class TestEvent: public Event<0>
+class TestEvent: public Event<TestEvent>
 {
 	public:
 		inline EventBase* clone() const

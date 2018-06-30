@@ -33,7 +33,7 @@ Application::Application():
 	status(EXIT_SUCCESS)
 {
 	// Allocate window manager
-	windowManager = new SDLWindowManager();
+	windowManager = new SDLWindowManager(&eventDispatcher);
 	if (!windowManager)
 	{
 		throw std::runtime_error("Application::Application(): Failed to initialize SDL window manager.");
@@ -46,17 +46,19 @@ Application::Application():
 	// Setup performance sampling
 	performanceSampler.setSampleSize(1);
 
-	// Setup input event handling
+	// Grab input manager
 	inputManager = windowManager->getInputManager();
-	inputManager->subscribe<ApplicationClosedEvent>(this);
-	inputManager->subscribe<WindowClosedEvent>(this);
-	inputManager->subscribe<WindowResizedEvent>(this);
-	inputManager->subscribe<KeyPressedEvent>(this);
-	inputManager->subscribe<KeyReleasedEvent>(this);
-	inputManager->subscribe<MouseMovedEvent>(this);
-	inputManager->subscribe<MouseButtonPressedEvent>(this);
-	inputManager->subscribe<MouseButtonReleasedEvent>(this);
-	inputManager->subscribe<MouseWheelScrolledEvent>(this);
+
+	// Setup event handling
+	eventDispatcher.subscribe<ApplicationClosedEvent>(this);
+	eventDispatcher.subscribe<WindowClosedEvent>(this);
+	eventDispatcher.subscribe<WindowResizedEvent>(this);
+	eventDispatcher.subscribe<KeyPressedEvent>(this);
+	eventDispatcher.subscribe<KeyReleasedEvent>(this);
+	eventDispatcher.subscribe<MouseMovedEvent>(this);
+	eventDispatcher.subscribe<MouseButtonPressedEvent>(this);
+	eventDispatcher.subscribe<MouseButtonReleasedEvent>(this);
+	eventDispatcher.subscribe<MouseWheelScrolledEvent>(this);
 }
 
 Application::~Application()
@@ -79,8 +81,10 @@ int Application::execute()
 	// Ensure state0 and state1 are equal
 	stepInterpolator.update();
 
-	// Start frame timer
+	// Initialize the step timer
 	double elapsedTime = 0.0;
+
+	// Start frame timer
 	std::chrono::high_resolution_clock::time_point t0;
 	std::chrono::high_resolution_clock::time_point t1;
 	t0 = std::chrono::high_resolution_clock::now();
@@ -90,17 +94,18 @@ int Application::execute()
 	{
 		// Process input
 		inputManager->update();
-		if (closed)
-		{
-			break;
-		}
-		input();
 
 		// Perform scheduled update steps
 		for (std::size_t step = 0; step < stepScheduler.getScheduledSteps(); ++step)
 		{
 			// Set state0 equal to state1
 			stepInterpolator.update();
+
+			// Dispatch due events
+			eventDispatcher.update(elapsedTime);
+
+			// Update controls
+			input();
 
 			// Perform update
 			update(elapsedTime, stepScheduler.getStepPeriod());

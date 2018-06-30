@@ -26,6 +26,7 @@
 #include <emergent/input/gamepad.hpp>
 #include <emergent/input/input-event.hpp>
 #include <emergent/input/scancode.hpp>
+#include <emergent/utility/event-dispatcher.hpp>
 #include <iostream>
 
 namespace Emergent
@@ -322,7 +323,8 @@ const Scancode SDLInputManager::scancodeTable[287] =
 	Scancode::AUDIOFASTFORWARD, // SDL_SCANCODE_AUDIOFASTFORWARD = 286,
 };
 
-SDLInputManager::SDLInputManager(SDLWindowManager* windowManager):
+SDLInputManager::SDLInputManager(EventDispatcher* eventDispatcher, SDLWindowManager* windowManager):
+	InputManager(eventDispatcher),
 	windowManager(windowManager)
 {
 	clipboard = new SDLClipboard();
@@ -355,8 +357,6 @@ SDLInputManager::~SDLInputManager()
 
 void SDLInputManager::update()
 {
-	EventDispatcher::update(0.0);
-
 	while (SDL_PollEvent(&sdlEvent))
 	{
 		switch (sdlEvent.type)
@@ -373,7 +373,7 @@ void SDLInputManager::update()
 						event.scancode = scancodeTable[sdlEvent.key.keysym.scancode];
 					}
 
-					dispatch(event);
+					eventDispatcher->queue(event);
 				}
 				break;
 			}
@@ -391,7 +391,7 @@ void SDLInputManager::update()
 						event.scancode = scancodeTable[sdlEvent.key.keysym.scancode];
 					}
 
-					dispatch(event);
+					eventDispatcher->queue(event);
 				}
 				break;
 			}
@@ -403,7 +403,7 @@ void SDLInputManager::update()
 				event.x = sdlEvent.motion.x;
 				event.y = sdlEvent.motion.y;
 
-				dispatch(event);
+				eventDispatcher->queue(event);
 				break;
 			}
 			
@@ -413,7 +413,7 @@ void SDLInputManager::update()
 				event.mouse = mouse;
 				event.button = sdlEvent.button.button;
 
-				dispatch(event);
+				eventDispatcher->queue(event);
 				break;
 			}
 			
@@ -423,7 +423,7 @@ void SDLInputManager::update()
 				event.mouse = mouse;
 				event.button = sdlEvent.button.button;
 
-				dispatch(event);
+				eventDispatcher->queue(event);
 				break;
 			}
 			
@@ -435,7 +435,7 @@ void SDLInputManager::update()
 				event.x = sdlEvent.wheel.x * direction;
 				event.y = sdlEvent.wheel.y * direction;
 
-				dispatch(event);
+				eventDispatcher->queue(event);
 				break;
 			}
 			
@@ -453,7 +453,7 @@ void SDLInputManager::update()
 				event.gamepad = it->second;
 				event.button = sdlEvent.cbutton.button;
 
-				dispatch(event);
+				eventDispatcher->queue(event);
 				break;
 			}
 			
@@ -471,7 +471,7 @@ void SDLInputManager::update()
 				event.gamepad = it->second;
 				event.button = sdlEvent.cbutton.button;
 
-				dispatch(event);
+				eventDispatcher->queue(event);
 				break;
 			}
 			
@@ -499,7 +499,7 @@ void SDLInputManager::update()
 					event.value = (float)sdlEvent.caxis.value / 32767.0f;
 				}
 
-				dispatch(event);
+				eventDispatcher->queue(event);
 				break;
 			}
 			
@@ -599,14 +599,14 @@ void SDLInputManager::update()
 					event.width = sdlEvent.window.data1;
 					event.height = sdlEvent.window.data2;
 
-					dispatch(event);
+					eventDispatcher->queue(event);
 				}
 				else if (sdlEvent.window.event == SDL_WINDOWEVENT_CLOSE)
 				{
 					WindowClosedEvent event;
 					event.window = window;
 
-					dispatch(event);
+					eventDispatcher->queue(event);
 				}
 				break;
 			}
@@ -615,7 +615,7 @@ void SDLInputManager::update()
 			{
 				ApplicationClosedEvent event;
 
-				dispatch(event);
+				eventDispatcher->queue(event);
 				break;
 			}
 			
