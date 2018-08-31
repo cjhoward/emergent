@@ -61,7 +61,7 @@ Run the following command to install Emergent and its dependencies in the direct
 
 ## Documentation
 
-The Emergent API reference can be found [here](http://cjhoward.org/emergent/api-reference).
+The Emergent API reference can be found [here](https://cjhoward.org/emergent/api-reference).
 
 ## Examples
 
