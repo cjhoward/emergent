@@ -22,8 +22,8 @@
 namespace Emergent
 {
 
-InputDevice::InputDevice(InputManager* inputManager, const std::string& name):
-	inputManager(inputManager),
+InputDevice::InputDevice(DeviceManager* deviceManager, const std::string& name):
+	deviceManager(deviceManager),
 	name(name),
 	disconnected(true)
 {}

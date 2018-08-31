@@ -17,27 +17,46 @@
  * along with Emergent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <emergent/configuration.hpp>
 #include <emergent/utility/application.hpp>
-#include <emergent/window/sdl-window-manager.hpp>
-#include <emergent/input/input-manager.hpp>
 #include <stdexcept>
 #include <chrono>
+
+// Include OS inteface header
+#if defined(EMERGENT_SDL)
+	#include <emergent/utility/sdl-interface.hpp>
+#else
+	#error "No OS interface defined."
+#endif
 
 namespace Emergent
 {
 
 Application::Application():
+	osInterface(nullptr),
+	deviceManager(nullptr),
 	windowManager(nullptr),
-	inputManager(nullptr),
 	closed(false),
 	status(EXIT_SUCCESS)
 {
-	// Allocate window manager
-	windowManager = new SDLWindowManager(&eventDispatcher);
-	if (!windowManager)
+	// Initialize OS interface
+	try
 	{
-		throw std::runtime_error("Application::Application(): Failed to initialize SDL window manager.");
+		#if defined(EMERGENT_SDL)
+			osInterface = new SDLInterface(&eventDispatcher);
+		#endif
 	}
+	catch (const std::exception& e)
+	{
+		std::string error = std::string("Application::Application(): Failed to initialize OS interface: \"") + std::string(e.what()) + std::string("\"");
+		throw std::runtime_error(error.c_str());
+	}
+
+	// Get the device manager
+	deviceManager = osInterface->getDeviceManager();
+
+	// Get the window manager
+	windowManager = osInterface->getWindowManager();
 
 	// Setup step scheduling
 	stepScheduler.setMaxFrameDuration(0.25);
@@ -45,9 +64,6 @@ Application::Application():
 	
 	// Setup performance sampling
 	performanceSampler.setSampleSize(1);
-
-	// Grab input manager
-	inputManager = windowManager->getInputManager();
 
 	// Setup event handling
 	eventDispatcher.subscribe<ApplicationClosedEvent>(this);
@@ -63,8 +79,8 @@ Application::Application():
 
 Application::~Application()
 {
-	// Free window manager
-	delete windowManager;
+	// Shutdown OS interface
+	delete osInterface;
 }
 
 int Application::execute()
@@ -92,8 +108,8 @@ int Application::execute()
 	// Enter main loop
 	while (!closed)
 	{
-		// Process input
-		inputManager->update();
+		// Route OS events through the event dispatcher
+		osInterface->routeEvents();
 
 		// Perform scheduled update steps
 		for (std::size_t step = 0; step < stepScheduler.getScheduledSteps(); ++step)

@@ -19,14 +19,15 @@
 
 #include <emergent/input/gamepad.hpp>
 #include <emergent/input/input-event.hpp>
-#include <emergent/input/input-manager.hpp>
+#include <emergent/utility/os-interface.hpp>
+#include <emergent/utility/device-manager.hpp>
 #include <emergent/utility/event-dispatcher.hpp>
 
 namespace Emergent
 {
 
-Gamepad::Gamepad(InputManager* inputManager, const std::string& name):
-	InputDevice(inputManager, name)
+Gamepad::Gamepad(DeviceManager* deviceManager, const std::string& name):
+	InputDevice(deviceManager, name)
 {}
 
 Gamepad::~Gamepad()
@@ -38,7 +39,7 @@ void Gamepad::press(int button)
 	event.gamepad = this;
 	event.button = button;
 
-	getInputManager()->getEventDispatcher()->queue(event);
+	getDeviceManager()->getOSInterface()->getEventDispatcher()->queue(event);
 }
 
 void Gamepad::release(int button)
@@ -47,7 +48,7 @@ void Gamepad::release(int button)
 	event.gamepad = this;
 	event.button = button;
 
-	getInputManager()->getEventDispatcher()->queue(event);
+	getDeviceManager()->getOSInterface()->getEventDispatcher()->queue(event);
 }
 
 void Gamepad::move(int axis, bool negative, float value)
@@ -58,7 +59,7 @@ void Gamepad::move(int axis, bool negative, float value)
 	event.negative = negative;
 	event.value = value;
 
-	getInputManager()->getEventDispatcher()->queue(event);
+	getDeviceManager()->getOSInterface()->getEventDispatcher()->queue(event);
 }
 
 } // namespace Emergent

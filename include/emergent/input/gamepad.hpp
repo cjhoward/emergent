@@ -36,10 +36,10 @@ public:
 	/**
 	 * Creates a gamepad input device.
 	 *
-	 * @param inputManager The parent input manager.
+	 * @param deviceManager The parent device manager.
 	 * @param name Name of the gamepad.
 	 */
-	Gamepad(InputManager* inputManager, const std::string& name);
+	Gamepad(DeviceManager* deviceManager, const std::string& name);
 
 	/// Destroys a gamepad input device.
 	virtual ~Gamepad();

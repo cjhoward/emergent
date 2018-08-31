@@ -27,7 +27,7 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	// Initialize default parameters
 	title = "Emergent";
 	float windowSizeRatio = 2.0f / 3.0f;
-	const Display* display = windowManager->getDisplay(0);
+	const Display* display = deviceManager->getDisplays()->front();
 	int w = std::get<0>(display->getDimensions()) * windowSizeRatio;
 	int h = std::get<1>(display->getDimensions()) * windowSizeRatio;
 	int x = std::get<0>(display->getPosition()) + std::get<0>(display->getDimensions()) / 2 - w / 2;
@@ -58,8 +58,8 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	performanceSampler.setSampleSize(15);
 	
 	// Setup control profile
-	Keyboard* keyboard = (*inputManager->getKeyboards()).front();
-	Mouse* mouse = (*inputManager->getMice()).front();
+	Keyboard* keyboard = deviceManager->getKeyboards()->front();
+	Mouse* mouse = deviceManager->getMice()->front();
 	closeControl.bindKey(keyboard, Scancode::ESCAPE);
 	closeControl.setActivatedCallback(std::bind(&Application::close, this, EXIT_SUCCESS));
 	fullscreenControl.bindKey(keyboard, Scancode::F11);

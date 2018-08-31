@@ -18,38 +18,40 @@
  */
 
 #include <emergent/window/window-manager.hpp>
-#include <emergent/window/sdl-window-manager.hpp>
+#include <emergent/window/window.hpp>
+#include <emergent/utility/os-interface.hpp>
 
 namespace Emergent
 {
 
-WindowManager::WindowManager():
-	inputManager(nullptr)
+WindowManager::WindowManager(OSInterface* osInterface):
+	osInterface(osInterface)
 {}
 
 WindowManager::~WindowManager()
-{}
-
-void WindowManager::registerDisplay(Display* display)
 {
-	displays.push_back(display);
+	osInterface = nullptr;
 }
 
-void WindowManager::unregisterDisplay(Display* display)
+Window* WindowManager::createWindow(const char* title, int x, int y, int width, int height, bool fullscreen, unsigned int flags)
 {
-	for (auto it = displays.begin(); it != displays.end(); ++it)
+	void* data = osInterface->openWindow(title, x, y, width, height, fullscreen, flags);
+	if (data == nullptr)
 	{
-		if (display == (*it))
-		{
-			displays.erase(it);
-			return;
-		}
+		return nullptr;
 	}
+
+	Window* window = new Window(this, flags, data);
+	registerWindow(window);
+
+	return window;
 }
 
-void WindowManager::unregisterDisplays()
+void WindowManager::destroyWindow(Window* window)
 {
-	displays.clear();
+	osInterface->closeWindow(window);
+	unregisterWindow(window);
+	delete window;
 }
 
 void WindowManager::registerWindow(Window* window)
@@ -59,14 +61,7 @@ void WindowManager::registerWindow(Window* window)
 
 void WindowManager::unregisterWindow(Window* window)
 {
-	for (auto it = windows.begin(); it != windows.end(); ++it)
-	{
-		if (window == (*it))
-		{
-			windows.erase(it);
-			return;
-		}
-	}
+	windows.remove(window);
 }
 
 void WindowManager::unregisterWindows()

@@ -19,7 +19,8 @@
 
 #include <emergent/input/keyboard.hpp>
 #include <emergent/input/input-event.hpp>
-#include <emergent/input/input-manager.hpp>
+#include <emergent/utility/os-interface.hpp>
+#include <emergent/utility/device-manager.hpp>
 #include <emergent/utility/event-dispatcher.hpp>
 
 namespace Emergent
@@ -280,8 +281,8 @@ const char* Keyboard::getScancodeName(Scancode scancode)
 	return names[static_cast<std::size_t>(scancode)];
 };
 
-Keyboard::Keyboard(InputManager* inputManager, const std::string& name):
-	InputDevice(inputManager, name)
+Keyboard::Keyboard(DeviceManager* DeviceManager, const std::string& name):
+	InputDevice(DeviceManager, name)
 {}
 
 Keyboard::~Keyboard()
@@ -293,7 +294,7 @@ void Keyboard::press(Scancode scancode)
 	event.keyboard = this;
 	event.scancode = scancode;
 
-	getInputManager()->getEventDispatcher()->queue(event);
+	getDeviceManager()->getOSInterface()->getEventDispatcher()->queue(event);
 }
 
 void Keyboard::release(Scancode scancode)
@@ -302,7 +303,7 @@ void Keyboard::release(Scancode scancode)
 	event.keyboard = this;
 	event.scancode = scancode;
 
-	getInputManager()->getEventDispatcher()->queue(event);
+	getDeviceManager()->getOSInterface()->getEventDispatcher()->queue(event);
 }
 
 } // namespace Emergent

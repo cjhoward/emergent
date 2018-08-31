@@ -30,8 +30,10 @@
 namespace Emergent
 {
 
-class WindowManager;
+class DeviceManager;
+class OSInterface;
 class InputManager;
+class WindowManager;
 
 /**
  * Base class for framerate-independent real-time graphical applications.
@@ -53,7 +55,7 @@ public:
 	/**
 	 * Creates an application.
 	 *
-	 * @throw std::runtime_error Failed to initialize SDL window manager.
+	 * @throw std::runtime_error Failed to initialize OS interface.
 	 */
 	Application();
 
@@ -76,8 +78,9 @@ public:
 
 protected:
 	EventDispatcher eventDispatcher;
+	OSInterface* osInterface;
+	DeviceManager* deviceManager;
 	WindowManager* windowManager;
-	InputManager* inputManager;
 	StepScheduler stepScheduler;
 	StepInterpolator stepInterpolator;
 	PerformanceSampler performanceSampler;

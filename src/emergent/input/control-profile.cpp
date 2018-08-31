@@ -22,7 +22,7 @@
 #include <emergent/input/keyboard.hpp>
 #include <emergent/input/mouse.hpp>
 #include <emergent/input/gamepad.hpp>
-#include <emergent/input/input-manager.hpp>
+#include <emergent/utility/device-manager.hpp>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -117,7 +117,7 @@ bool ControlProfile::save(const std::string& filename)
 	return true;
 }
 
-bool ControlProfile::load(const std::string& filename, InputManager* inputManager)
+bool ControlProfile::load(const std::string& filename, DeviceManager* deviceManager)
 {
 	// Open control profile
 	std::ifstream file(filename.c_str());
@@ -155,7 +155,7 @@ bool ControlProfile::load(const std::string& filename, InputManager* inputManage
 			// Find input device
 			if (tokens[2] == "keyboard")
 			{
-				Keyboard* keyboard = inputManager->getKeyboards()->front();
+				Keyboard* keyboard = deviceManager->getKeyboards()->front();
 				
 				if (tokens[3] == "key")
 				{
@@ -172,7 +172,7 @@ bool ControlProfile::load(const std::string& filename, InputManager* inputManage
 			}
 			else if (tokens[2] == "mouse")
 			{
-				Mouse* mouse = inputManager->getMice()->front();
+				Mouse* mouse = deviceManager->getMice()->front();
 				
 				if (tokens[3] == "button")
 				{
@@ -215,12 +215,12 @@ bool ControlProfile::load(const std::string& filename, InputManager* inputManage
 					continue;
 				}
 				
-				Gamepad* gamepad = inputManager->getGamepad(tokens[3]);
+				Gamepad* gamepad = deviceManager->getGamepad(tokens[3]);
 				if (!gamepad)
 				{
-					gamepad = new Gamepad(inputManager, tokens[3]);
+					gamepad = new Gamepad(deviceManager, tokens[3]);
 					gamepad->setDisconnected(true);
-					inputManager->registerGamepad(gamepad);
+					deviceManager->registerGamepad(gamepad);
 				}
 				
 				if (tokens[4] == "button")

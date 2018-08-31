@@ -25,7 +25,7 @@
 namespace Emergent
 {
 
-class InputManager;
+class DeviceManager;
 
 /**
  * Abstract base class for input devices such as keyboards, mice, and gamepads.
@@ -46,19 +46,19 @@ public:
 	/**
 	 * Creates an input device.
 	 *
-	 * @param inputManager The parent input manager.
+	 * @param deviceManager The parent device manager.
 	 * @param name Specifies the device name
 	 */
-	InputDevice(InputManager* inputManager, const std::string& name);
+	InputDevice(DeviceManager* deviceManager, const std::string& name);
 
 	/// Destroys an input device.
 	virtual ~InputDevice();
 
-	/// Returns the parent input manager.
-	const InputManager* getInputManager() const;
+	/// Returns the parent device manager.
+	const DeviceManager* getDeviceManager() const;
 
-	/// @copydoc getInputManager() const
-	InputManager* getInputManager();
+	/// @copydoc getDeviceManager() const
+	DeviceManager* getDeviceManager();
 
 	/// Returns the name of the device.
 	const std::string& getName() const;
@@ -73,19 +73,19 @@ public:
 	bool isDisconnected() const;
 	
 private:
-	InputManager* inputManager;
+	DeviceManager* deviceManager;
 	std::string name;
 	bool disconnected;
 };
 
-inline const InputManager* InputDevice::getInputManager() const
+inline const DeviceManager* InputDevice::getDeviceManager() const
 {
-	return inputManager;
+	return deviceManager;
 }
 
-inline InputManager* InputDevice::getInputManager()
+inline DeviceManager* InputDevice::getDeviceManager()
 {
-	return inputManager;
+	return deviceManager;
 }
 
 inline const std::string& InputDevice::getName() const

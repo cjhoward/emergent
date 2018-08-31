@@ -17,35 +17,25 @@
  * along with Emergent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <emergent/input/sdl-clipboard.hpp>
-#include <SDL.h>
+#include <emergent/utility/os-interface.hpp>
+#include <emergent/utility/device-manager.hpp>
+#include <emergent/window/window-manager.hpp>
 
 namespace Emergent
 {
 
-SDLClipboard::SDLClipboard()
-{}
-
-SDLClipboard::~SDLClipboard()
-{}
-
-void SDLClipboard::setContents(const char* contents)
+OSInterface::OSInterface(EventDispatcher* eventDispatcher):
+	deviceManager(nullptr),
+	eventDispatcher(eventDispatcher)
 {
-	SDL_SetClipboardText(contents);
+	deviceManager = new DeviceManager(this);
+	windowManager = new WindowManager(this);
 }
 
-const char* SDLClipboard::getContents() const
+OSInterface::~OSInterface()
 {
-	if (SDL_HasClipboardText() == SDL_TRUE)
-	{
-		char* text = SDL_GetClipboardText();
-		contents = text;
-		SDL_free(text);
-
-		return contents.c_str();
-	}
-
-	return nullptr;
+	delete deviceManager;
+	delete windowManager;
 }
 
 } // namespace Emergent

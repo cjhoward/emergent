@@ -84,14 +84,12 @@
  * Input devices and events
  */
 #include <emergent/input/arcball.hpp>
-#include <emergent/input/clipboard.hpp>
 #include <emergent/input/control-binder.hpp>
 #include <emergent/input/control-profile.hpp>
 #include <emergent/input/control.hpp>
 #include <emergent/input/gamepad.hpp>
 #include <emergent/input/input-device.hpp>
 #include <emergent/input/input-event.hpp>
-#include <emergent/input/input-manager.hpp>
 #include <emergent/input/keyboard.hpp>
 #include <emergent/input/mouse.hpp>
 #include <emergent/input/scancode.hpp>
@@ -114,9 +112,11 @@
  * Utility classes
  */
 #include <emergent/utility/application.hpp>
+#include <emergent/utility/device-manager.hpp>
 #include <emergent/utility/event-dispatcher.hpp>
 #include <emergent/utility/event-handler.hpp>
 #include <emergent/utility/event.hpp>
+#include <emergent/utility/os-interface.hpp>
 #include <emergent/utility/performance-sampler.hpp>
 #include <emergent/utility/step-interpolator.hpp>
 #include <emergent/utility/step-scheduler.hpp>

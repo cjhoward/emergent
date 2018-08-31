@@ -43,10 +43,10 @@ public:
 	/**
 	 * Creates a keyboard input device.
 	 *
-	 * @param inputManager The parent input manager.
+	 * @param DeviceManager The parent device manager.
 	 * @param name Name of the keyboard.
 	 */
-	Keyboard(InputManager* inputManager, const std::string& name);
+	Keyboard(DeviceManager* DeviceManager, const std::string& name);
 
 	/// Destroys a keyboard input device.
 	virtual ~Keyboard();

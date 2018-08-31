@@ -27,7 +27,7 @@ namespace Emergent
 {
 
 class Control;
-class InputManager;
+class DeviceManager;
 
 /**
  * Manages a set of controls.
@@ -59,9 +59,9 @@ public:
 	 * Loads the control profile from a file.
 	 *
 	 * @param filename File from which the control profile will be loaded.
-	 * @param inputManager Input manager from which to retrieve input devices.
+	 * @param deviceManager Device manager from which to retrieve input devices.
 	 */
-	bool load(const std::string& filename, InputManager* inputManager);
+	bool load(const std::string& filename, DeviceManager* deviceManager);
 	
 	/**
 	 * Calls Control::update() on each control registered with this profile.

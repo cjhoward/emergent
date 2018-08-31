@@ -57,10 +57,10 @@ public:
 	/**
 	 * Creates a mouse input device.
 	 *
-	 * @param inputManager The parent input manager.
+	 * @param DeviceManager The parent device manager.
 	 * @param name Name of the mouse.
 	 */
-	Mouse(InputManager* inputManager, const std::string& name);
+	Mouse(DeviceManager* DeviceManager, const std::string& name);
 
 	/// Destroys a mouse input device.
 	virtual ~Mouse();

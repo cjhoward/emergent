@@ -20,14 +20,12 @@
 #ifndef EMERGENT_WINDOW_WINDOW_MANAGER_HPP
 #define EMERGENT_WINDOW_WINDOW_MANAGER_HPP
 
-#include <vector>
+#include <list>
 
 namespace Emergent
 {
 
-class Application;
-class Display;
-class InputManager;
+class OSInterface;
 class Window;
 
 /**
@@ -73,58 +71,51 @@ public:
 	 * @param flags Window creation flags.
 	 * @return Pointer to the created window, or nullptr if the window creation failed.
 	 */
-	virtual Window* createWindow(const char* title, int x, int y, int width, int height, bool fullscreen, unsigned int flags) = 0;
+	Window* createWindow(const char* title, int x, int y, int width, int height, bool fullscreen, unsigned int flags);
 
 	/**
 	 * Destroys a window.
 	 *
 	 * @param window Window to destroy.
 	 */
-	virtual void destroyWindow(Window* window) = 0;
+	void destroyWindow(Window* window);
 
-	/// Returns the associated input manager.
-	const InputManager* getInputManager() const;
+	/// Returns the associated OS interface.
+	const OSInterface* getOSInterface() const;
 
-	/// @copydoc WindowManager::getInputManager() const
-	InputManager* getInputManager();
+	/// @copydoc WindowManager::getOSInterface() const
+	OSInterface* getOSInterface();
 
-	/// Returns the number of registered displays
-	std::size_t getDisplayCount() const;
+	/// Returns a list of the registered windows
+	const std::list<Window*>* getWindows() const;
 
-	/// Returns the display at the specified index.
-	const Display* getDisplay(std::size_t index) const;
-
-protected:
+private:
+	friend class OSInterface;
+	friend class Window;
+	
 	/**
-	 * Registers a display with the window manager.
+	 * Creates a window manager.
 	 *
-	 * @param display Pointer to the display to register.
+	 * @param osInterface OS interface through which windows will be managed.
 	 */
-	void registerDisplay(Display* display);
+	WindowManager(OSInterface* osInterface);
 
 	/**
-	 * Unregisters a display from the window manager.
+	 * Destroys a window manager.
+	 */
+	~WindowManager();
+
+	/**
+	 * Registers a window with this window manager.
 	 *
-	 * @param display Pointer to the display to unregister.
-	 */
-	void unregisterDisplay(Display* display);
-
-	/**
-	 * Unregisters all displays.
-	 */
-	void unregisterDisplays();
-
-	/**
-	 * Registers a window with the window manager.
-	 *
-	 * @param window Pointer to the window to register.
+	 * @param window Window to register.
 	 */
 	void registerWindow(Window* window);
 
 	/**
-	 * Unregisters a window from the window manager.
+	 * Unregisters a window from this window manager.
 	 *
-	 * @param window Pointer to the window to unregister.
+	 * @param window Window to unregister.
 	 */
 	void unregisterWindow(Window* window);
 
@@ -133,44 +124,23 @@ protected:
 	 */
 	void unregisterWindows();
 
-
-	InputManager* inputManager;
-	std::vector<Display*> displays;
-	std::vector<Window*> windows;
-
-private:
-	friend class Application;
-	friend class SDLWindowManager;
-
-	/**
-	 * Creates a window manager.
-	 */
-	WindowManager();
-
-	/**
-	 * Destroys a window manager.
-	 */
-	virtual ~WindowManager();
+	OSInterface* osInterface;
+	std::list<Window*> windows;
 };
 
-inline const InputManager* WindowManager::getInputManager() const
+inline const OSInterface* WindowManager::getOSInterface() const
 {
-	return inputManager;
+	return osInterface;
 }
 
-inline InputManager* WindowManager::getInputManager()
+inline OSInterface* WindowManager::getOSInterface()
 {
-	return inputManager;
+	return osInterface;
 }
 
-inline std::size_t WindowManager::getDisplayCount() const
+inline const std::list<Window*>* WindowManager::getWindows() const
 {
-	return displays.size();
-}
-
-inline const Display* WindowManager::getDisplay(std::size_t index) const
-{
-	return displays[index];
+	return &windows;
 }
 
 } // namespace Emergent

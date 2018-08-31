@@ -3,9 +3,10 @@ project(emergent-superbuild)
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
 # Setup configuration options
-option(BUILD_DOCS "Build the API reference docs." OFF)
+option(BUILD_DOCS "Build the API reference docs using Doxygen." OFF)
 option(BUILD_EXAMPLES "Build the example programs." ON)
 option(BUILD_STATIC "Build a static version of the library." ON)
+set(DOXYGEN_BINARY "doxygen" CACHE PATH "Path to the Doxygen binary")
 if(BUILD_STATIC)
 	set(BUILD_SHARED FALSE)
 else()
@@ -73,6 +74,8 @@ ExternalProject_Add(project-emergent
 	"-DBUILD_DOCS=${BUILD_DOCS}"
 	"-DBUILD_EXAMPLES=${BUILD_EXAMPLES}"
 	"-DBUILD_STATIC=${BUILD_STATIC}"
+	"-DDOXYGEN_BINARY=${DOXYGEN_BINARY}"
+	"-DEMERGENT_SDL=ON"
 	BINARY_DIR ${EXTERNAL_PROJECT_BUILD_DIR}/emergent
 	INSTALL_DIR ${EXTERNAL_PROJECT_INSTALL_DIR})
 

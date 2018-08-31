@@ -36,6 +36,7 @@ endif()
 
 # Generate configuration header
 set(EMERGENT_CONFIG_HEADER ${PROJECT_BINARY_DIR}/include/emergent/configuration.hpp)
+set(EMERGENT_SDL ON)
 configure_file(${EMERGENT_SOURCE_DIR}/include/emergent/configuration.hpp.in ${EMERGENT_CONFIG_HEADER})
 
 # Collect source files
@@ -118,7 +119,7 @@ if(BUILD_DOCS)
 	# Build documentation
 	add_custom_command(TARGET emergent
 		POST_BUILD
-		COMMAND doxygen
+		COMMAND ${DOXYGEN_BINARY}
 		WORKING_DIRECTORY ${DOXYGEN_OUTPUT_DIR})
 
 	# Install documentation

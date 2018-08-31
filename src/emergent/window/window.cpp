@@ -18,14 +18,74 @@
  */
 
 #include <emergent/window/window.hpp>
+#include <emergent/window/window-manager.hpp>
 
 namespace Emergent
 {
 
-Window::Window()
-{}
+Window::Window(WindowManager* windowManager, unsigned int flags, void* data):
+	windowManager(windowManager),
+	graphicsContext(nullptr),
+	data(data)
+{
+	resizable = (flags & WindowFlag::RESIZABLE);
+	bordered = !(flags & WindowFlag::BORDERLESS);
+}
 
 Window::~Window()
-{}
+{
+	//delete graphicsContext;
+}
+
+void Window::setTitle(const char* title)
+{
+	windowManager->getOSInterface()->setWindowTitle(this, title);
+}
+
+void Window::setPosition(int x, int y)
+{
+	windowManager->getOSInterface()->setWindowPosition(this, x, y);
+}
+
+void Window::setDimensions(int width, int height)
+{
+	windowManager->getOSInterface()->setWindowDimensions(this, width, height);
+}
+
+void Window::setResizable(bool resizable)
+{
+	windowManager->getOSInterface()->setWindowResizable(this, resizable);
+}
+
+void Window::setBordered(bool bordered)
+{
+	windowManager->getOSInterface()->setWindowBordered(this, bordered);
+}
+
+void Window::setFullscreen(bool fullscreen)
+{
+	windowManager->getOSInterface()->setWindowFullscreen(this, fullscreen);
+}
+
+void Window::setVSync(bool vsync)
+{
+	windowManager->getOSInterface()->setWindowVSync(this, vsync);
+}
+
+void Window::setInputGrabbed(bool grab)
+{
+	windowManager->getOSInterface()->setWindowInputGrabbed(this, grab);
+}
+
+void Window::makeCurrent()
+{
+	windowManager->getOSInterface()->makeWindowCurrent(this);
+}
+
+void Window::swapBuffers()
+{
+	windowManager->getOSInterface()->swapWindowBuffers(this);
+}
 
 } // namespace Emergent
+

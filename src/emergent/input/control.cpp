@@ -22,7 +22,8 @@
 #include <emergent/input/keyboard.hpp>
 #include <emergent/input/gamepad.hpp>
 #include <emergent/input/input-event.hpp>
-#include <emergent/input/input-manager.hpp>
+#include <emergent/utility/os-interface.hpp>
+#include <emergent/utility/device-manager.hpp>
 #include <emergent/utility/event-dispatcher.hpp>
 
 namespace Emergent
@@ -114,8 +115,8 @@ void Control::bindKey(Keyboard* keyboard, Scancode scancode)
 	// Check if subscribed to keyboard events
 	if (boundKeys.empty())
 	{
-		keyboard->getInputManager()->getEventDispatcher()->subscribe<KeyPressedEvent>(this);
-		keyboard->getInputManager()->getEventDispatcher()->subscribe<KeyReleasedEvent>(this);
+		keyboard->getDeviceManager()->getOSInterface()->getEventDispatcher()->subscribe<KeyPressedEvent>(this);
+		keyboard->getDeviceManager()->getOSInterface()->getEventDispatcher()->subscribe<KeyReleasedEvent>(this);
 	}
 
 	// Check if already bound to this scancode
@@ -136,8 +137,8 @@ void Control::bindMouseButton(Mouse* mouse, int button)
 	// Check if subscribed to mouse button events
 	if (boundMouseButtons.empty())
 	{
-		mouse->getInputManager()->getEventDispatcher()->subscribe<MouseButtonPressedEvent>(this);
-		mouse->getInputManager()->getEventDispatcher()->subscribe<MouseButtonReleasedEvent>(this);
+		mouse->getDeviceManager()->getOSInterface()->getEventDispatcher()->subscribe<MouseButtonPressedEvent>(this);
+		mouse->getDeviceManager()->getOSInterface()->getEventDispatcher()->subscribe<MouseButtonReleasedEvent>(this);
 	}
 
 	// Checking if already bound to this mouse button
@@ -157,7 +158,7 @@ void Control::bindMouseWheelAxis(Mouse* mouse, MouseWheelAxis axis)
 {
 	if (boundMouseWheelAxes.empty())
 	{
-		mouse->getInputManager()->getEventDispatcher()->subscribe<MouseWheelScrolledEvent>(this);
+		mouse->getDeviceManager()->getOSInterface()->getEventDispatcher()->subscribe<MouseWheelScrolledEvent>(this);
 	}
 
 	// Checking if already observing this mouse
@@ -176,8 +177,8 @@ void Control::bindGamepadButton(Gamepad* gamepad, int button)
 {
 	if (boundGamepadButtons.empty())
 	{
-		gamepad->getInputManager()->getEventDispatcher()->subscribe<GamepadButtonPressedEvent>(this);
-		gamepad->getInputManager()->getEventDispatcher()->subscribe<GamepadButtonReleasedEvent>(this);
+		gamepad->getDeviceManager()->getOSInterface()->getEventDispatcher()->subscribe<GamepadButtonPressedEvent>(this);
+		gamepad->getDeviceManager()->getOSInterface()->getEventDispatcher()->subscribe<GamepadButtonReleasedEvent>(this);
 	}
 
 	for (auto it: boundGamepadButtons)
@@ -195,7 +196,7 @@ void Control::bindGamepadAxis(Gamepad* gamepad, int axis, bool negative)
 {
 	if (boundGamepadAxes.empty())
 	{
-		gamepad->getInputManager()->getEventDispatcher()->subscribe<GamepadAxisMovedEvent>(this);
+		gamepad->getDeviceManager()->getOSInterface()->getEventDispatcher()->subscribe<GamepadAxisMovedEvent>(this);
 	}
 
 	for (auto it: boundGamepadAxes)
@@ -213,34 +214,34 @@ void Control::unbind()
 {
 	for (auto it = boundKeys.begin(); it != boundKeys.end(); ++it)
 	{
-		it->first->getInputManager()->getEventDispatcher()->unsubscribe<KeyPressedEvent>(this);
-		it->first->getInputManager()->getEventDispatcher()->unsubscribe<KeyReleasedEvent>(this);
+		it->first->getDeviceManager()->getOSInterface()->getEventDispatcher()->unsubscribe<KeyPressedEvent>(this);
+		it->first->getDeviceManager()->getOSInterface()->getEventDispatcher()->unsubscribe<KeyReleasedEvent>(this);
 	}
 	boundKeys.clear();
 
 	for (auto it = boundMouseButtons.begin(); it != boundMouseButtons.end(); ++it)
 	{
-		it->first->getInputManager()->getEventDispatcher()->unsubscribe<MouseButtonPressedEvent>(this);
-		it->first->getInputManager()->getEventDispatcher()->unsubscribe<MouseButtonReleasedEvent>(this);
+		it->first->getDeviceManager()->getOSInterface()->getEventDispatcher()->unsubscribe<MouseButtonPressedEvent>(this);
+		it->first->getDeviceManager()->getOSInterface()->getEventDispatcher()->unsubscribe<MouseButtonReleasedEvent>(this);
 	}
 	boundMouseButtons.clear();
 
 	for (auto it = boundMouseWheelAxes.begin(); it != boundMouseWheelAxes.end(); ++it)
 	{
-		it->first->getInputManager()->getEventDispatcher()->unsubscribe<MouseWheelScrolledEvent>(this);
+		it->first->getDeviceManager()->getOSInterface()->getEventDispatcher()->unsubscribe<MouseWheelScrolledEvent>(this);
 	}
 	boundMouseWheelAxes.clear();
 
 	for (auto it = boundGamepadButtons.begin(); it != boundGamepadButtons.end(); ++it)
 	{
-		it->first->getInputManager()->getEventDispatcher()->unsubscribe<GamepadButtonPressedEvent>(this);
-		it->first->getInputManager()->getEventDispatcher()->unsubscribe<GamepadButtonReleasedEvent>(this);
+		it->first->getDeviceManager()->getOSInterface()->getEventDispatcher()->unsubscribe<GamepadButtonPressedEvent>(this);
+		it->first->getDeviceManager()->getOSInterface()->getEventDispatcher()->unsubscribe<GamepadButtonReleasedEvent>(this);
 	}
 	boundGamepadButtons.clear();
 
 	for (auto it = boundGamepadAxes.begin(); it != boundGamepadAxes.end(); ++it)
 	{
-		std::get<0>(*it)->getInputManager()->getEventDispatcher()->unsubscribe<GamepadAxisMovedEvent>(this);
+		std::get<0>(*it)->getDeviceManager()->getOSInterface()->getEventDispatcher()->unsubscribe<GamepadAxisMovedEvent>(this);
 	}
 	boundGamepadAxes.clear();
 }

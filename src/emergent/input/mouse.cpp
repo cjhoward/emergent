@@ -19,14 +19,15 @@
 
 #include <emergent/input/mouse.hpp>
 #include <emergent/input/input-event.hpp>
-#include <emergent/input/input-manager.hpp>
+#include <emergent/utility/os-interface.hpp>
+#include <emergent/utility/device-manager.hpp>
 #include <emergent/utility/event-dispatcher.hpp>
 
 namespace Emergent
 {
 
-Mouse::Mouse(InputManager* inputManager, const std::string& name):
-	InputDevice(inputManager, name)
+Mouse::Mouse(DeviceManager* DeviceManager, const std::string& name):
+	InputDevice(DeviceManager, name)
 {}
 
 Mouse::~Mouse()
@@ -40,7 +41,7 @@ void Mouse::press(int button, int x, int y)
 	event.x = x;
 	event.y = y;
 
-	getInputManager()->getEventDispatcher()->queue(event);
+	getDeviceManager()->getOSInterface()->getEventDispatcher()->queue(event);
 }
 
 void Mouse::release(int button, int x, int y)
@@ -51,7 +52,7 @@ void Mouse::release(int button, int x, int y)
 	event.x = x;
 	event.y = y;
 
-	getInputManager()->getEventDispatcher()->queue(event);
+	getDeviceManager()->getOSInterface()->getEventDispatcher()->queue(event);
 }
 
 void Mouse::move(int x, int y)
@@ -61,7 +62,7 @@ void Mouse::move(int x, int y)
 	event.x = x;
 	event.y = y;
 
-	getInputManager()->getEventDispatcher()->queue(event);
+	getDeviceManager()->getOSInterface()->getEventDispatcher()->queue(event);
 }
 
 void Mouse::scroll(int x, int y)
@@ -71,7 +72,7 @@ void Mouse::scroll(int x, int y)
 	event.x = x;
 	event.y = y;
 
-	getInputManager()->getEventDispatcher()->queue(event);
+	getDeviceManager()->getOSInterface()->getEventDispatcher()->queue(event);
 }
 
 } // namespace Emergent

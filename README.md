@@ -1,65 +1,93 @@
-# Emergent
+# Emergent &middot; [![GitHub license](https://img.shields.io/github/license/cjhoward/emergent.svg)](https://github.com/cjhoward/emergent/blob/master/COPYING) [![GitHub release](https://img.shields.io/github/release/cjhoward/emergent.svg)](https://github.com/cjhoward/emergent/releases/)
 
-Emergent is a cross-platform compatible C++ framework for real-time 3D applications. It facilitates rapid development of framerate-independent applications with hardware-accelerated graphics.
+Emergent is a cross-platform compatible C++ framework for real-time 3D applications.
 
-## Download
+## Table of Contents
+
+* [Installation](#installation)
+	* [Download](#download)
+	* [Configure](#configure)
+	* [Build on GNU/Linux](#build-on-gnulinux)
+	* [Build on Windows](#build-on-windows)
+	* [Install](#install)
+* [Documentation](#documentation)
+* [Examples](#examples)
+* [License](#license)
+
+## Installation
+
+### Download
 
 Use Git to download the Emergent repository and its submodules:
 
 	git clone --recursive https://github.com/cjhoward/emergent.git emergent
 
-## Building and Installation
+### Configure
 
 Emergent uses a CMake build system to configure, build, and install Emergent and its dependencies. Ensure CMake is installed before proceeding.
- 
-### Configuration
 
 The following basic CMake configuration options are available:
 
-| Option                       | Description                                                                     |
-| ---------------------------- | ------------------------------------------------------------------------------- |
-| `BUILD_DOCS:BOOL=OFF`        | Build the API reference docs.                                                   |
-| `BUILD_EXAMPLES:BOOL=ON`     | Build the example programs.                                                     |
-| `BUILD_STATIC:BOOL=ON`       | Build a static version of the library.                                          |
-| `CMAKE_BUILD_TYPE:STRING=`   | Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel. |
-| `CMAKE_INSTALL_PREFIX:PATH=` | Install path prefix, prepended onto install directories.                        |
+| Option                        | Description                                                                     |
+| ----------------------------- | ------------------------------------------------------------------------------- |
+| `BUILD_DOCS:BOOL=OFF`         | Build the API reference docs using Doxygen.                                     |
+| `BUILD_EXAMPLES:BOOL=ON`      | Build the example programs.                                                     |
+| `BUILD_STATIC:BOOL=ON`        | Build a static version of the library.                                          |
+| `CMAKE_BUILD_TYPE:STRING=`    | Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel. |
+| `CMAKE_INSTALL_PREFIX:PATH=`  | Install path prefix, prepended onto install directories.                        |
+| `DOXYGEN_BINARY:PATH=doxygen` | Path to the Doxygen binary.                                                     |
 
 For a full list of advanced CMake configuration options, run the command `cmake .. -LAH` from the `build` directory.
 
-### Building on GNU/Linux
+### Build on GNU/Linux
 
 Building on GNU/Linux requires GCC, G++, and GNU Make. Open a command prompt in the `build` directory then run the following commands:
 
-	cmake .. -G "Unix Makefiles" -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<...>
+	cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<...>
 	cmake --build .
 
-### Building on Windows
+### Build on Windows
 
 Building on Windows requires Visual Studio 2017. Open the Visual Studio Native Tools Command Prompt in the `build` directory then run the following commands:
 
-	cmake .. -G "NMake Makefiles" -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<...>
+	cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<...>
 	cmake --build .
 
-### Installation
+### Install
 
 Run the following command to install Emergent and its dependencies in the directory specified by the `CMAKE_INSTALL_PREFIX` option:
 
 	cmake --build . --target install
 
-## Usage
+## Documentation
 
-To use Emergent in a CMake-built application, add the following to its `CMakeLists.txt`:
+The Emergent API reference can be found [here](http://cjhoward.org/emergent/api-reference).
 
-	set(emergent_DIR ${EMERGENT_INSTALL_PREFIX}/lib/cmake/emergent)
+## Examples
+
+Creating an application with Emergent is as simple as deriving from the `Emergent::Application` class and calling its `execute()` function:
+
+	#include <emergent/emergent.hpp>
+
+	class ExampleApplication: public Emergent::Application {};
+
+	int main(int argc, char* argv[])
+	{
+		return ExampleApplication().execute();
+	}
+
+The `Emergent::Application` class provides virtual functions such as `setup()`, `update()`, `render()`, and `exit()`, which are called from within the `execute()` function and can be overridden.
+
+To build an Emergent application using CMake, add the following to its `CMakeLists.txt`:
+
+	set(emergent_DIR ${EMERGENT_INSTALL_PREFIX})
 	find_package(emergent REQUIRED CONFIG)
 	add_executable(${EXECUTABLE} ${SOURCE_FILES})
 	target_link_libraries(${EXECUTABLE} emergent)
 
 `${EMERGENT_INSTALL_PREFIX}` is the location at which Emergent was installed, `${EXECUTABLE}` is your application's executable name, and `${SOURCE_FILES}` is a list of your application's source files.
 
-## Documentation
-
-API reference documentation can be generated by passing `-DBUILD_DOCS=ON` to CMake when configuring the Emergent build. Generating documentation requires that Doxygen is installed and that the `doxygen` binary is in the system path.
+For more in-depth examples, see the [`src/examples`](./src/examples) directory.
 
 ## License
 
