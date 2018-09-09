@@ -4,7 +4,7 @@ project(emergent VERSION "0.0.0")
 # Find dependency packages
 find_package(freetype REQUIRED CONFIG)
 find_package(OpenGL REQUIRED)
-find_package(SDL2 REQUIRED CONFIG)
+find_package(SDL2 REQUIRED COMPONENTS SDL2::SDL2-static SDL2::SDL2main CONFIG)
 
 # Set compiler options
 set(EMERGENT_DEBUG_OPTIONS "")
@@ -15,8 +15,7 @@ set(EMERGENT_STATIC_LIBS
 	freetype
 	${OPENGL_gl_LIBRARY}
 	SDL2::SDL2-static
-	SDL2::SDL2main
-	freetype)
+	SDL2::SDL2main)
 set(EMERGENT_SHARED_LIBS
 	freetype
 	${OPENGL_gl_LIBRARY}
@@ -37,16 +36,16 @@ endif()
 # Generate configuration header
 set(EMERGENT_CONFIG_HEADER ${PROJECT_BINARY_DIR}/include/emergent/configuration.hpp)
 set(EMERGENT_SDL ON)
-configure_file(${EMERGENT_SOURCE_DIR}/include/emergent/configuration.hpp.in ${EMERGENT_CONFIG_HEADER})
+configure_file(${PROJECT_SOURCE_DIR}/include/emergent/configuration.hpp.in ${EMERGENT_CONFIG_HEADER})
 
 # Collect source files
 file(GLOB_RECURSE EMERGENT_HEADER_FILES
-	${EMERGENT_SOURCE_DIR}/include/emergent/*.hpp
+	${PROJECT_SOURCE_DIR}/include/emergent/*.hpp
 	${PROJECT_BINARY_DIR}/include/emergent/configuration.hpp)
 file(GLOB_RECURSE EMERGENT_SOURCE_FILES
-	${EMERGENT_SOURCE_DIR}/src/emergent/*.cpp
-	${EMERGENT_SOURCE_DIR}/src/gl3w/src/gl3w.c
-	${EMERGENT_SOURCE_DIR}/src/stb/stb_image.c)
+	${PROJECT_SOURCE_DIR}/src/emergent/*.cpp
+	${PROJECT_SOURCE_DIR}/src/gl3w/src/gl3w.c
+	${PROJECT_SOURCE_DIR}/src/stb/stb_image.c)
 
 # Build emergent library
 if(BUILD_STATIC)
@@ -61,16 +60,17 @@ set_target_properties(emergent
 		VERSION ${PROJECT_VERSION}
 		SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 		DEBUG_POSTFIX d)
+
 target_include_directories(emergent
 	PUBLIC
-		$<BUILD_INTERFACE:${EMERGENT_SOURCE_DIR}/include>
-		$<BUILD_INTERFACE:${EMERGENT_SOURCE_DIR}/src/glm>
-		$<BUILD_INTERFACE:${EMERGENT_SOURCE_DIR}/src/gl3w/include>
-		$<BUILD_INTERFACE:${EMERGENT_SOURCE_DIR}/src/stb>
+		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src/glm>
+		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src/gl3w/include>
+		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src/stb>
 		$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
 		$<INSTALL_INTERFACE:include>
 	PRIVATE
-		$<BUILD_INTERFACE:${EMERGENT_SOURCE_DIR}/src>)
+		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>)
 target_compile_options(emergent PUBLIC "$<$<CONFIG:DEBUG>:${EMERGENT_DEBUG_OPTIONS}>")
 target_compile_options(emergent PUBLIC "$<$<CONFIG:RELEASE>:${EMERGENT_RELEASE_OPTIONS}>")
 target_link_libraries(emergent ${EMERGENT_EXTRA_LIBS})
@@ -84,24 +84,30 @@ install(TARGETS emergent
 
 # Install emergent headers
 install(
-	DIRECTORY ${EMERGENT_SOURCE_DIR}/include/emergent
+	DIRECTORY ${PROJECT_SOURCE_DIR}/include/emergent
 	DESTINATION include
 	FILES_MATCHING PATTERN *.hpp)
+install(
+	DIRECTORY ${PROJECT_SOURCE_DIR}/src/glm/glm
+	DESTINATION include)
+install(
+	DIRECTORY ${PROJECT_SOURCE_DIR}/src/gl3w/include/GL
+	DESTINATION include)
 install(
 	FILES ${EMERGENT_CONFIG_HEADER}
 	DESTINATION include/emergent)
 
 # Install emergent CMake config file
 install(EXPORT emergent-targets
-	FILE emergent-config.cmake
+	FILE emergent-targets.cmake
 	DESTINATION lib/cmake/emergent)
 
 # Build example programs
 if(BUILD_EXAMPLES)
 	# Build examples
 	add_executable(hello-world-example
-		${EMERGENT_SOURCE_DIR}/src/examples/example-application.cpp
-		${EMERGENT_SOURCE_DIR}/src/examples/hello-world-example.cpp)
+		${PROJECT_SOURCE_DIR}/src/examples/example-application.cpp
+		${PROJECT_SOURCE_DIR}/src/examples/hello-world-example.cpp)
 	target_link_libraries(hello-world-example emergent)
 
 	# Install examples
@@ -112,9 +118,9 @@ endif(BUILD_EXAMPLES)
 if(BUILD_DOCS)
 	# Configure Doxygen
 	set(EMERGENT_DOXYFILE ${PROJECT_BINARY_DIR}/docs/Doxyfile)
-	set(DOXYGEN_INPUT_DIR ${EMERGENT_SOURCE_DIR}/include)
+	set(DOXYGEN_INPUT_DIR ${PROJECT_SOURCE_DIR}/include)
 	set(DOXYGEN_OUTPUT_DIR ${PROJECT_BINARY_DIR}/docs)
-	configure_file(${EMERGENT_SOURCE_DIR}/docs/Doxyfile.in ${EMERGENT_DOXYFILE})
+	configure_file(${PROJECT_SOURCE_DIR}/docs/Doxyfile.in ${EMERGENT_DOXYFILE})
 
 	# Build documentation
 	add_custom_command(TARGET emergent
@@ -127,3 +133,16 @@ if(BUILD_DOCS)
 		DESTINATION docs/emergent)
 endif(BUILD_DOCS)
 
+
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+    ${PROJECT_SOURCE_DIR}/cmake/emergent-config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/emergent-config.cmake
+    INSTALL_DESTINATION lib/cmake/emergent
+)
+
+install(
+    FILES
+      ${CMAKE_CURRENT_BINARY_DIR}/emergent-config.cmake
+    DESTINATION lib/cmake/emergent
+)
