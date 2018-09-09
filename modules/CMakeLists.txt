@@ -76,14 +76,8 @@ ExternalProject_Add(project-emergent
 	"-DDOXYGEN_BINARY=${DOXYGEN_BINARY}"
 	"-DEMERGENT_SDL=ON"
 	BINARY_DIR ${MODULE_BUILD_DIR}/emergent
+	BUILD_ALWAYS 1
 	INSTALL_DIR ${MODULE_INSTALL_DIR})
-
-# Force rebuilds
-ExternalProject_Add_Step(project-emergent forcebuild
-	COMMAND ${CMAKE_COMMAND} -E echo_append ""
-	DEPENDEES configure
-	DEPENDERS build
-	ALWAYS 1)
 
 # Install modules
 file(MAKE_DIRECTORY ${MODULE_INSTALL_DIR}/bin)
