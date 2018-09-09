@@ -80,14 +80,13 @@ The `Emergent::Application` class provides virtual functions such as `setup()`, 
 
 To build an Emergent application using CMake, add the following to its `CMakeLists.txt`:
 
-	set(emergent_DIR ${EMERGENT_INSTALL_PREFIX})
-	find_package(emergent REQUIRED CONFIG)
-	add_executable(${EXECUTABLE} ${SOURCE_FILES})
-	target_link_libraries(${EXECUTABLE} emergent)
+	find_package(emergent REQUIRED CONFIG PATHS ${EMERGENT_INSTALL_PREFIX})
+	add_executable(${EXECUTABLE_TARGET} ${SOURCE_FILES})
+	target_link_libraries(${EXECUTABLE_TARGET} emergent)
 
-`${EMERGENT_INSTALL_PREFIX}` is the location at which Emergent was installed, `${EXECUTABLE}` is your application's executable name, and `${SOURCE_FILES}` is a list of your application's source files.
+`${EMERGENT_INSTALL_PREFIX}` is the location at which Emergent was installed, `${EXECUTABLE_TARGET}` is your application's executable target, and `${SOURCE_FILES}` is a list of your application's source files.
 
-For more in-depth examples, see the [`src/examples`](./src/examples) directory.
+For more in-depth examples, see the [`modules/emergent/src/examples`](./modules/emergent/src/examples) directory.
 
 ## License
 
