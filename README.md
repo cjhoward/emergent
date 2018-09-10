@@ -78,13 +78,13 @@ Creating an application with Emergent is as simple as deriving from the `Emergen
 
 The `Emergent::Application` class provides virtual functions such as `setup()`, `update()`, `render()`, and `exit()`, which are called from within the `execute()` function and can be overridden.
 
-To build an Emergent application using CMake, add the following to its `CMakeLists.txt`:
+To build an Emergent application using CMake, set `CMAKE_PREFIX_PATH` to the location at which Emergent was installed then add the following to your `CMakeLists.txt`:
 
-	find_package(emergent REQUIRED CONFIG PATHS ${EMERGENT_INSTALL_PREFIX})
+	find_package(emergent REQUIRED CONFIG)
 	add_executable(${EXECUTABLE_TARGET} ${SOURCE_FILES})
 	target_link_libraries(${EXECUTABLE_TARGET} emergent)
 
-`${EMERGENT_INSTALL_PREFIX}` is the location at which Emergent was installed, `${EXECUTABLE_TARGET}` is your application's executable target, and `${SOURCE_FILES}` is a list of your application's source files.
+Where `${EXECUTABLE_TARGET}` is your application's executable target and `${SOURCE_FILES}` is a list of your application's source files.
 
 For more in-depth examples, see the [`modules/emergent/src/examples`](./modules/emergent/src/examples) directory.
 
