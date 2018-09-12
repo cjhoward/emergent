@@ -25,6 +25,21 @@ namespace Emergent
 
 void Animator::animate(float dt)
 {
+	// Process queued animations
+	for (AnimationBase* animation: queuedAnimations)
+	{
+		animations.push_back(animation);
+	}
+	queuedAnimations.clear();
+
+	// Process dequeued animations
+	for (AnimationBase* animation: dequeuedAnimations)
+	{
+		animations.remove(animation);
+	}
+	dequeuedAnimations.clear();
+
+	// Animate playing animationss
 	for (AnimationBase* animation: animations)
 	{
 		if (animation->isPlaying())
@@ -36,16 +51,19 @@ void Animator::animate(float dt)
 
 void Animator::addAnimation(AnimationBase* animation)
 {
-	animations.push_back(animation);
+	queuedAnimations.push_back(animation);
 }
 
 void Animator::removeAnimation(AnimationBase* animation)
 {
-	animations.remove(animation);
+	queuedAnimations.remove(animation);
+	dequeuedAnimations.push_back(animation);
 }
 
 void Animator::removeAnimations()
 {
+	queuedAnimations.clear();
+	dequeuedAnimations.clear();
 	animations.clear();
 }
 

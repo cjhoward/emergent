@@ -29,6 +29,8 @@ namespace Emergent
  * @param x Start of the interpolation range.
  * @param y End of the interpolation range.
  * @param a Interpolation ratio.
+ *
+ * @ingroup math
  */
 template <typename T>
 inline T lerp(const T& x, const T& y, float a)

@@ -63,6 +63,8 @@ public:
 
 private:
 	std::list<AnimationBase*> animations;
+	std::list<AnimationBase*> queuedAnimations;
+	std::list<AnimationBase*> dequeuedAnimations;
 };
 
 } // namespace Emergent
