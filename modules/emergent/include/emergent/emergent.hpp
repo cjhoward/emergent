@@ -135,6 +135,7 @@
 #include <emergent/font/glyph-metrics.hpp>
 #include <emergent/font/kerning-table.hpp>
 #include <emergent/font/texture-atlas.hpp>
+#include <emergent/font/texture-packer.hpp>
 #include <emergent/font/unicode-range.hpp>
 
 /**

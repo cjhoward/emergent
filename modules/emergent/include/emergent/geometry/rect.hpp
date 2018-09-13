@@ -42,6 +42,9 @@ public:
 	
 	const Vector2& getMin() const;
 	const Vector2& getMax() const;
+
+	float getWidth() const;
+	float getHeight() const;
 	
 	bool intersects(const Rect& rect) const;
 	bool contains(const Vector2& point) const;
@@ -75,6 +78,16 @@ inline const Vector2& Rect::getMin() const
 inline const Vector2& Rect::getMax() const
 {
 	return max;
+}
+
+inline float Rect::getWidth() const
+{
+	return max.x - min.x;
+}
+
+inline float Rect::getHeight() const
+{
+	return max.y - min.y;
 }
 
 inline bool Rect::intersects(const Rect& rect) const

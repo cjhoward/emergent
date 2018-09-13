@@ -21,77 +21,14 @@
 #define EMERGENT_FONT_TEXTURE_ATLAS_HPP
 
 #include <emergent/geometry/rect.hpp>
-#include <cstdlib>
+#include <map>
+#include <string>
 
 namespace Emergent
 {
 
-class TextureAtlas;
-
 /**
- * Texture atlas binary tree node.
- *
- * @ingroup font
- */
-class TextureAtlasNode
-{
-public:
-	/**
-	 * Returns bounds describing the position of a texture.
-	 *
-	 * @return Bounds of the position of a texture.
-	 */
-	const Rect& getBounds() const;
-	
-private:
-	friend class TextureAtlas;
-	
-	/**
-	 * Creates an instance of TextureAtlasNode.
-	 */
-	TextureAtlasNode();
-	
-	/**
-	 * Destroys an instance of TextureAtlasNode.
-	 */
-	~TextureAtlasNode();
-	
-	/**
-	 * Inserts a texture into the tree.
-	 *
-	 * @param width Specifies the width of the texture.
-	 * @param height Specifies the height of the texture.
-	 * @return Pointer to the node containing the inserted texture, or `nullptr` if the texture could not be inserted.
-	 */
-	TextureAtlasNode* insert(unsigned int width, unsigned int height);
-	
-	TextureAtlasNode* children[2];
-	Rect bounds;
-	bool reserved;
-};
-
-inline TextureAtlasNode::TextureAtlasNode()
-{
-	children[0] = nullptr;
-	children[1] = nullptr;
-	reserved = false;
-}
-
-inline TextureAtlasNode::~TextureAtlasNode()
-{
-	delete children[0];
-	delete children[1];
-}
-
-inline const Rect& TextureAtlasNode::getBounds() const
-{
-	return bounds;
-}
-
-/**
- * Manages subtextures.
- *
- * @see http://www.blackpawn.com/texts/lightmaps/
+ * An atlas of texures.
  *
  * @ingroup font
  */
@@ -99,61 +36,46 @@ class TextureAtlas
 {
 public:
 	/**
-	 * Creates an instance of TextureAtlas.
-	 *
-	 * @param width Specifies the width of the texture atlas.
-	 * @param height Specifies the height of the texture atlas.
-	 */
-	TextureAtlas(unsigned int width, unsigned int height);
-	
-	/**
-	 * Destroys an instance of TextureAtlas.
-	 */
-	~TextureAtlas();
-	
-	/**
 	 * Inserts a texture into the atlas.
 	 *
-	 * @param width Specifies the width of the texture.
-	 * @param height Specifies the height of the texture.
-	 * @return Pointer to the node containing the inserted texture, or `nullptr` if the texture could not be inserted.
+	 * @param name Name of the texture to insert.
+	 * @param bounds Bounds of the texture.
 	 */
-	const TextureAtlasNode* insert(unsigned int width, unsigned int height);
-	
+	void insert(const std::string& name, const Rect& bounds);
+
+	/**
+	 * Removes a texture from the atlas.
+	 *
+	 * @param name Name of the texture to remove.
+	 */
+	void remove(const std::string& name);
+
 	/**
 	 * Removes all textures from the atlas.
 	 */
 	void clear();
-	
+
 	/**
-	 * Returns the width of the texture atlas.
+	 * Returns whether or not a texture is in the atlas.
 	 *
-	 * @return Width of the texture atlas.
+	 * @param name Name of a texture.
+	 * @return true if the texture is in the atlas, false otherwise.
 	 */
-	unsigned int getWidth() const;
-	
+	bool hasTexture(const std::string& name) const;
+
 	/**
-	 * Returns the height of the texture atlas.
+	 * Returns the bounds of a texture in the atlas.
 	 *
-	 * @return Height of the texture atlas.
+	 * @param name Name of the texture.
+	 * @return Bounds of the texture.
+	 *
+	 * @throw std::runtime_error Missing texture.
 	 */
-	unsigned int getHeight() const;
-	
+	const Rect& getBounds(const std::string& name) const;
+
 private:
-	unsigned int width;
-	unsigned int height;
-	TextureAtlasNode root;
+	std::map<std::string, Rect> atlas;
 };
-
-inline unsigned int TextureAtlas::getWidth() const
-{
-	return width;
-}
-
-inline unsigned int TextureAtlas::getHeight() const
-{
-	return height;
-}
 
 } // namespace Emergent
 

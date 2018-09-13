@@ -32,7 +32,7 @@ namespace Emergent
 {
 
 class BillboardBatch;
-class TextureAtlas;
+class TexturePacker;
 class Image;
 
 /**
@@ -135,7 +135,7 @@ private:
 	FontMetrics fontMetrics;
 	std::map<char32_t, Glyph> glyphs;
 	KerningTable kerningTable;
-	TextureAtlas* atlas;
+	TexturePacker* texturePacker;
 	Texture2D texture;
 };
 

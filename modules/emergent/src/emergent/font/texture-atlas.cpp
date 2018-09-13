@@ -18,102 +18,48 @@
  */
 
 #include <emergent/font/texture-atlas.hpp>
+#include <stdexcept>
 
 namespace Emergent
 {
 
-TextureAtlasNode* TextureAtlasNode::insert(unsigned int width, unsigned int height)
+void TextureAtlas::insert(const std::string& name, const Rect& bounds)
 {
-	// If not a leaf node
-	if (children[0] && children[1])
-	{
-		// Insert into first child
-		TextureAtlasNode* node = children[0]->insert(width, height);
-		if (node)
-		{
-			return node;
-		}
-		
-		// First child full, insert into second
-		return children[1]->insert(width, height);
-	}
-	
-	// Check if texture already exists
-	if (reserved)
-	{
-		return nullptr;
-	}
-	
-	unsigned int boundsWidth = bounds.getMax()[0] - bounds.getMin()[0];
-	unsigned int boundsHeight = bounds.getMax()[1] - bounds.getMin()[1];
-	
-	// Check if area cannot accommodate texture
-	if (width > boundsWidth || height > boundsHeight)
-	{
-		return nullptr;
-	}
-	
-	// Check for a perfect fit.
-	if (width == boundsWidth && height == boundsHeight)
-	{
-		return this;
-	}
-	
-	// Split node
-	children[0] = new TextureAtlasNode();
-	children[1] = new TextureAtlasNode();
-	
-	// Determine split direction
-	int dw = (int)boundsWidth - (int)width;
-	int dh = (int)boundsHeight - (int)height;
-	
-	if (dw > dh)
-	{
-		children[0]->bounds.setMin(bounds.getMin());
-		children[0]->bounds.setMax(Vector2(bounds.getMin()[0] + width, bounds.getMax()[1]));
-			
-		children[1]->bounds.setMin(Vector2(bounds.getMin()[0] + width, bounds.getMin()[1]));
-		children[1]->bounds.setMax(bounds.getMax());
-	}
-	else
-	{		
-		children[0]->bounds.setMin(bounds.getMin());
-		children[0]->bounds.setMax(Vector2(bounds.getMax()[0], bounds.getMin()[1] + height));
-			
-		children[1]->bounds.setMin(Vector2(bounds.getMin()[0], bounds.getMin()[1] + height));
-		children[1]->bounds.setMax(bounds.getMax());
-	}
-	
-	return children[0]->insert(width, height);
+	atlas[name] = bounds;
 }
 
-TextureAtlas::TextureAtlas(unsigned int width, unsigned int height):
-	width(width),
-	height(height)
+void TextureAtlas::remove(const std::string& name)
 {
-	root.bounds.setMin(Vector2(0, 0));
-	root.bounds.setMax(Vector2(width, height));
-}
-
-TextureAtlas::~TextureAtlas()
-{}
-
-const TextureAtlasNode* TextureAtlas::insert(unsigned int width, unsigned int height)
-{
-	TextureAtlasNode* node = root.insert(width, height);
-	if (node)
+	auto it = atlas.find(name);
+	if (it != atlas.end())
 	{
-		node->reserved = true;
+		atlas.erase(it);
 	}
-	
-	return node;
 }
 
 void TextureAtlas::clear()
 {
-	delete root.children[0];
-	delete root.children[1];
-	root.children[0] = root.children[1] = nullptr;
+	atlas.clear();
+}
+
+bool TextureAtlas::hasTexture(const std::string& name) const
+{
+	auto it = atlas.find(name);
+	return (it != atlas.end());
+}
+
+const Rect& TextureAtlas::getBounds(const std::string& name) const
+{
+	auto it = atlas.find(name);
+	if (it != atlas.end())
+	{
+		return it->second;
+	}
+	else
+	{
+		std::string error = std::string("TextureAtlas::getBounds(): Missing texture: \"") + name + std::string("\"");
+		throw std::runtime_error(error.c_str());
+	}
 }
 
 } // namespace Emergent

@@ -18,7 +18,7 @@
  */
 
 #include <emergent/font/font.hpp>
-#include <emergent/font/texture-atlas.hpp>
+#include <emergent/font/texture-packer.hpp>
 #include <emergent/graphics/billboard.hpp>
 #include <iostream>
 
@@ -46,12 +46,12 @@ Font::Font(unsigned int width, unsigned int height)
 	texture.setWidth(width);
 	texture.setHeight(height);
 	
-	atlas = new TextureAtlas(width, height);
+	texturePacker = new TexturePacker(Rect(Vector2(0), Vector2(width, height)));
 }
 
 Font::~Font()
 {
-	delete atlas;
+	delete texturePacker;
 }
 
 void Font::puts(BillboardBatch* batch, const Vector3& origin, const std::u32string& string, const Vector4& color, std::size_t offset, std::size_t* count) const
@@ -64,8 +64,9 @@ void Font::puts(BillboardBatch* batch, const Vector3& origin, const std::u32stri
 	float cursorX = origin.x;
 	float cursorY = origin.y + fontMetrics.getAscender();
 
-	float atlasWidth = static_cast<float>(atlas->getWidth());
-	float atlasHeight = static_cast<float>(atlas->getHeight());
+	const Rect& packingBounds = texturePacker->getBounds();
+	float atlasWidth = packingBounds.getWidth();
+	float atlasHeight = packingBounds.getHeight();
 	
 	std::size_t currentBillboard = offset;
 	char32_t previousCharacter = U'\0';
@@ -172,7 +173,7 @@ float Font::getWidth(const std::u32string& string) const
 
 bool Font::createGlyph(char32_t charcode, const GlyphMetrics& metrics, const unsigned char* data, unsigned int width, unsigned int height)
 {
-	const TextureAtlasNode* node = atlas->insert(width, height);
+	const TexturePackerNode* node = texturePacker->pack(width, height);
 	if (!node)
 	{
 		return false;
