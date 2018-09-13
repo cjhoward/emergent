@@ -99,7 +99,9 @@ private:
 	virtual void setWindowInputGrabbed(Window* window, bool grabbed);
 	virtual void makeWindowCurrent(Window* window);
 	virtual void swapWindowBuffers(Window* window);
-
+	virtual void warpMousePosition(Window* window, int x, int y);
+	virtual void setRelativeMouseMode(Mouse* mouse, bool enabled);
+	virtual void setMouseVisible(Mouse* mouse, bool visible);
 
 	static const Scancode scancodeTable[287];
 

@@ -66,6 +66,8 @@ EventBase* MouseMovedEvent::clone() const
 	event->mouse = mouse;
 	event->x = x;
 	event->y = y;
+	event->dx = dx;
+	event->dy = dy;
 	return event;
 }
 

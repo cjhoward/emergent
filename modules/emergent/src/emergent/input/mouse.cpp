@@ -75,5 +75,20 @@ void Mouse::scroll(int x, int y)
 	getDeviceManager()->getOSInterface()->getEventDispatcher()->queue(event);
 }
 
+void Mouse::warp(Window* window, int x, int y)
+{
+	getDeviceManager()->getOSInterface()->warpMousePosition(window, x, y);
+}
+
+void Mouse::setRelativeMode(bool enabled)
+{
+	getDeviceManager()->getOSInterface()->setRelativeMouseMode(this, enabled);
+}
+
+void Mouse::setVisible(bool visible)
+{
+	getDeviceManager()->getOSInterface()->setMouseVisible(this, visible);
+}
+
 } // namespace Emergent
 

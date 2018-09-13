@@ -53,6 +53,14 @@ SDLInterface::SDLInterface(EventDispatcher* eventDispatcher):
 		throw std::runtime_error(error.c_str());
 	}
 
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+
 	// Register displays
 	int displayCount = SDL_GetNumVideoDisplays();
 	for (int i = 0; i < displayCount; ++i)
@@ -204,6 +212,11 @@ void SDLInterface::routeEvents()
 				event.mouse = mouse;
 				event.x = sdlEvent.motion.x;
 				event.y = sdlEvent.motion.y;
+				event.dx = sdlEvent.motion.xrel;
+				event.dy = sdlEvent.motion.yrel;
+
+
+				OSInterface::updateMousePosition(mouse, sdlEvent.motion.x, sdlEvent.motion.y);
 
 				eventDispatcher->queue(event);
 				break;
@@ -691,6 +704,22 @@ void SDLInterface::swapWindowBuffers(Window* window)
 {
 	WindowData* data = static_cast<WindowData*>(window->getWindowData());
 	SDL_GL_SwapWindow(data->window);
+}
+
+void SDLInterface::warpMousePosition(Window* window, int x, int y)
+{
+	WindowData* data = static_cast<WindowData*>(window->getWindowData());
+	SDL_WarpMouseInWindow(data->window, x, y);
+}
+
+void SDLInterface::setRelativeMouseMode(Mouse* mouse, bool enabled)
+{
+	SDL_SetRelativeMouseMode((enabled) ? SDL_TRUE : SDL_FALSE);
+}
+
+void SDLInterface::setMouseVisible(Mouse* mouse, bool visible)
+{
+	SDL_ShowCursor((visible) ? SDL_ENABLE : SDL_DISABLE);
 }
 
 const Scancode SDLInterface::scancodeTable[287] =

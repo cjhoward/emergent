@@ -26,6 +26,9 @@
 namespace Emergent
 {
 
+class OSInterface;
+class Window;
+
 /**
  * Enumerates the mouse wheel axes.
  *
@@ -98,6 +101,29 @@ public:
 	 * Simulates mouse wheel scrolling. Notifies all mouse wheel observers via MouseWheelObserver::mouseWheelScrolled().
 	 */
 	void scroll(int x, int y);
+
+	/**
+	 * Warps the mouse to the specified position in a window.
+	 *
+	 * @param window Window to which the mouse should warp.
+	 * @param x X-coordinate of the new mouse position.
+	 * @param y Y-coordinate of the new mouse position.
+	 */
+	void warp(Window* window, int x, int y);
+
+	/**
+	 * Enables or disables relative mouse mode.
+	 *
+	 * @param enabled Whether to enable relative mouse mode.
+	 */
+	void setRelativeMode(bool enabled);
+
+	/**
+	 * Shows or hides the mouse cursor.
+	 *
+	 * @param visible Whether the mouse cursor should be visible.
+	 */
+	void setVisible(bool visible);
 	
 	/// Returns the current mouse position.
 	const std::tuple<int, int>& getCurrentPosition() const;
@@ -106,6 +132,7 @@ public:
 	const std::tuple<int, int>& getPreviousPosition() const;
 	
 private:
+	friend class OSInterface;
 	std::tuple<int, int> currentPosition;
 	std::tuple<int, int> previousPosition;
 };

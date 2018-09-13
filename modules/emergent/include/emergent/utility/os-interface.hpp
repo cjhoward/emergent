@@ -25,6 +25,7 @@ namespace Emergent
 
 class DeviceManager;
 class EventDispatcher;
+class Mouse;
 class Window;
 class WindowManager;
 
@@ -96,7 +97,10 @@ protected:
 	DeviceManager* deviceManager;
 	WindowManager* windowManager;
 
+	void updateMousePosition(Mouse* mouse, int x, int y);
+
 private:
+	friend class Mouse;
 	friend class Window;
 	friend class WindowManager;
 
@@ -124,6 +128,9 @@ private:
 	virtual void setWindowInputGrabbed(Window* window, bool grabbed) = 0;
 	virtual void makeWindowCurrent(Window* window) = 0;
 	virtual void swapWindowBuffers(Window* window) = 0;
+	virtual void warpMousePosition(Window* window, int x, int y) = 0;
+	virtual void setRelativeMouseMode(Mouse* mouse, bool enabled) = 0;
+	virtual void setMouseVisible(Mouse* mouse, bool visible) = 0;
 };
 
 inline const EventDispatcher* OSInterface::getEventDispatcher() const

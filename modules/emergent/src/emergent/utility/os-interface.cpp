@@ -20,6 +20,7 @@
 #include <emergent/utility/os-interface.hpp>
 #include <emergent/utility/device-manager.hpp>
 #include <emergent/window/window-manager.hpp>
+#include <emergent/input/mouse.hpp>
 
 namespace Emergent
 {
@@ -36,6 +37,13 @@ OSInterface::~OSInterface()
 {
 	delete deviceManager;
 	delete windowManager;
+}
+
+void OSInterface::updateMousePosition(Mouse* mouse, int x, int y)
+{
+	mouse->previousPosition = mouse->currentPosition;
+	std::get<0>(mouse->currentPosition) = x;
+	std::get<1>(mouse->currentPosition) = y;
 }
 
 } // namespace Emergent
