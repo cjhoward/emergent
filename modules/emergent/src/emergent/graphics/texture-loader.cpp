@@ -167,7 +167,7 @@ Texture2D* TextureLoader::load2D(const std::string& filename)
 	// Set wrapping and filtering parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (wrapRepeatS) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (wrapRepeatT) ? GL_REPEAT : GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
 	// Set anisotropic filtering

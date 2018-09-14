@@ -127,8 +127,7 @@ private:
 };
 
 template <typename T>
-AnimationClip<T>::AnimationClip():
-	interpolationFunction(lerp<T>)
+AnimationClip<T>::AnimationClip()
 {
 	calculateTimeFrame();
 }
