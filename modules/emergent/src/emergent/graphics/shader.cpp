@@ -61,7 +61,11 @@ ShaderPermutation::~ShaderPermutation()
 	glDeleteProgram(shaderProgram);
 }
 
-Shader::Shader()
+Shader::Shader():
+	hasVertexDirective(0),
+	hasGeometryDirective(0),
+	hasFragmentDirective(0),
+	activePermutation(nullptr)
 {}
 
 Shader::~Shader()
@@ -70,48 +74,28 @@ Shader::~Shader()
 	deleteAllPermutations();
 }
 
-bool Shader::loadSource(const std::string& filename)
+void Shader::setSource(const std::vector<std::string>& source)
 {
 	// If shader has already been loaded
-	if (!source.empty())
+	if (!this->source.empty())
 	{
-		// Unload shader
-		source.clear();
+		// Delete shader permutations
 		deleteAllPermutations();
 		activePermutation = nullptr;
 	}
-	
-	// Reset preprocessor data
-	permutationDefinitionLine = 0;
-	shaderTypeDefinitionLine = 0;
-	hasVertexDirective = false;
-	hasGeometryDirective = false;
-	hasFragmentDirective = false;
-	
-	// Set source filename
-	sourceFilename = filename;
-	
-	// Attempt to read the shader source file
-	if (!read(filename, &source, 0))
-	{
-		return false;
-	}
-	
-	// Attempt to preprocess the shader source
-	if (!preprocess(filename, &source))
-	{
-		source.clear();
-		return false;
-	}
-	
-	return true;
+
+	// Copy source
+	this->source = source;
+
+	// Preprocess source
+	preprocess();
 }
 
 bool Shader::generatePermutation(std::uint32_t permutation)
 {
 	if (hasPermutation(permutation))
 	{
-		return false;
+		return true;
 	}
 	
 	GLuint shaderProgram = 0;
@@ -147,7 +131,7 @@ bool Shader::generatePermutation(std::uint32_t permutation)
 		std::string log;
 		if (!checkShaderCompileStatus(vertexShader, &log))
 		{
-			std::cerr << "Failed to compile vertex shader from \"" << sourceFilename << "\": " << log << std::endl;
+			std::cerr << "Failed to compile vertex shader from \"" << c_str << "\": " << log << std::endl;
 			glDeleteShader(vertexShader);
 			vertexShader = 0;
 			error = true;
@@ -178,7 +162,7 @@ bool Shader::generatePermutation(std::uint32_t permutation)
 		std::string log;
 		if (!checkShaderCompileStatus(geometryShader, &log))
 		{
-			std::cerr << "Failed to compile geometry shader from \"" << sourceFilename << "\": " << log << std::endl;
+			std::cerr << "Failed to compile geometry shader from \"" << c_str << "\": " << log << std::endl;
 			glDeleteShader(geometryShader);
 			geometryShader = 0;
 			error = true;
@@ -209,7 +193,7 @@ bool Shader::generatePermutation(std::uint32_t permutation)
 		std::string log;
 		if (!checkShaderCompileStatus(fragmentShader, &log))
 		{
-			std::cerr << "Failed to compile fragment shader from \"" << sourceFilename << "\": " << log << std::endl;
+			std::cerr << "Failed to compile fragment shader from \"" << c_str << "\": " << log << std::endl;
 			glDeleteShader(fragmentShader);
 			fragmentShader = 0;
 			error = true;
@@ -243,7 +227,7 @@ bool Shader::generatePermutation(std::uint32_t permutation)
 	if (!checkShaderProgramLinkStatus(shaderProgram, &log))
 	{
 		// A shader program linking error occurred, detach and delete all shaders and delete the shader program
-		std::cerr << "Failed to link shader program \"" << sourceFilename << "\": " << log << std::endl;
+		std::cerr << "Failed to link shader program: \"" << log << "\"" << std::endl;
 		if (vertexShader != 0)
 		{
 			glDetachShader(shaderProgram, vertexShader);
@@ -316,26 +300,6 @@ bool Shader::activate(std::uint32_t permutation)
 	return true;
 }
 
-bool Shader::read(const std::string& filename, std::vector<std::string>* source, std::size_t position)
-{
-	// Attempt to open file
-	std::ifstream file(filename.c_str());
-	if (!file)
-	{
-		return false;
-	}
-	
-	// Read file lines into vector
-	std::string line;
-	while (std::getline(file, line))
-	{
-		source->insert(source->begin() + position, line);
-		++position;
-	}
-	
-	return true;
-}
-
 std::string Shader::generateSourceBuffer(const std::vector<std::string>& source)
 {
 	std::ostringstream stream;
@@ -383,23 +347,21 @@ bool Shader::checkShaderProgramLinkStatus(GLuint program, std::string* log)
 	return true;
 }
 
-bool Shader::preprocess(const std::string& filename, std::vector<std::string>* source)
+void Shader::preprocess()
 {
-	// Determine directory path
-	std::string directoryPath;
-	std::size_t delimeterIndex;
-	delimeterIndex = filename.find_last_of("/\\");
-	if (delimeterIndex != std::string::npos)
-	{
-		directoryPath = filename.substr(0, delimeterIndex + 1);
-	}
-	
+	// Reset preprocessor data
+	permutationDefinitionLine = 0;
+	shaderTypeDefinitionLine = 0;
+	hasVertexDirective = false;
+	hasGeometryDirective = false;
+	hasFragmentDirective = false;
+
 	// For each line in the source
 	std::size_t lineIndex = 0;
-	while (lineIndex < source->size())
+	while (lineIndex < source.size())
 	{
 		// Get string containing current line
-		const std::string& line = (*source)[lineIndex];
+		const std::string& line = source[lineIndex];
 		
 		// Tokenize line
 		std::vector<std::string> tokens;
@@ -415,39 +377,13 @@ bool Shader::preprocess(const std::string& filename, std::vector<std::string>* s
 				// Inject macros immediately following `#version` directive
 				permutationDefinitionLine = lineIndex + 1;
 				shaderTypeDefinitionLine = lineIndex + 2;
-				source->insert(source->begin() + permutationDefinitionLine, std::string());
-				source->insert(source->begin() + shaderTypeDefinitionLine, std::string());
+				source.insert(source.begin() + permutationDefinitionLine, std::string());
+				source.insert(source.begin() + shaderTypeDefinitionLine, std::string());
 				lineIndex += 2;
 			}
 			else if (tokens[0] == "#pragma" && tokens.size() > 1)
 			{
-				if (tokens[1] == "include")
-				{
-					if (tokens.size() == 3)
-					{
-						// Construct path to include file
-						std::string includeFilename = directoryPath + tokens[2].substr(1, tokens[2].length() - 2);
-						
-						// Erase current line
-						source->erase(source->begin() + lineIndex);
-						
-						// Read include file into sources
-						if (!read(includeFilename, source, lineIndex))
-						{
-							std::cerr << "Failed to include file \"" << includeFilename << "\" from shader \"" << filename << "\"" << std::endl;
-							return false;
-						}
-						
-						// Process current line again
-						continue;
-					}
-					else
-					{
-						std::cerr << "Invalid preprocessor include directive: \"" << line << "\" from shader \"" << filename << "\"" << std::endl;
-						return false;
-					}
-				}
-				else if (tokens[1] == "vertex")
+				if (tokens[1] == "vertex")
 				{
 					hasVertexDirective = true;
 				}
@@ -464,8 +400,7 @@ bool Shader::preprocess(const std::string& filename, std::vector<std::string>* s
 		
 		++lineIndex;
 	}
-	
-	return true;
+
 }
 
 void Shader::reevaluateInputs(ShaderPermutation* permutation)
@@ -556,7 +491,7 @@ void Shader::reevaluateInputs(ShaderPermutation* permutation)
 		// Check if data type is supported
 		if (unsupported)
 		{
-			std::cerr << "Shader uniform \"" << uniformName << "\" from shader \"" << sourceFilename << "\" has an unsupported data type." << std::endl;
+			std::cerr << "Shader uniform \"" << uniformName << "\" has an unsupported data type." << std::endl;
 			continue;
 		}
 		
@@ -564,7 +499,7 @@ void Shader::reevaluateInputs(ShaderPermutation* permutation)
 		GLint uniformLocation = glGetUniformLocation(permutation->shaderProgram, uniformName);
 		if (uniformLocation == -1)
 		{
-			std::cerr << "Unable to get location for uniform \"" << uniformName << "\" from shader \"" << sourceFilename << "\"" << std::endl;
+			std::cerr << "Unable to get location for uniform \"" << uniformName << "\"" << std::endl;
 			continue;
 		}
 		
@@ -577,7 +512,7 @@ void Shader::reevaluateInputs(ShaderPermutation* permutation)
 			
 			if (variableType != input->getDataType() || uniformSize != input->getElementCount())
 			{
-				std::cerr << "Shader permutation uniform \"" << uniformName << "\" in shader \"" << sourceFilename << "\" has differing type or size from preceding permutation. The shader input will not be connected." << std::endl;
+				std::cerr << "Shader permutation uniform \"" << uniformName << "\" has differing type or size from preceding permutation. The shader input will not be connected." << std::endl;
 			}
 			else
 			{

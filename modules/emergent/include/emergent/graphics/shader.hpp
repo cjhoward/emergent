@@ -84,19 +84,18 @@ public:
 	 * Destroys a shader.
 	 */
 	~Shader();
-	
+
 	/**
-	 * Loads the shader source from a file. No shaders are generated during this process.
+	 * Sets the shader source.
 	 *
-	 * @param filename Path to a shader source file.
+	 * @param source Vector of lines of source code.
 	 */
-	bool loadSource(const std::string& filename);
+	void setSource(const std::vector<std::string>& source);
 	
 	/**
 	 * Generates a shader permutation. The specified 32-bit permutation value is injected into the shader source before compilation as the preprocessor definition `__PERMUTATION__`. This definition can be parsed for bit flags and other information in order to selectively enable features at compile-time.
 	 *
 	 * Preprocessor directives:
-	 * * `#pragma include "file.inc"` will replace the current line with the contents of the file `file.inc`
 	 * * `#pragma vertex` causes a vertex shader to be generated with the preprocessor definition `__VERTEX__` defined.
 	 * * `#pragma geometry` causes a geometry shader to be generated with the preprocessor definition `__GEOMETRY__` defined.
 	 * * `#pragma fragment` causes a fragment shader to be generated with the preprocessor definition `__FRAGMENT__` defined.
@@ -190,7 +189,7 @@ private:
 	/**
 	 * Preprocesses the shader source code. This will replace `#pragma include` directives with the contents of their referenced files and determine which types of shader (vertex, fragment, and geometry) to produce when generating a shader permutation by checking for `#pragma vertex`, `#pragma geometry`, and `#pragma fragment` directives.
 	 */
-	bool preprocess(const std::string& filename, std::vector<std::string>* source);
+	void preprocess();
 	
 	/**
 	 * Scans a shader permutation for active uniforms and sets up the shader inputs accordingly. This should be called every time a new shader permutation is generated.
@@ -208,7 +207,7 @@ private:
 	void deleteAllInputs();
 	
 	/**
-	 * Links a material to this shader. Every time a new shader permutation is generated or destroyed, the material shader variables will  be reconnected.
+	 * Links a material to this shader. Every time a new shader permutation is generated or destroyed, the material shader variables will be reconnected.
 	 */
 	void linkMaterial(Material* material);
 	
@@ -222,7 +221,6 @@ private:
 	 */
 	void reconnectLinkedMaterials();
 	
-	std::string sourceFilename;
 	std::vector<std::string> source;
 	std::size_t permutationDefinitionLine;
 	std::size_t shaderTypeDefinitionLine;
