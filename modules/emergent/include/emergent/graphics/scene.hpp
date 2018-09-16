@@ -26,6 +26,7 @@ namespace Emergent
 {
 
 class SceneLayer;
+class StepInterpolator;
 
 /**
  * A three-dimensional scene consisting of one or more scene layers.
@@ -37,8 +38,10 @@ class Scene
 public:
 	/**
 	 * Creates an instance of Scene.
+	 *
+	 * @param interpolator The interpolator which will be used to interpolated scene object variables.
 	 */
-	Scene();
+	Scene(StepInterpolator* interpolator);
 	
 	/**
 	 * Destroys an instance of Scene.
@@ -56,6 +59,12 @@ public:
 	 * Removes all layers from the scene.
 	 */
 	void removeLayers();
+
+	/// Returns the scene's interpolator.
+	const StepInterpolator* getInterpolator() const;
+
+	/// @copydoc Scene::getInterpolator() const
+	StepInterpolator* getInterpolator();
 	
 	/**
 	 * Returns the number of layers in the scene.
@@ -72,10 +81,20 @@ public:
 	
 	/// @copydoc Scene::getLayer(std::size_t) const
 	SceneLayer* getLayer(std::size_t index);
-	
 private:
+	StepInterpolator* interpolator;
 	std::vector<SceneLayer*> layers;
 };
+
+inline const StepInterpolator* Scene::getInterpolator() const
+{
+	return interpolator;
+}
+
+inline StepInterpolator* Scene::getInterpolator()
+{
+	return interpolator;
+}
 
 inline std::size_t Scene::getLayerCount() const
 {

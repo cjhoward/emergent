@@ -17,37 +17,32 @@
  * along with Emergent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EMERGENT_MATH_INTERPOLATION_HPP
-#define EMERGENT_MATH_INTERPOLATION_HPP
+#include <emergent/math/interpolation.hpp>
+#include <emergent/geometry/aabb.hpp>
+#include <emergent/math/transform.hpp>
 
 namespace Emergent
 {
 
-class AABB;
-class Transform;
-
-/**
- * Linearly interpolates between two variables.
- *
- * @param x Start of the interpolation range.
- * @param y End of the interpolation range.
- * @param a Interpolation ratio.
- *
- * @ingroup math
- */
-template <typename T>
-inline T lerp(const T& x, const T& y, float a)
+template <>
+AABB lerp<AABB>(const AABB& x, const AABB& y, float a)
 {
-	return x * (1.0f - a) + y * a;
+	AABB result;
+	result.setMin(lerp<Vector3>(x.getMin(), y.getMin(), a));
+	result.setMax(lerp<Vector3>(x.getMax(), y.getMax(), a));
+	return result;
 }
 
 template <>
-AABB lerp<AABB>(const AABB& x, const AABB& y, float a);
-
-template <>
-Transform lerp<Transform>(const Transform& x, const Transform& y, float a);
+Transform lerp<Transform>(const Transform& x, const Transform& y, float a)
+{
+	Transform result;
+	result.translation = lerp<Vector3>(x.translation, y.translation, a);
+	result.rotation = glm::slerp(x.rotation, y.rotation, a);
+	result.scale = lerp<Vector3>(x.scale, y.scale, a);
+	return result;
+}
 
 } // namespace Emergent
 
-#endif // EMERGENT_MATH_INTERPOLATION_HPP
 

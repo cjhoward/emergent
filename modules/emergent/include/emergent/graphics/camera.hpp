@@ -69,21 +69,32 @@ public:
 	float getClipTop() const;
 	float getClipNear() const;
 	float getClipFar() const;
-
 	const Matrix4& getView() const;
 	const Matrix4& getProjection() const;
 	const Matrix4& getInverseProjection() const;
 	const Matrix4& getViewProjection() const;
 	const Matrix4& getInverseViewProjection() const;
-	
 	const ViewFrustum& getViewFrustum() const;
 	
+	float getSubstepFOV() const;
+	float getSubstepAspectRatio() const;
+	float getSubstepClipLeft() const;
+	float getSubstepClipRight() const;
+	float getSubstepClipBottom() const;
+	float getSubstepClipTop() const;
+	float getSubstepClipNear() const;
+	float getSubstepClipFar() const;
+	Matrix4 getSubstepView() const;
+	Matrix4 getSubstepProjection() const;
+	Matrix4 getSubstepInverseProjection() const;
+	Matrix4 getSubstepViewProjection() const;
+	Matrix4 getSubstepInverseViewProjection() const;
+	ViewFrustum getSubstepViewFrustum() const;
+
 	const BoundingVolume* getCullingMask() const;
 	bool isActive() const;
-	
 	const Compositor* getCompositor() const;
 	Compositor* getCompositor();
-	
 	std::size_t getCompositeIndex() const;
 	
 private:
@@ -92,23 +103,21 @@ private:
 	void updateView();
 	void updateProjection();
 	void updateViewProjection();
-	
-	float fov;
-	float aspectRatio;
-	
-	float clipLeft;
-	float clipRight;
-	float clipBottom;
-	float clipTop;
-	float clipNear;
-	float clipFar;
-	
+
+	bool orthographic;
+	Tween<float, lerp<float>> fov;
+	Tween<float, lerp<float>> aspectRatio;
+	Tween<float, lerp<float>> clipLeft;
+	Tween<float, lerp<float>> clipRight;
+	Tween<float, lerp<float>> clipBottom;
+	Tween<float, lerp<float>> clipTop;
+	Tween<float, lerp<float>> clipNear;
+	Tween<float, lerp<float>> clipFar;
 	Matrix4 view;
 	Matrix4 projection;
 	Matrix4 inverseProjection;
 	Matrix4 viewProjection;
 	Matrix4 inverseViewProjection;
-	
 	ViewFrustum viewFrustum;
 	
 	const BoundingVolume* cullingMask;
@@ -144,42 +153,42 @@ inline SceneObjectType Camera::getSceneObjectType() const
 
 inline float Camera::getFOV() const
 {
-	return fov;
+	return fov.getState1();
 }
 
 inline float Camera::getAspectRatio() const
 {
-	return aspectRatio;
+	return aspectRatio.getState1();
 }
 
 inline float Camera::getClipLeft() const
 {
-	return clipLeft;
+	return clipLeft.getState1();
 }
 
 inline float Camera::getClipRight() const
 {
-	return clipRight;
+	return clipRight.getState1();
 }
 
 inline float Camera::getClipBottom() const
 {
-	return clipBottom;
+	return clipBottom.getState1();
 }
 
 inline float Camera::getClipTop() const
 {
-	return clipTop;
+	return clipTop.getState1();
 }
 
 inline float Camera::getClipNear() const
 {
-	return clipNear;
+	return clipNear.getState1();
 }
 
 inline float Camera::getClipFar() const
 {
-	return clipFar;
+	return clipFar.getState1();
 }
 
 inline const Matrix4& Camera::getView() const
@@ -210,6 +219,85 @@ inline const Matrix4& Camera::getInverseViewProjection() const
 inline const ViewFrustum& Camera::getViewFrustum() const
 {
 	return viewFrustum;
+}
+
+inline float Camera::getSubstepFOV() const
+{
+	return fov.getSubstate();
+}
+
+inline float Camera::getSubstepAspectRatio() const
+{
+	return aspectRatio.getSubstate();
+}
+
+inline float Camera::getSubstepClipLeft() const
+{
+	return clipLeft.getSubstate();
+}
+
+inline float Camera::getSubstepClipRight() const
+{
+	return clipRight.getSubstate();
+}
+
+inline float Camera::getSubstepClipBottom() const
+{
+	return clipBottom.getSubstate();
+}
+
+inline float Camera::getSubstepClipTop() const
+{
+	return clipTop.getSubstate();
+}
+
+inline float Camera::getSubstepClipNear() const
+{
+	return clipNear.getSubstate();
+}
+
+inline float Camera::getSubstepClipFar() const
+{
+	return clipFar.getSubstate();
+}
+
+inline Matrix4 Camera::getSubstepView() const
+{
+	return glm::lookAt(getSubstepTranslation(), getSubstepTranslation() - getSubstepForward(), getSubstepUp());
+}
+
+inline Matrix4 Camera::getSubstepProjection() const
+{
+	if (orthographic)
+	{
+		return glm::ortho(clipLeft.getSubstate(), clipRight.getSubstate(), clipBottom.getSubstate(), clipTop.getSubstate(), clipNear.getSubstate(), clipFar.getSubstate());
+	}
+	else
+	{
+		return glm::perspective(getSubstepFOV(), getSubstepAspectRatio(), getSubstepClipNear(), getSubstepClipFar());
+	}
+}
+
+inline Matrix4 Camera::getSubstepInverseProjection() const
+{
+	return glm::inverse(getSubstepProjection());
+}
+
+inline Matrix4 Camera::getSubstepViewProjection() const
+{
+	return getSubstepProjection() * getSubstepView();
+}
+
+inline Matrix4 Camera::getSubstepInverseViewProjection() const
+{
+	return glm::inverse(getSubstepViewProjection());
+}
+
+inline ViewFrustum Camera::getSubstepViewFrustum() const
+{
+	ViewFrustum frustum;
+	frustum.setMatrices(getSubstepView(), getSubstepProjection());
+	return frustum;
 }
 
 inline const BoundingVolume* Camera::getCullingMask() const

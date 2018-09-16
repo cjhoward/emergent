@@ -18,7 +18,9 @@
  */
 
 #include <emergent/graphics/scene-layer.hpp>
+#include <emergent/graphics/scene.hpp>
 #include <emergent/graphics/scene-object.hpp>
+#include <emergent/utility/step-interpolator.hpp>
 
 namespace Emergent
 {
@@ -32,16 +34,23 @@ void SceneLayer::addObject(SceneObject* object)
 {
 	objectList.push_back(object);
 	objectMap[object->getSceneObjectType()].push_back(object);
+	registerSubstepTweens(object);
 }
 
 void SceneLayer::removeObject(SceneObject* object)
 {
 	objectList.remove(object);
 	objectMap[object->getSceneObjectType()].remove(object);
+	unregisterSubstepTweens(object);
 }
 
 void SceneLayer::removeObjects()
 {
+	for (SceneObject* object: objectList)
+	{
+		unregisterSubstepTweens(object);
+	}
+
 	objectList.clear();
 	objectMap.clear();
 }
@@ -54,6 +63,7 @@ void SceneLayer::removeObjects(SceneObjectType type)
 		for (SceneObject* object: it->second)
 		{
 			objectList.remove(object);
+			unregisterSubstepTweens(object);
 		}
 		
 		objectMap.erase(it);
@@ -69,6 +79,24 @@ const std::list<SceneObject*>* SceneLayer::getObjects(SceneObjectType type) cons
 	}
 	
 	return nullptr;
+}
+
+void SceneLayer::registerSubstepTweens(SceneObject* object)
+{
+	const std::list<TweenBase*>* substepTweens = object->getSubstepTweens();
+	for (TweenBase* variable: *substepTweens)
+	{
+		scene->getInterpolator()->addVariable(variable);
+	}
+}
+
+void SceneLayer::unregisterSubstepTweens(SceneObject* object)
+{
+	const std::list<TweenBase*>* substepTweens = object->getSubstepTweens();
+	for (TweenBase* variable: *substepTweens)
+	{
+		scene->getInterpolator()->removeVariable(variable);
+	}
 }
 
 } // namespace Emergent

@@ -18,18 +18,27 @@
  */
 
 #include <emergent/graphics/scene-object.hpp>
+#include <emergent/utility/step-interpolator.hpp>
 
 namespace Emergent
 {
 
 SceneObject::SceneObject():
-	active(true),
-	transform(Transform::getIdentity()),
-	forward(0.0f, 0.0f, -1.0f),
-	up(0.0f, 1.0f, 0.0f),
-	right(1.0f, 0.0f, 0.0f),
-	matrix(1.0f)
-{}
+	active(true)
+{
+	registerSubstepTween(&bounds);
+	registerSubstepTween(&transform);
+	registerSubstepTween(&forward);
+	registerSubstepTween(&up);
+	registerSubstepTween(&right);
+
+	transform.setState1(Transform::getIdentity());
+	forward.setState1(Vector3(0, 0, -1));
+	up.setState1(Vector3(0, 1, 0));
+	right.setState1(Vector3(1, 0, 0));
+	matrix = Matrix4(1.0f);
+	resetSubstepTweens();
+}
 
 SceneObject::~SceneObject()
 {}
@@ -41,31 +50,44 @@ void SceneObject::setActive(bool active)
 
 void SceneObject::setTransform(const Transform& transform)
 {
-	this->transform = transform;
+	this->transform.setState1(transform);
 	updateTransform();
 }
 
 void SceneObject::setTranslation(const Vector3& translation)
 {
-	transform.translation = translation;
+	transform.getState1().translation = translation;
 	updateTransform();
 }
 
 void SceneObject::setRotation(const Quaternion& rotation)
 {
-	transform.rotation = rotation;
+	transform.getState1().rotation = rotation;
 	updateTransform();
 }
 
 void SceneObject::setScale(const Vector3& scale)
 {
-	transform.scale = scale;
+	transform.getState1().scale = scale;
 	updateTransform();
 }
 
-void SceneObject::updateBounds()
+void SceneObject::resetSubstepTweens()
 {
-	bounds = calculateBounds();
+	for (TweenBase* variable: substepTweens)
+	{
+		variable->update();
+	}
+}
+
+inline void SceneObject::updateBounds()
+{
+	bounds.setState1(calculateBounds());
+}
+
+void SceneObject::registerSubstepTween(TweenBase* variable)
+{
+	substepTweens.push_back(variable);
 }
 
 AABB SceneObject::calculateBounds() const
@@ -78,14 +100,15 @@ void SceneObject::transformed()
 
 void SceneObject::updateTransform()
 {
-	forward = glm::normalize(getRotation() * Vector3(0.0f, 0.0f, -1.0f));
-	up = glm::normalize(getRotation() * Vector3(0.0f, 1.0f, 0.0f));
-	right = glm::normalize(glm::cross(forward, up));
-	up = glm::cross(right, forward);
+	forward.setState1(glm::normalize(getRotation() * Vector3(0.0f, 0.0f, -1.0f)));
+	up.setState1(glm::normalize(getRotation() * Vector3(0.0f, 1.0f, 0.0f)));
+	right.setState1(glm::normalize(glm::cross(forward.getState1(), up.getState1())));
+	up.setState1(glm::cross(right.getState1(), forward.getState1()));
 	
-	matrix = transform.toMatrix();
+	matrix = transform.getState1().toMatrix();
 	transformed();
-	bounds = calculateBounds();
+
+	updateBounds();
 }
 
 } // namespace Emergent

@@ -24,14 +24,7 @@ namespace Emergent
 {
 
 Camera::Camera():
-	fov(glm::radians(90.0f)),
-	aspectRatio(1.0f),
-	clipLeft(-1.0f),
-	clipRight(1.0f),
-	clipBottom(-1.0f),
-	clipTop(1.0f),
-	clipNear(-1.0f),
-	clipFar(1.0f),
+	orthographic(true),
 	view(1.0f),
 	projection(1.0f),
 	inverseProjection(1.0f),
@@ -42,14 +35,35 @@ Camera::Camera():
 	active(true),
 	compositor(nullptr),
 	compositeIndex(0)
-{}
+{
+	registerSubstepTween(&fov);
+	registerSubstepTween(&aspectRatio);
+	registerSubstepTween(&clipLeft);
+	registerSubstepTween(&clipRight);
+	registerSubstepTween(&clipBottom);
+	registerSubstepTween(&clipTop);
+	registerSubstepTween(&clipNear);
+	registerSubstepTween(&clipFar);
+
+	fov.setState1(glm::radians(90.0f));
+	aspectRatio.setState1(1.0f);
+	clipLeft.setState1(-1.0f);
+	clipRight.setState1(1.0f);
+	clipBottom.setState1(-1.0f);
+	clipTop.setState1(1.0f);
+	clipNear.setState1(-1.0f);
+	clipFar.setState1(1.0f);
+	resetSubstepTweens();
+}
 
 void Camera::setPerspective(float fov, float aspectRatio, float near, float far)
 {
-	this->fov = fov;
-	this->aspectRatio = aspectRatio;
-	this->clipNear = near;
-	this->clipFar = far;
+	orthographic = false;
+
+	this->fov.setState1(fov);
+	this->aspectRatio.setState1(aspectRatio);
+	this->clipNear.setState1(near);
+	this->clipFar.setState1(far);
 	
 	projection = glm::perspective(fov, aspectRatio, near, far);
 	updateProjection();
@@ -57,12 +71,14 @@ void Camera::setPerspective(float fov, float aspectRatio, float near, float far)
 
 void Camera::setOrthographic(float left, float right, float bottom, float top, float near, float far)
 {
-	this->clipLeft = left;
-	this->clipRight = right;
-	this->clipBottom = bottom;
-	this->clipTop = top;
-	this->clipNear = near;
-	this->clipFar = far;
+	orthographic = true;
+	
+	this->clipLeft.setState1(left);
+	this->clipRight.setState1(right);
+	this->clipBottom.setState1(bottom);
+	this->clipTop.setState1(top);
+	this->clipNear.setState1(near);
+	this->clipFar.setState1(far);
 	
 	projection = glm::ortho(left, right, bottom, top, near, far);
 	updateProjection();

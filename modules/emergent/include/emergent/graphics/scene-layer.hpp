@@ -101,6 +101,9 @@ private:
 	 * @param index Index of the layer in relation to its parent scene's layers.
 	 */
 	SceneLayer(Scene* scene, std::size_t index);
+
+	void registerSubstepTweens(SceneObject* object);
+	void unregisterSubstepTweens(SceneObject* object);
 	
 	Scene* scene;
 	std::size_t index;

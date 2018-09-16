@@ -23,7 +23,8 @@
 namespace Emergent
 {
 
-Scene::Scene()
+Scene::Scene(StepInterpolator* interpolator):
+	interpolator(interpolator)
 {}
 
 Scene::~Scene()

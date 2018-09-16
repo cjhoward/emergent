@@ -55,7 +55,7 @@ void RenderQueue::queue(const ModelInstance* instance)
 	RenderOperation operation;
 
 	// Set operation transform
-	operation.transform = instance->getMatrix();
+	operation.transform = instance->getSubstepMatrix();
 	
 	const Model* model = instance->getModel();
 	operation.vao = model->getVAO();
@@ -80,7 +80,7 @@ void RenderQueue::queue(const BillboardBatch* batch)
 	RenderOperation operation;
 
 	// Set operation transform
-	operation.transform = batch->getMatrix();
+	operation.transform = batch->getSubstepMatrix();
 	operation.vao = batch->vao;
 	operation.pose = nullptr;
 	
@@ -201,7 +201,7 @@ void Renderer::render(const Scene& scene)
 			for (auto object: *objects)
 			{
 				// Cull objects outside view frustum
-				if (camera->getCullingMask() && !camera->getCullingMask()->intersects(object->getBounds()))
+				if (camera->getCullingMask() && !camera->getCullingMask()->intersects(object->getSubstepBounds()))
 					continue;
 				
 				renderQueue.queue(object);

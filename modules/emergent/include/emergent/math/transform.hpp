@@ -49,8 +49,6 @@ public:
 	
 	Vector3 operator*(const Vector3& v) const;
 	Transform operator*(const Transform& other) const;
-
-	static Transform interpolate(const Transform& x, const Transform& y, float a);
 };
 
 inline Transform::Transform(const Vector3& translation, const Quaternion& rotation, const Vector3& scale):

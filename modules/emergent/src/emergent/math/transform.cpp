@@ -56,14 +56,5 @@ Matrix4 Transform::toMatrix() const
 	return result * glm::scale(scale);
 }
 
-Transform Transform::interpolate(const Transform& x, const Transform& y, float a)
-{
-	Transform result;
-	result.translation = lerp<Vector3>(x.translation, y.translation, a);
-	result.rotation = glm::slerp(x.rotation, y.rotation, a);
-	result.scale = lerp<Vector3>(x.scale, y.scale, a);
-	return result;
-}
-
 } // namespace Emergent
 

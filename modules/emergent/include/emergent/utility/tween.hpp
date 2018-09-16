@@ -83,8 +83,14 @@ public:
 	/// Returns the value of state0
 	const T& getState0() const;
 
+	/// Returns the value of state0
+	T& getState0();
+
 	/// Returns the value of state1
 	const T& getState1() const;
+
+	/// Returns the value of state1
+	T& getState1();
 
 	/// Returns the value of the substate
 	const T& getSubstate() const;
@@ -136,7 +142,19 @@ inline const T& Tween<T, F>::getState0() const
 }
 
 template <typename T, T (*F)(const T&, const T&, float)>
+inline T& Tween<T, F>::getState0()
+{
+	return state0;
+}
+
+template <typename T, T (*F)(const T&, const T&, float)>
 inline const T& Tween<T, F>::getState1() const
+{
+	return state1;
+}
+
+template <typename T, T (*F)(const T&, const T&, float)>
+inline T& Tween<T, F>::getState1()
 {
 	return state1;
 }
