@@ -61,38 +61,38 @@ public:
 	virtual LightType getLightType() const;
 	
 	/**
-	 * Sets the diffuse cubemap texture.
+	 * Sets the irradiance cubemap texture.
 	 */
-	void setDiffuseTexture(const TextureCube* texture);
+	void setIrradianceMap(const TextureCube* texture);
 	
 	/**
-	 * Sets the specular cubemap texture
+	 * Sets the radiance cubemap texture
 	 */
-	void setSpecularTexture(const TextureCube* texture);
+	void setRadianceMap(const TextureCube* texture);
 	
 	/**
-	 * Returns the diffuse cubemap texture.
+	 * Returns the irradiance cubemap texture.
 	 */
-	const TextureCube* getDiffuseTexture() const;
+	const TextureCube* getIrradianceMap() const;
 	
 	/**
-	 * Returns the specular cubemap texture.
+	 * Returns the radiance cubemap texture.
 	 */
-	const TextureCube* getSpecularTexture() const;
+	const TextureCube* getRadianceMap() const;
 
 private:
-	const TextureCube* diffuseTexture;
-	const TextureCube* specularTexture;
+	const TextureCube* irradianceMap;
+	const TextureCube* radianceMap;
 };
 
-inline void AmbientCube::setDiffuseTexture(const TextureCube* texture)
+inline void AmbientCube::setIrradianceMap(const TextureCube* texture)
 {
-	this->diffuseTexture = texture;
+	this->irradianceMap = texture;
 }
 
-inline void AmbientCube::setSpecularTexture(const TextureCube* texture)
+inline void AmbientCube::setRadianceMap(const TextureCube* texture)
 {
-	this->specularTexture = texture;
+	this->radianceMap = texture;
 }
 
 inline LightType AmbientCube::getLightType() const
@@ -100,14 +100,14 @@ inline LightType AmbientCube::getLightType() const
 	return LightType::AMBIENT_CUBE;
 }
 
-inline const TextureCube* AmbientCube::getDiffuseTexture() const
+inline const TextureCube* AmbientCube::getIrradianceMap() const
 {
-	return diffuseTexture;
+	return irradianceMap;
 }
 
-inline const TextureCube* AmbientCube::getSpecularTexture() const
+inline const TextureCube* AmbientCube::getRadianceMap() const
 {
-	return specularTexture;
+	return radianceMap;
 }
 
 } // namespace Emergent

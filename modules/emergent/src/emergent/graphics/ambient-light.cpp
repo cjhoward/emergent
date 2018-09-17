@@ -23,8 +23,8 @@ namespace Emergent
 {
 
 AmbientCube::AmbientCube():
-	diffuseTexture(nullptr),
-	specularTexture(nullptr)
+	irradianceMap(nullptr),
+	radianceMap(nullptr)
 {}
 
 AmbientCube::~AmbientCube()

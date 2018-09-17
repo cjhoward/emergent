@@ -122,7 +122,7 @@ bool Material::upload() const
 			++transmissions;
 		}
 	}
-	
+
 	return (transmissions == variables.size());
 }
 

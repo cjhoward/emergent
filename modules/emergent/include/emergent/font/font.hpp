@@ -33,7 +33,6 @@ namespace Emergent
 
 class BillboardBatch;
 class TexturePacker;
-class Image;
 
 /**
  * Renders text to billboard batches
