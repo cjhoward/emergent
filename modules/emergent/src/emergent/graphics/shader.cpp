@@ -261,6 +261,9 @@ bool Shader::generatePermutation(std::uint32_t permutation)
 	
 	// Re-evaluate shader inputs
 	reevaluateInputs(shaderPermutation);
+
+	// Reconnect the shader variables of each linked materials
+	reconnectLinkedMaterials();
 	
 	return true;
 }

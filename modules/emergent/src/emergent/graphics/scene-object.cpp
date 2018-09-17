@@ -80,7 +80,7 @@ void SceneObject::resetSubstepTweens()
 	}
 }
 
-inline void SceneObject::updateBounds()
+void SceneObject::updateBounds()
 {
 	bounds.setState1(calculateBounds());
 }
