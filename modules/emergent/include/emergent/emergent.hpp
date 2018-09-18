@@ -99,6 +99,7 @@
  *
  * Essential math functions and structures
  */
+#include <emergent/math/easings.hpp>
 #include <emergent/math/glm.hpp>
 #include <emergent/math/hash.hpp>
 #include <emergent/math/interpolation.hpp>

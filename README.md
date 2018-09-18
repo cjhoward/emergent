@@ -93,3 +93,12 @@ For more in-depth examples, see the [`modules/emergent/src/examples`](./modules/
 The source code for Emergent is licensed under the GNU General Public License, version 3. See [`COPYING`](./COPYING) for details.
 
 Documentation text and assets for Emergent are licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/).
+
+### 3rd-Party Software
+
+| Name                         | Author(s)                                        | License                      | Files |
+| :--------------------------- | :----------------------------------------------- | :--------------------------- | :---- |
+| Easing Functions (Equations) | Robert Penner                                    | 3-Clause BSD License         | [`easings.hpp`](./modules/emergent/include/emergent/math/easings.hpp) |
+| FreeType                     | David Turner, Robert Wilhelm, and Werner Lemberg | FreeType License (BSD-style) | [`freetype/*`](./modules/freetype/) |
+| Simple DirectMedia Layer     | Sam Lantinga                                     | zlib License                 | [`SDL2/*`](./modules/SDL2/) |
+

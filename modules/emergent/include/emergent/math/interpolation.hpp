@@ -20,6 +20,9 @@
 #ifndef EMERGENT_MATH_INTERPOLATION_HPP
 #define EMERGENT_MATH_INTERPOLATION_HPP
 
+#include <emergent/math/math.hpp>
+#include <cmath>
+
 namespace Emergent
 {
 
@@ -46,6 +49,24 @@ AABB lerp<AABB>(const AABB& x, const AABB& y, float a);
 
 template <>
 Transform lerp<Transform>(const Transform& x, const Transform& y, float a);
+
+template <typename T>
+inline T coserp(const T& x, const T& y, float a)
+{
+	return lerp<T>(x, y, 1.0f - static_cast<float>(std::cos(static_cast<double>(a) * halfPi<double>())));
+}
+
+template <typename T>
+inline T sinerp(const T& x, const T& y, float a)
+{
+	return lerp<T>(x, y, static_cast<float>(std::sin(static_cast<double>(a) * halfPi<double>())));
+}
+
+template <typename T>
+inline T hermite(const T& x, const T& y, float a)
+{
+	return lerp<T>(x, y, a * a * (3.0f - 2.0f * a));
+}
 
 } // namespace Emergent
 
