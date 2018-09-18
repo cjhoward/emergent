@@ -83,14 +83,8 @@ public:
 	/// Returns the value of state0
 	const T& getState0() const;
 
-	/// Returns the value of state0
-	T& getState0();
-
 	/// Returns the value of state1
 	const T& getState1() const;
-
-	/// Returns the value of state1
-	T& getState1();
 
 	/// Returns the value of the substate
 	const T& getSubstate() const;
@@ -99,40 +93,51 @@ private:
 	T state0;
 	T state1;
 	T substate;
+	bool dirty;
 };
 
 template <typename T, T (*F)(const T&, const T&, float)>
 Tween<T, F>::Tween(const T& value):
 	state0(value),
-	state1(value)
+	state1(value),
+	dirty(true)
 {}
 
 template <typename T, T (*F)(const T&, const T&, float)>
-Tween<T, F>::Tween()
+Tween<T, F>::Tween():
+	dirty(true)
 {}
 
 template <typename T, T (*F)(const T&, const T&, float)>
 inline void Tween<T, F>::update()
 {
 	state0 = state1;
+	substate = state1;
+	dirty = false;
 }
 
 template <typename T, T (*F)(const T&, const T&, float)>
 inline void Tween<T, F>::interpolate(float t)
 {
-	substate = F(state0, state1, t);
+	if (dirty)
+	{
+		substate = F(state0, state1, t);
+		dirty = false;
+	}
 }
 
 template <typename T, T (*F)(const T&, const T&, float)>
 inline void Tween<T, F>::setState0(const T& value)
 {
 	state0 = value;
+	dirty = true;
 }
 
 template <typename T, T (*F)(const T&, const T&, float)>
 inline void Tween<T, F>::setState1(const T& value)
 {
 	state1 = value;
+	dirty = true;
 }
 
 template <typename T, T (*F)(const T&, const T&, float)>
@@ -142,19 +147,7 @@ inline const T& Tween<T, F>::getState0() const
 }
 
 template <typename T, T (*F)(const T&, const T&, float)>
-inline T& Tween<T, F>::getState0()
-{
-	return state0;
-}
-
-template <typename T, T (*F)(const T&, const T&, float)>
 inline const T& Tween<T, F>::getState1() const
-{
-	return state1;
-}
-
-template <typename T, T (*F)(const T&, const T&, float)>
-inline T& Tween<T, F>::getState1()
 {
 	return state1;
 }

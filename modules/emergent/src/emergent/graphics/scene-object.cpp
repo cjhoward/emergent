@@ -56,19 +56,19 @@ void SceneObject::setTransform(const Transform& transform)
 
 void SceneObject::setTranslation(const Vector3& translation)
 {
-	transform.getState1().translation = translation;
+	transform.setState1(Transform(translation, transform.getState1().rotation, transform.getState1().scale));
 	updateTransform();
 }
 
 void SceneObject::setRotation(const Quaternion& rotation)
 {
-	transform.getState1().rotation = rotation;
+	transform.setState1(Transform(transform.getState1().translation, rotation, transform.getState1().scale));
 	updateTransform();
 }
 
 void SceneObject::setScale(const Vector3& scale)
 {
-	transform.getState1().scale = scale;
+	transform.setState1(Transform(transform.getState1().translation, transform.getState1().rotation, scale));
 	updateTransform();
 }
 

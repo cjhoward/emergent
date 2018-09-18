@@ -49,6 +49,9 @@ public:
 	
 	Vector3 operator*(const Vector3& v) const;
 	Transform operator*(const Transform& other) const;
+
+	bool operator==(const Transform& rhs) const;
+	bool operator!=(const Transform& rhs) const;
 };
 
 inline Transform::Transform(const Vector3& translation, const Quaternion& rotation, const Vector3& scale):
@@ -72,6 +75,17 @@ inline Transform Transform::operator*(const Transform& other) const
 {
 	return transform(other);
 }
+
+inline bool Transform::operator==(const Transform& rhs) const
+{
+	return (translation == rhs.translation && rotation == rhs.rotation && scale == rhs.scale);
+}
+
+inline bool Transform::operator!=(const Transform& rhs) const
+{
+	return (translation != rhs.translation || rotation != rhs.rotation || scale != rhs.scale);
+}
+
 
 } // namespace Emergent
 

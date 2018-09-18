@@ -57,6 +57,9 @@ public:
 	virtual bool contains(const Vector3& point) const;
 	virtual bool contains(const Sphere& sphere) const;
 	virtual bool contains(const AABB& aabb) const;
+
+	bool operator==(const AABB& rhs) const;
+	bool operator!=(const AABB& rhs) const;
 	
 private:
 	Vector3 minPoint;
@@ -91,6 +94,16 @@ inline const Vector3& AABB::getMax() const
 inline BoundingVolume::Type AABB::getType() const
 {
 	return BoundingVolume::Type::AABB;
+}
+
+inline bool AABB::operator==(const AABB& rhs) const
+{
+	return (minPoint == rhs.minPoint && maxPoint == rhs.maxPoint);
+}
+
+inline bool AABB::operator!=(const AABB& rhs) const
+{
+	return (minPoint != rhs.minPoint || maxPoint != rhs.maxPoint);
 }
 
 } // namespace Emergent
