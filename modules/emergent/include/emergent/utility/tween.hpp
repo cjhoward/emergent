@@ -93,19 +93,16 @@ private:
 	T state0;
 	T state1;
 	T substate;
-	bool dirty;
 };
 
 template <typename T, T (*F)(const T&, const T&, float)>
 Tween<T, F>::Tween(const T& value):
 	state0(value),
-	state1(value),
-	dirty(true)
+	state1(value)
 {}
 
 template <typename T, T (*F)(const T&, const T&, float)>
-Tween<T, F>::Tween():
-	dirty(true)
+Tween<T, F>::Tween()
 {}
 
 template <typename T, T (*F)(const T&, const T&, float)>
@@ -113,16 +110,14 @@ inline void Tween<T, F>::update()
 {
 	state0 = state1;
 	substate = state1;
-	dirty = false;
 }
 
 template <typename T, T (*F)(const T&, const T&, float)>
 inline void Tween<T, F>::interpolate(float t)
 {
-	if (dirty)
+	if (state0 != state1)
 	{
 		substate = F(state0, state1, t);
-		dirty = false;
 	}
 }
 
@@ -130,14 +125,12 @@ template <typename T, T (*F)(const T&, const T&, float)>
 inline void Tween<T, F>::setState0(const T& value)
 {
 	state0 = value;
-	dirty = true;
 }
 
 template <typename T, T (*F)(const T&, const T&, float)>
 inline void Tween<T, F>::setState1(const T& value)
 {
 	state1 = value;
-	dirty = true;
 }
 
 template <typename T, T (*F)(const T&, const T&, float)>
