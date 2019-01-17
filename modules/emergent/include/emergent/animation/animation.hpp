@@ -267,7 +267,7 @@ void Animation<T>::interpolate(float time)
 			float interpolationRatio = (time - std::get<0>(left)) / (std::get<0>(right) - std::get<0>(left));
 
 			// Interpolate between the left and right keyframes
-			T frame = clip->getInterpolationFunction()(*std::get<1>(left), *std::get<1>(right), interpolationRatio);
+			T frame = clip->getInterpolator()(*std::get<1>(left), *std::get<1>(right), interpolationRatio);
 
 			// Pass interpolated frame to the animate callback
 			animateCallback(channel->getChannelID(), frame);

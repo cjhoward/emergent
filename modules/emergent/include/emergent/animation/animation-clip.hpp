@@ -52,7 +52,7 @@ public:
 	 *
 	 * @param function Keyframe interpolation function.
 	 */
-	void setInterpolationFunction(std::function<T(const T&, const T&, float)> function);
+	void setInterpolator(std::function<T(const T&, const T&, float)> function);
 
 	/**
 	 * Adds a channel to the animation clip.
@@ -82,7 +82,7 @@ public:
 	void removeChannels();
 
 	/// Returns the function used to interpolate between keyframes.
-	std::function<T(const T&, const T&, float)> getInterpolationFunction() const;
+	std::function<T(const T&, const T&, float)> getInterpolator() const;
 
 	/**
 	 * Returns the number of channels in the animation clip.
@@ -120,14 +120,15 @@ private:
 	/// Calculates the time frame according to the time frames of each animation channel.
 	void calculateTimeFrame();
 
-	std::function<T(const T&, const T&, float)> interpolationFunction;
+	std::function<T(const T&, const T&, float)> interpolator;
 	std::vector<AnimationChannel<T>*> channels;
 	std::map<std::size_t, AnimationChannel<T>*> channelMap;
 	std::tuple<float, float> timeFrame;
 };
 
 template <typename T>
-AnimationClip<T>::AnimationClip()
+AnimationClip<T>::AnimationClip():
+	interpolator(lerp<T>)
 {
 	calculateTimeFrame();
 }
@@ -139,9 +140,9 @@ AnimationClip<T>::~AnimationClip()
 }
 
 template <typename T>
-void AnimationClip<T>::setInterpolationFunction(std::function<T(const T&, const T&, float)> function)
+void AnimationClip<T>::setInterpolator(std::function<T(const T&, const T&, float)> function)
 {
-	interpolationFunction = function;
+	interpolator = function;
 }
 
 template <typename T>
@@ -217,9 +218,9 @@ void AnimationClip<T>::removeChannels()
 
 
 template <typename T>
-inline std::function<T(const T&, const T&, float)> AnimationClip<T>::getInterpolationFunction() const
+inline std::function<T(const T&, const T&, float)> AnimationClip<T>::getInterpolator() const
 {
-	return interpolationFunction;
+	return interpolator;
 }
 
 template <typename T>
