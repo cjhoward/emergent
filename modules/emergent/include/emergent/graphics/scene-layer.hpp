@@ -102,8 +102,8 @@ private:
 	 */
 	SceneLayer(Scene* scene, std::size_t index);
 
-	void registerSubstepTweens(SceneObject* object);
-	void unregisterSubstepTweens(SceneObject* object);
+	void registerTweens(SceneObject* object);
+	void unregisterTweens(SceneObject* object);
 	
 	Scene* scene;
 	std::size_t index;

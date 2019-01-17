@@ -20,9 +20,9 @@
 #ifndef EMERGENT_GRAPHICS_CAMERA_HPP
 #define EMERGENT_GRAPHICS_CAMERA_HPP
 
+#include <emergent/geometry/view-frustum.hpp>
 #include <emergent/graphics/scene-object.hpp>
 #include <emergent/math/types.hpp>
-#include <emergent/geometry/view-frustum.hpp>
 
 namespace Emergent
 {
@@ -49,10 +49,12 @@ public:
 	// Maps window coordinates to object coordinates. viewport vector = (x, y, w, h)
 	Vector3 unproject(const Vector3& window, const Vector4& viewport) const;
 	
-	
+	void setCullingEnabled(bool enabled);
 	void setCullingMask(const BoundingVolume* mask);
 	
 	void setActive(bool active);
+
+
 	
 	void setCompositor(Compositor* compositor);
 	
@@ -60,59 +62,167 @@ public:
 	void setCompositeIndex(std::size_t index);
 	
 	virtual SceneObjectType getSceneObjectType() const;
-	
-	float getFOV() const;
-	float getAspectRatio() const;
-	float getClipLeft() const;
-	float getClipRight() const;
-	float getClipBottom() const;
-	float getClipTop() const;
-	float getClipNear() const;
-	float getClipFar() const;
-	const Matrix4& getView() const;
-	const Matrix4& getProjection() const;
-	const Matrix4& getInverseProjection() const;
-	const Matrix4& getViewProjection() const;
-	const Matrix4& getInverseViewProjection() const;
-	const ViewFrustum& getViewFrustum() const;
-	
-	float getSubstepFOV() const;
-	float getSubstepAspectRatio() const;
-	float getSubstepClipLeft() const;
-	float getSubstepClipRight() const;
-	float getSubstepClipBottom() const;
-	float getSubstepClipTop() const;
-	float getSubstepClipNear() const;
-	float getSubstepClipFar() const;
-	Matrix4 getSubstepView() const;
-	Matrix4 getSubstepProjection() const;
-	Matrix4 getSubstepInverseProjection() const;
-	Matrix4 getSubstepViewProjection() const;
-	Matrix4 getSubstepInverseViewProjection() const;
-	ViewFrustum getSubstepViewFrustum() const;
 
+	bool isCullingEnabled() const;
 	const BoundingVolume* getCullingMask() const;
 	bool isActive() const;
 	const Compositor* getCompositor() const;
 	Compositor* getCompositor();
 	std::size_t getCompositeIndex() const;
 	
+	/// Returns the vertical field of view (in radians)
+	float getFOV() const;
+
+	/// Returns the aspect ratio
+	float getAspectRatio() const;
+
+	/// Returns the distance to the left clipping plane
+	float getClipLeft() const;
+
+	/// Returns the distance to the right clipping plane
+	float getClipRight() const;
+
+	/// Returns the distance to the bottom clipping plane
+	float getClipBottom() const;
+
+	/// Returns the distance to the top clipping plane
+	float getClipTop() const;
+
+	/// Returns the distance to the near clipping plane
+	float getClipNear() const;
+
+	/// Returns the distance to the far clipping plane
+	float getClipFar() const;
+
+	/// Returns the view matrix
+	const Matrix4& getView() const;
+
+	/// Returns the projection matrix
+	const Matrix4& getProjection() const;
+
+	/// Returns the inverse projection matrix
+	const Matrix4& getInverseProjection() const;
+
+	/// Returns the view-projection matrix
+	const Matrix4& getViewProjection() const;
+
+	/// Returns the inverse view-projection matrix
+	const Matrix4& getInverseViewProjection() const;
+
+	/// Returns the view frustum
+	const ViewFrustum& getViewFrustum() const;
+
+	/// Returns the field of view tween
+	const Tween<float>* getFOVTween() const;
+
+	/// @copydoc Camera::getFOVTween() const
+	Tween<float>* getFOVTween();
+
+	/// Returns the aspect ratio tween
+	const Tween<float>* getAspectRatioTween() const;
+
+	/// @copydoc Camera::getAspectRatioTween() const
+	Tween<float>* getAspectRatioTween();
+
+	/// Returns the clip left tween
+	const Tween<float>* getClipLeftTween() const;
+	Tween<float>* getClipLeftTween();
+
+	/// Returns the clip right tween
+	const Tween<float>* getClipRightTween() const;
+
+	/// @copydoc Camera::getClipRightTween() const
+	Tween<float>* getClipRightTween();
+
+	/// Returns the clip bottom tween
+	const Tween<float>* getClipBottomTween() const;
+
+	/// @copydoc Camera::getClipBottomTween() const
+	Tween<float>* getClipBottomTween();
+
+	/// Returns the clip top tween
+	const Tween<float>* getClipTopTween() const;
+
+	/// @copydoc Camera::getClipTopTween() const
+	Tween<float>* getClipTopTween();
+
+	/// Returns the clip near tween
+	const Tween<float>* getClipNearTween() const;
+
+	/// @copydoc Camera::getClipNearTween() const
+	Tween<float>* getClipNearTween();
+
+	/// Returns the clip far tween
+	const Tween<float>* getClipFarTween() const;
+
+	/// @copydoc Camera::getClipFarTween() const
+	Tween<float>* getClipFarTween();
+
+	/// Returns the view matrix tween
+	const Tween<Matrix4>* getViewTween() const;
+
+	/// @copydoc Camera::getViewTween() const
+	Tween<Matrix4>* getViewTween();
+
+	/// Returns the projection matrix tween
+	const Tween<Matrix4>* getProjectionTween() const;
+
+	/// @copydoc Camera::getProjectionTween() const
+	Tween<Matrix4>* getProjectionTween();
+
+	/// Returns the inverse projection tween
+	const Tween<Matrix4>* getInverseProjectionTween() const;
+
+	/// @copydoc Camera::getInverseProjectionTween() const
+	Tween<Matrix4>* getInverseProjectionTween();
+
+	/// Returns the view-projection tween
+	const Tween<Matrix4>* getViewProjectionTween() const;
+
+	/// @copydoc Camera::getViewProjectionTween() const
+	Tween<Matrix4>* getViewProjectionTween();
+
+	/// Returns the inverse view-projection tween
+	const Tween<Matrix4>* getInverseViewProjectionTween() const;
+
+	/// @copydoc Camera::getInverseViewProjectionTween() const
+	Tween<Matrix4>* getInverseViewProjectionTween();
+
+	/// Returns the view frustum tween
+	const Tween<ViewFrustum>* getViewFrustumTween() const;
+
+	/// @copydoc Camera::getViewFrustumTween() const
+	Tween<ViewFrustum>* getViewFrustumTween();
+	
 private:
 	virtual void transformed();
-	
 	void updateView();
 	void updateProjection();
 	void updateViewProjection();
 
+	// These functions are somewhat hacky. They don't actually use the x and y parameters but rather use the state0 and state1 of other known tweens (such as the scene object's transform tween) to calculate the interpolated matrices.
+	Matrix4 interpolateView(const Matrix4& x, const Matrix4& y, float a) const;
+	Matrix4 interpolateProjection(const Matrix4& x, const Matrix4& y, float a) const;
+	Matrix4 interpolateInverseProjection(const Matrix4& x, const Matrix4& y, float a) const;
+	Matrix4 interpolateViewProjection(const Matrix4& x, const Matrix4& y, float a) const;
+	Matrix4 interpolateInverseViewProjection(const Matrix4& x, const Matrix4& y, float a)const ;
+	ViewFrustum interpolateViewFrustum(const ViewFrustum& x, const ViewFrustum& y, float a) const;
+
+	bool cullingEnabled;
+	const BoundingVolume* cullingMask;
+	bool active;
+	Compositor* compositor;
+	std::size_t compositeIndex;
+
 	bool orthographic;
-	Tween<float, lerp<float>> fov;
-	Tween<float, lerp<float>> aspectRatio;
-	Tween<float, lerp<float>> clipLeft;
-	Tween<float, lerp<float>> clipRight;
-	Tween<float, lerp<float>> clipBottom;
-	Tween<float, lerp<float>> clipTop;
-	Tween<float, lerp<float>> clipNear;
-	Tween<float, lerp<float>> clipFar;
+	float fov;
+	float aspectRatio;
+	float clipLeft;
+	float clipRight;
+	float clipBottom;
+	float clipTop;
+	float clipNear;
+	float clipFar;
 	Matrix4 view;
 	Matrix4 projection;
 	Matrix4 inverseProjection;
@@ -120,15 +230,30 @@ private:
 	Matrix4 inverseViewProjection;
 	ViewFrustum viewFrustum;
 	
-	const BoundingVolume* cullingMask;
-	bool active;
-	Compositor* compositor;
-	std::size_t compositeIndex;
+	Tween<float> fovTween;
+	Tween<float> aspectRatioTween;
+	Tween<float> clipLeftTween;
+	Tween<float> clipRightTween;
+	Tween<float> clipBottomTween;
+	Tween<float> clipTopTween;
+	Tween<float> clipNearTween;
+	Tween<float> clipFarTween;
+	Tween<Matrix4> viewTween;
+	Tween<Matrix4> projectionTween;
+	Tween<Matrix4> inverseProjectionTween;
+	Tween<Matrix4> viewProjectionTween;
+	Tween<Matrix4> inverseViewProjectionTween;
+	Tween<ViewFrustum> viewFrustumTween;
 };
 
 inline void Camera::setActive(bool active)
 {
 	this->active = active;
+}
+
+inline void Camera::setCullingEnabled(bool enabled)
+{
+	this->cullingEnabled = enabled;
 }
 
 inline void Camera::setCullingMask(const BoundingVolume* mask)
@@ -151,44 +276,74 @@ inline SceneObjectType Camera::getSceneObjectType() const
 	return SceneObjectType::CAMERA;
 }
 
+inline bool Camera::isActive() const
+{
+	return active;
+}
+
+inline bool Camera::isCullingEnabled() const
+{
+	return cullingEnabled;
+}
+
+inline const BoundingVolume* Camera::getCullingMask() const
+{
+	return cullingMask;
+}
+
+inline const Compositor* Camera::getCompositor() const
+{
+	return compositor;
+}
+
+inline Compositor* Camera::getCompositor()
+{
+	return compositor;
+}
+
+inline std::size_t Camera::getCompositeIndex() const
+{
+	return compositeIndex;
+}
+
 inline float Camera::getFOV() const
 {
-	return fov.getState1();
+	return fov;
 }
 
 inline float Camera::getAspectRatio() const
 {
-	return aspectRatio.getState1();
+	return aspectRatio;
 }
 
 inline float Camera::getClipLeft() const
 {
-	return clipLeft.getState1();
+	return clipLeft;
 }
 
 inline float Camera::getClipRight() const
 {
-	return clipRight.getState1();
+	return clipRight;
 }
 
 inline float Camera::getClipBottom() const
 {
-	return clipBottom.getState1();
+	return clipBottom;
 }
 
 inline float Camera::getClipTop() const
 {
-	return clipTop.getState1();
+	return clipTop;
 }
 
 inline float Camera::getClipNear() const
 {
-	return clipNear.getState1();
+	return clipNear;
 }
 
 inline float Camera::getClipFar() const
 {
-	return clipFar.getState1();
+	return clipFar;
 }
 
 inline const Matrix4& Camera::getView() const
@@ -221,108 +376,144 @@ inline const ViewFrustum& Camera::getViewFrustum() const
 	return viewFrustum;
 }
 
-inline float Camera::getSubstepFOV() const
+inline const Tween<float>* Camera::getFOVTween() const
 {
-	return fov.getSubstate();
+	return &fovTween;
 }
 
-inline float Camera::getSubstepAspectRatio() const
+inline Tween<float>* Camera::getFOVTween()
 {
-	return aspectRatio.getSubstate();
+	return &fovTween;
 }
 
-inline float Camera::getSubstepClipLeft() const
+inline const Tween<float>* Camera::getAspectRatioTween() const
 {
-	return clipLeft.getSubstate();
+	return &aspectRatioTween;
 }
 
-inline float Camera::getSubstepClipRight() const
+inline Tween<float>* Camera::getAspectRatioTween()
 {
-	return clipRight.getSubstate();
+	return &aspectRatioTween;
 }
 
-inline float Camera::getSubstepClipBottom() const
+inline const Tween<float>* Camera::getClipLeftTween() const
 {
-	return clipBottom.getSubstate();
+	return &clipLeftTween;
 }
 
-inline float Camera::getSubstepClipTop() const
+inline Tween<float>* Camera::getClipLeftTween()
 {
-	return clipTop.getSubstate();
+	return &clipLeftTween;
 }
 
-inline float Camera::getSubstepClipNear() const
+inline const Tween<float>* Camera::getClipRightTween() const
 {
-	return clipNear.getSubstate();
+	return &clipRightTween;
 }
 
-inline float Camera::getSubstepClipFar() const
+inline Tween<float>* Camera::getClipRightTween()
 {
-	return clipFar.getSubstate();
+	return &clipRightTween;
 }
 
-inline Matrix4 Camera::getSubstepView() const
+inline const Tween<float>* Camera::getClipBottomTween() const
 {
-	return glm::lookAt(getSubstepTranslation(), getSubstepTranslation() - getSubstepForward(), getSubstepUp());
+	return &clipBottomTween;
 }
 
-inline Matrix4 Camera::getSubstepProjection() const
+inline Tween<float>* Camera::getClipBottomTween()
 {
-	if (orthographic)
-	{
-		return glm::ortho(clipLeft.getSubstate(), clipRight.getSubstate(), clipBottom.getSubstate(), clipTop.getSubstate(), clipNear.getSubstate(), clipFar.getSubstate());
-	}
-	else
-	{
-		return glm::perspective(getSubstepFOV(), getSubstepAspectRatio(), getSubstepClipNear(), getSubstepClipFar());
-	}
+	return &clipBottomTween;
 }
 
-inline Matrix4 Camera::getSubstepInverseProjection() const
+inline const Tween<float>* Camera::getClipTopTween() const
 {
-	return glm::inverse(getSubstepProjection());
+	return &clipTopTween;
 }
 
-inline Matrix4 Camera::getSubstepViewProjection() const
+inline Tween<float>* Camera::getClipTopTween()
 {
-	return getSubstepProjection() * getSubstepView();
+	return &clipTopTween;
 }
 
-inline Matrix4 Camera::getSubstepInverseViewProjection() const
+inline const Tween<float>* Camera::getClipNearTween() const
 {
-	return glm::inverse(getSubstepViewProjection());
+	return &clipNearTween;
 }
 
-inline ViewFrustum Camera::getSubstepViewFrustum() const
+inline Tween<float>* Camera::getClipNearTween()
 {
-	ViewFrustum frustum;
-	frustum.setMatrices(getSubstepView(), getSubstepProjection());
-	return frustum;
+	return &clipNearTween;
 }
 
-inline const BoundingVolume* Camera::getCullingMask() const
+inline const Tween<float>* Camera::getClipFarTween() const
 {
-	return cullingMask;
+	return &clipFarTween;
 }
 
-inline bool Camera::isActive() const
+inline Tween<float>* Camera::getClipFarTween()
 {
-	return active;
+	return &clipFarTween;
 }
 
-inline const Compositor* Camera::getCompositor() const
+inline const Tween<Matrix4>* Camera::getViewTween() const
 {
-	return compositor;
+	return &viewTween;
 }
 
-inline Compositor* Camera::getCompositor()
+inline Tween<Matrix4>* Camera::getViewTween()
 {
-	return compositor;
+	return &viewTween;
 }
 
-inline std::size_t Camera::getCompositeIndex() const
+inline const Tween<Matrix4>* Camera::getProjectionTween() const
 {
-	return compositeIndex;
+	return &projectionTween;
+}
+
+inline Tween<Matrix4>* Camera::getProjectionTween()
+{
+	return &projectionTween;
+}
+
+inline const Tween<Matrix4>* Camera::getInverseProjectionTween() const
+{
+	return &inverseProjectionTween;
+}
+
+inline Tween<Matrix4>* Camera::getInverseProjectionTween()
+{
+	return &inverseProjectionTween;
+}
+
+inline const Tween<Matrix4>* Camera::getViewProjectionTween() const
+{
+	return &viewProjectionTween;
+}
+
+inline Tween<Matrix4>* Camera::getViewProjectionTween()
+{
+	return &viewProjectionTween;
+}
+
+inline const Tween<Matrix4>* Camera::getInverseViewProjectionTween() const
+{
+	return &inverseViewProjectionTween;
+}
+
+inline Tween<Matrix4>* Camera::getInverseViewProjectionTween()
+{
+	return &inverseViewProjectionTween;
+}
+
+inline const Tween<ViewFrustum>* Camera::getViewFrustumTween() const
+{
+	return &viewFrustumTween;
+}
+
+inline Tween<ViewFrustum>* Camera::getViewFrustumTween()
+{
+	return &viewFrustumTween;
 }
 
 } // namespace Emergent

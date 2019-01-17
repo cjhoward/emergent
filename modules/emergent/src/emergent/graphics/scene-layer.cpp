@@ -17,10 +17,11 @@
  * along with Emergent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <emergent/animation/step-interpolator.hpp>
 #include <emergent/graphics/scene-layer.hpp>
 #include <emergent/graphics/scene.hpp>
 #include <emergent/graphics/scene-object.hpp>
-#include <emergent/utility/step-interpolator.hpp>
+#include <iostream>
 
 namespace Emergent
 {
@@ -34,21 +35,21 @@ void SceneLayer::addObject(SceneObject* object)
 {
 	objectList.push_back(object);
 	objectMap[object->getSceneObjectType()].push_back(object);
-	registerSubstepTweens(object);
+	registerTweens(object);
 }
 
 void SceneLayer::removeObject(SceneObject* object)
 {
 	objectList.remove(object);
 	objectMap[object->getSceneObjectType()].remove(object);
-	unregisterSubstepTweens(object);
+	unregisterTweens(object);
 }
 
 void SceneLayer::removeObjects()
 {
 	for (SceneObject* object: objectList)
 	{
-		unregisterSubstepTweens(object);
+		unregisterTweens(object);
 	}
 
 	objectList.clear();
@@ -63,7 +64,7 @@ void SceneLayer::removeObjects(SceneObjectType type)
 		for (SceneObject* object: it->second)
 		{
 			objectList.remove(object);
-			unregisterSubstepTweens(object);
+			unregisterTweens(object);
 		}
 		
 		objectMap.erase(it);
@@ -81,21 +82,21 @@ const std::list<SceneObject*>* SceneLayer::getObjects(SceneObjectType type) cons
 	return nullptr;
 }
 
-void SceneLayer::registerSubstepTweens(SceneObject* object)
+void SceneLayer::registerTweens(SceneObject* object)
 {
-	const std::list<TweenBase*>* substepTweens = object->getSubstepTweens();
-	for (TweenBase* variable: *substepTweens)
+	const std::list<TweenBase*>* tweens = object->getTweens();
+	for (TweenBase* tween: *tweens)
 	{
-		scene->getInterpolator()->addVariable(variable);
+		scene->getInterpolator()->addTween(tween);
 	}
 }
 
-void SceneLayer::unregisterSubstepTweens(SceneObject* object)
+void SceneLayer::unregisterTweens(SceneObject* object)
 {
-	const std::list<TweenBase*>* substepTweens = object->getSubstepTweens();
-	for (TweenBase* variable: *substepTweens)
+	const std::list<TweenBase*>* tweens = object->getTweens();
+	for (TweenBase* tween: *tweens)
 	{
-		scene->getInterpolator()->removeVariable(variable);
+		scene->getInterpolator()->removeTween(tween);
 	}
 }
 

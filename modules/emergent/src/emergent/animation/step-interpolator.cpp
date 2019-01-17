@@ -17,41 +17,41 @@
  * along with Emergent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <emergent/utility/step-interpolator.hpp>
-#include <emergent/utility/tween.hpp>
+#include <emergent/animation/step-interpolator.hpp>
+#include <emergent/animation/tween.hpp>
 
 namespace Emergent
 {
 
-void StepInterpolator::update()
+void StepInterpolator::reset()
 {
-	for (TweenBase* variable: variables)
+	for (TweenBase* tween: tweens)
 	{
-		variable->update();
+		tween->reset();
 	}
 }
 
-void StepInterpolator::interpolate(float t)
+void StepInterpolator::interpolate(float a)
 {
-	for (TweenBase* variable: variables)
+	for (TweenBase* tween: tweens)
 	{
-		variable->interpolate(t);
+		tween->interpolate(a);
 	}
 }
 
-void StepInterpolator::addVariable(TweenBase* variable)
+void StepInterpolator::addTween(TweenBase* tween)
 {
-	variables.push_back(variable);
+	tweens.push_back(tween);
 }
 
-void StepInterpolator::removeVariable(TweenBase* variable)
+void StepInterpolator::removeTween(TweenBase* tween)
 {
-	variables.remove(variable);
+	tweens.remove(tween);
 }
 
-void StepInterpolator::removeVariables()
+void StepInterpolator::removeTweens()
 {
-	variables.clear();
+	tweens.clear();
 }
 
 } // namespace Emergent

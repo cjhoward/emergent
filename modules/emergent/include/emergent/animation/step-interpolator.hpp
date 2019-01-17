@@ -17,8 +17,8 @@
  * along with Emergent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EMERGENT_UTILITY_STEP_INTERPOLATOR_HPP
-#define EMERGENT_UTILITY_STEP_INTERPOLATOR_HPP
+#ifndef EMERGENT_ANIMATION_STEP_INTERPOLATOR_HPP
+#define EMERGENT_ANIMATION_STEP_INTERPOLATOR_HPP
 
 #include <list>
 
@@ -28,49 +28,49 @@ namespace Emergent
 class TweenBase;
 
 /**
- * Interpolates variables between steps.
+ * Interpolates tweens between logical steps.
  *
- * @ingroup utility
+ * @ingroup animation
  */
 class StepInterpolator
 {
 public:
 	/**
-	 * For each variable, sets state0 equal to state1. This should be called at the beginning of each logical step.
+	 * Resets the step interpolation for each tween. This should be called at the beginning of each logical step.
 	 */
-	void update();
+	void reset();
 
 	/**
-	 * Calculates the substate of each variable by interpolating between state0 and state1. This should be called before rendering.
+	 * Calculates the substate of each tween by interpolating between state0 and state1. This should be called right before rendering.
 	 *
-	 * @param t Interpolation ratio
+	 * @param a Interpolation ratio.
 	 */
-	void interpolate(float t);
+	void interpolate(float a);
 
 	/**
-	 * Adds a variable to the interpolator.
+	 * Adds a tween to the step interpolator.
 	 *
-	 * @param variable Variable to add.
+	 * @param tween Tween to add.
 	 */
-	void addVariable(TweenBase* variable);
+	void addTween(TweenBase* tween);
 
 	/**
-	 * Removes a variable from the interpolator.
+	 * Removes a tween from the step interpolator.
 	 *
-	 * @param variable Variable to remove.
+	 * @param tween Tween to remove.
 	 */
-	void removeVariable(TweenBase* variable);
+	void removeTween(TweenBase* tween);
 
 	/**
-	 * Removes all variables from the interpolator.
+	 * Removes all tweens from the interpolator.
 	 */
-	void removeVariables();
+	void removeTweens();
 
 private:
-	std::list<TweenBase*> variables;
+	std::list<TweenBase*> tweens;
 };
 
 } // namespace Emergent
 
-#endif // EMERGENT_UTILITY_STEP_INTERPOLATOR_HPP
+#endif // EMERGENT_ANIMATION_STEP_INTERPOLATOR_HPP
 

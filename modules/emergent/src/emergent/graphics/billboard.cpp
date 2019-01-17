@@ -162,6 +162,7 @@ void BillboardBatch::update()
 	{
 		const Billboard& billboard = billboards[i];
 		const Vector3& translation = billboard.getTranslation();
+		const Quaternion& rotation = billboard.getRotation();
 		const Vector2& dimensions = billboard.getDimensions();
 		const Vector2& coordinatesMin = billboard.getTextureCoordinatesMin();
 		const Vector2& coordinatesMax = billboard.getTextureCoordinatesMax();
@@ -172,18 +173,18 @@ void BillboardBatch::update()
 		{
 			if (alignmentMode == BillboardAlignmentMode::SPHERICAL)
 			{
-				alignment = glm::normalize(billboard.getRotation() * lookRotation(-camera->getForward(), -camera->getUp()));
+				alignment = glm::normalize(rotation * lookRotation(-camera->getForwardTween()->getSubstate(), -camera->getUpTween()->getSubstate()));
 			}
 			else if (alignmentMode == BillboardAlignmentMode::CYLINDRICAL)
 			{
-				Vector3 look = glm::normalize(project_on_plane((billboard.getTranslation() - camera->getTranslation()), Vector3(0.0f), billboard.getRotation() * alignmentVector));
-				Vector3 up = glm::normalize(billboard.getRotation() * getUp());
+				Vector3 look = glm::normalize(project_on_plane((translation - camera->getTransformTween()->getSubstate().translation), Vector3(0.0f), rotation * alignmentVector));
+				Vector3 up = glm::normalize(rotation * getUpTween()->getSubstate());
 				alignment = glm::normalize(lookRotation(look, up));
 			}
 		}
 		else
 		{
-			alignment = billboard.getRotation();
+			alignment = rotation;
 		}
 				
 		Vector2 offset = dimensions * 0.5f;

@@ -94,9 +94,6 @@ int Application::execute()
 
 	setup();
 
-	// Ensure state0 and state1 are equal
-	stepInterpolator.update();
-
 	// Initialize the step timer
 	double elapsedTime = 0.0;
 
@@ -114,8 +111,8 @@ int Application::execute()
 		// Perform scheduled update steps
 		for (std::size_t step = 0; step < stepScheduler.getScheduledSteps(); ++step)
 		{
-			// Set state0 equal to state1
-			stepInterpolator.update();
+			// Reset step interpolation
+			stepInterpolator.reset();
 
 			// Dispatch due events
 			eventDispatcher.update(elapsedTime);

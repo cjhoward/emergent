@@ -17,45 +17,33 @@
  * along with Emergent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EMERGENT_GEOMETRY_BOUNDING_VOLUME_HPP
-#define EMERGENT_GEOMETRY_BOUNDING_VOLUME_HPP
-
-#include <emergent/math/types.hpp>
+#include <emergent/geometry/bounding-volume.hpp>
+#include <emergent/geometry/aabb.hpp>
+#include <emergent/geometry/sphere.hpp>
+#include <emergent/geometry/convex-hull.hpp>
 #include <stdexcept>
 
 namespace Emergent
 {
 
-class Sphere;
-class AABB;
-class ConvexHull;
-
-/**
- * Abstract base class for bounding volumes.
- *
- * @ingroup geometry
- */
-class BoundingVolume
+bool BoundingVolume::intersects(const BoundingVolume& volume) const
 {
-public:
-	enum class Type
+	BoundingVolume::Type type = volume.getType();
+	switch (type)
 	{
-		SPHERE,
-		AABB,
-		CONVEX_HULL
-	};
-	
-	virtual BoundingVolume::Type getType() const = 0;
-	virtual bool intersects(const Sphere& sphere) const = 0;
-	virtual bool intersects(const AABB& aabb) const = 0;
-	virtual bool contains(const Sphere& sphere) const = 0;
-	virtual bool contains(const AABB& aabb) const = 0;
-	virtual bool contains(const Vector3& point) const = 0;
+		case BoundingVolume::Type::AABB:
+			return intersects(static_cast<const AABB&>(volume));
+			break;
 
-	bool intersects(const BoundingVolume& volume) const;
-};
+		case BoundingVolume::Type::SPHERE:
+			return intersects(static_cast<const Sphere&>(volume));
+			break;
+
+		default:
+			throw std::runtime_error("unimplemented");
+			break;
+	}
+}
 
 } // namespace Emergent
-
-#endif // EMERGENT_GEOMETRY_BOUNDING_VOLUME_HPP
 

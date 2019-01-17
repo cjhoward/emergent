@@ -26,6 +26,7 @@
 #include <emergent/graphics/texture-2d.hpp>
 #include <cstdlib>
 #include <map>
+#include <set>
 #include <string>
 
 namespace Emergent
@@ -33,6 +34,7 @@ namespace Emergent
 
 class BillboardBatch;
 class TexturePacker;
+class Typeface;
 
 /**
  * Renders text to billboard batches
@@ -43,18 +45,32 @@ class Font
 {
 public:
 	/**
-	 * Creates an instance of Font.
+	 * Creates a font.
 	 *
-	 * @param width Specifies the width of the font texture.
-	 * @param height Specifies the height of the font texture.
+	 * @param metrics Font metrics.
+	 * @param width Width of the font texture, in pixels.
+	 * @param height Height of the font texture, in pixels.
 	 */
-	Font(unsigned int width, unsigned int height);
+	Font(const FontMetrics& metrics, unsigned int width, unsigned int height);
 
 	/**
-	 * Destroys an instance of Font.
+	 * Destroys a font.
 	 */
 	~Font();
 	
+	/**
+	 * Adds a glyph to the font.
+	 *
+	 * @param charcode Character code of the glyph being added.
+	 * @param metrics Metrics of the glyph.
+	 * @param data Glyph image data.
+	 * @param width Width of the glyph image, in pixels.
+	 * @param height Height of the glyph image, in pixels.
+	 *
+	 * @return `true` if the glyph was successfully created, `false` otherwise.
+	 */
+	bool addGlyph(char32_t charcode, const GlyphMetrics& metrics, const unsigned char* data, unsigned int width, unsigned int height);
+
 	/**
 	 * Prints a string to a billboard batch.
 	 *
@@ -64,35 +80,15 @@ public:
 	 * @param[in] offset Specifies an offset to the index of the first billboard
 	 * @param[out] count Returns the number of billboards written to the batch
 	 */
-	void puts(BillboardBatch* batch, const Vector3& origin, const std::u32string& string, const Vector4& color, std::size_t offset = 0, std::size_t* count = nullptr) const;
-	
-	/**
-	 * Sets the font metrics.
-	 *
-	 * @param metrics Specifies font metrics.
-	 */
-	void setMetrics(const FontMetrics& metrics);
+	void puts(BillboardBatch* batch, const Vector3& origin, const std::string& string, const Vector4& color, std::size_t offset = 0, std::size_t* count = nullptr) const;
 
 	/**
-	 * Creates a glyph in the font.
+	 * Calculates the width of a string encoded with UTF-8.
 	 *
-	 * @param charcode Specifies the charcode of a glyph.
-	 * @param metrics Specifies the glyph metrics.
-	 * @param data Specifies the glyph image data.
-	 * @param width Specifies the width of the image data, in pixels.
-	 * @param height Specifies the height of the image data, in pixels.
-	 *
-	 * @return `true` if the glyph was successfully created, `false` otherwise.
+	 * @param string UTF-8 string.
+	 * @return Width of the string, in pixels.
 	 */
-	bool createGlyph(char32_t charcode, const GlyphMetrics& metrics, const unsigned char* data, unsigned int width, unsigned int height);
-
-	/**
-	 * Calculates the width of a string.
-	 *
-	 * @param string Specifies a UTF-32 string.
-	 * @return Width of the string.
-	 */
-	float getWidth(const std::u32string& string) const;
+	float getWidth(const std::string& string) const;
 
 	/**
 	 * Returns the font metrics.
@@ -102,11 +98,15 @@ public:
 	const FontMetrics& getMetrics() const;
 
 	/**
-	 * Finds a glyph corresponding to the specified character code.
+	 * Returns the set of characters which have been loaded into the font.
+	 */
+	const std::set<char32_t>& getCharset() const;
+
+	/**
+	 * Returns a glyph corresponding to the specified character code.
 	 *
-	 * @param charcode Specifies a character code.
-	 *
-	 * @return Pointer to the corresponding glyph, or `nullptr` if the glyph does not exist.
+	 * @param charcode Character code corresponding to a glyph.
+	 * @return Pointer to the corresponding glyph, or `nullptr` if the glyph for the specified character code has not been loaded.
 	 */
 	const Glyph* getGlyph(char32_t charcode) const;
 
@@ -131,21 +131,22 @@ public:
 	Texture2D* getTexture();
 	
 private:
-	FontMetrics fontMetrics;
+	FontMetrics metrics;
+	std::set<char32_t> charset;
 	std::map<char32_t, Glyph> glyphs;
 	KerningTable kerningTable;
 	TexturePacker* texturePacker;
 	Texture2D texture;
 };
 
-inline void Font::setMetrics(const FontMetrics& metrics)
-{
-	this->fontMetrics = metrics;
-}
-
 inline const FontMetrics& Font::getMetrics() const
 {
-	return fontMetrics;
+	return metrics;
+}
+
+inline const std::set<char32_t>& Font::getCharset() const
+{
+	return charset;
 }
 
 inline const Glyph* Font::getGlyph(char32_t charcode) const
@@ -182,3 +183,4 @@ inline Texture2D* Font::getTexture()
 } // namespace Emergent
 
 #endif // EMERGENT_FONT_FONT_HPP
+

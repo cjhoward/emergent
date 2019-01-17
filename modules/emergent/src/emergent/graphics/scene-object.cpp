@@ -17,82 +17,87 @@
  * along with Emergent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <emergent/animation/step-interpolator.hpp>
 #include <emergent/graphics/scene-object.hpp>
-#include <emergent/utility/step-interpolator.hpp>
+#include <emergent/math/interpolation.hpp>
 
 namespace Emergent
 {
 
 SceneObject::SceneObject():
-	active(true)
+	active(true),
+	cullingEnabled(true),
+	cullingMask(nullptr),
+	bounds(transform.translation, transform.translation),
+	transform(Transform::getIdentity()),
+	forward(0, 0, -1),
+	up(0, 1, 0),
+	right(1, 0, 0),
+	matrix(1.0f),
+	boundsTween(&bounds, lerp<AABB>),
+	transformTween(&transform, lerp<Transform>),
+	forwardTween(&forward, std::bind(&SceneObject::interpolateForward, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)),
+	upTween(&up, std::bind(&SceneObject::interpolateUp, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)),
+	rightTween(&right, std::bind(&SceneObject::interpolateRight, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)),
+	matrixTween(&matrix, std::bind(&SceneObject::interpolateMatrix, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))
 {
-	registerSubstepTween(&bounds);
-	registerSubstepTween(&transform);
-	registerSubstepTween(&forward);
-	registerSubstepTween(&up);
-	registerSubstepTween(&right);
-
-	transform.setState1(Transform::getIdentity());
-	forward.setState1(Vector3(0, 0, -1));
-	up.setState1(Vector3(0, 1, 0));
-	right.setState1(Vector3(1, 0, 0));
-	matrix = Matrix4(1.0f);
-	resetSubstepTweens();
+	// WARNING: The order of registration is important (see interpolation functions)
+	registerTween(&boundsTween);
+	registerTween(&transformTween);
+	registerTween(&forwardTween);
+	registerTween(&upTween);
+	registerTween(&rightTween);
+	registerTween(&matrixTween);
 }
 
 SceneObject::~SceneObject()
 {}
 
-void SceneObject::setActive(bool active)
-{
-	this->active = active;
-}
-
 void SceneObject::setTransform(const Transform& transform)
 {
-	this->transform.setState1(transform);
+	this->transform = transform;
 	updateTransform();
 }
 
 void SceneObject::setTranslation(const Vector3& translation)
 {
-	transform.setState1(Transform(translation, transform.getState1().rotation, transform.getState1().scale));
+	transform.translation = translation;
 	updateTransform();
 }
 
 void SceneObject::setRotation(const Quaternion& rotation)
 {
-	transform.setState1(Transform(transform.getState1().translation, rotation, transform.getState1().scale));
+	transform.rotation = rotation;
 	updateTransform();
 }
 
 void SceneObject::setScale(const Vector3& scale)
 {
-	transform.setState1(Transform(transform.getState1().translation, transform.getState1().rotation, scale));
+	transform.scale = scale;
 	updateTransform();
 }
 
-void SceneObject::resetSubstepTweens()
+void SceneObject::resetTweens()
 {
-	for (TweenBase* variable: substepTweens)
+	for (TweenBase* tween: tweens)
 	{
-		variable->update();
+		tween->reset();
 	}
 }
 
 void SceneObject::updateBounds()
 {
-	bounds.setState1(calculateBounds());
+	bounds = calculateBounds();
 }
 
-void SceneObject::registerSubstepTween(TweenBase* variable)
+void SceneObject::registerTween(TweenBase* variable)
 {
-	substepTweens.push_back(variable);
+	tweens.push_back(variable);
 }
 
 AABB SceneObject::calculateBounds() const
 {
-	return AABB(getTranslation(), getTranslation());
+	return AABB(transform.translation, transform.translation);
 }
 
 void SceneObject::transformed()
@@ -100,15 +105,42 @@ void SceneObject::transformed()
 
 void SceneObject::updateTransform()
 {
-	forward.setState1(glm::normalize(getRotation() * Vector3(0.0f, 0.0f, -1.0f)));
-	up.setState1(glm::normalize(getRotation() * Vector3(0.0f, 1.0f, 0.0f)));
-	right.setState1(glm::normalize(glm::cross(forward.getState1(), up.getState1())));
-	up.setState1(glm::cross(right.getState1(), forward.getState1()));
+	forward = glm::normalize(transform.rotation * Vector3(0.0f, 0.0f, -1.0f));
+	up = glm::normalize(transform.rotation * Vector3(0.0f, 1.0f, 0.0f));
+	right = glm::normalize(glm::cross(forward, up));
+	up = glm::cross(right, forward);
 	
-	matrix = transform.getState1().toMatrix();
+	matrix = transform.toMatrix();
 	transformed();
 
 	updateBounds();
+}
+
+Vector3 SceneObject::interpolateForward(const Vector3& x, const Vector3& y, float a) const
+{
+	// WARNING: Assumes this tween has been interpolated beforehand
+	return glm::normalize(transformTween.getSubstate().rotation * Vector3(0.0f, 0.0f, -1.0f));
+}
+
+Vector3 SceneObject::interpolateUp(const Vector3& x, const Vector3& y, float a) const
+{
+	// WARNING: Assumes these tweens have been interpolated beforehand
+	Vector3 upSubstate = glm::normalize(transformTween.getSubstate().rotation * Vector3(0.0f, 1.0f, 0.0f));
+	Vector3 rightSubstate = glm::normalize(glm::cross(forwardTween.getSubstate(), upSubstate));
+	return glm::cross(rightSubstate, forwardTween.getSubstate());
+}
+
+Vector3 SceneObject::interpolateRight(const Vector3& x, const Vector3& y, float a) const
+{
+	// WARNING: Assumes these tweens have been interpolated beforehand
+	Vector3 upSubstate = glm::normalize(transformTween.getSubstate().rotation * Vector3(0.0f, 1.0f, 0.0f));
+	return glm::normalize(glm::cross(forwardTween.getSubstate(), upSubstate));
+}
+
+Matrix4 SceneObject::interpolateMatrix(const Matrix4& x, const Matrix4& y, float a) const
+{
+	// WARNING: Assumes this tween has been interpolated beforehand
+	return transformTween.getSubstate().toMatrix();
 }
 
 } // namespace Emergent

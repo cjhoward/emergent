@@ -31,6 +31,8 @@
 #include <emergent/animation/animation-clip.hpp>
 #include <emergent/animation/animation.hpp>
 #include <emergent/animation/animator.hpp>
+#include <emergent/animation/step-interpolator.hpp>
+#include <emergent/animation/tween.hpp>
 
 /**
  * @defgroup geometry Geometry
@@ -119,10 +121,8 @@
 #include <emergent/utility/event.hpp>
 #include <emergent/utility/os-interface.hpp>
 #include <emergent/utility/performance-sampler.hpp>
-#include <emergent/utility/step-interpolator.hpp>
 #include <emergent/utility/step-scheduler.hpp>
 #include <emergent/utility/timer.hpp>
-#include <emergent/utility/tween.hpp>
 
 /**
  * @defgroup font Font
@@ -130,13 +130,13 @@
  * Font-related classes
  */
 #include <emergent/font/font.hpp>
-#include <emergent/font/font-loader.hpp>
 #include <emergent/font/font-metrics.hpp>
 #include <emergent/font/glyph.hpp>
 #include <emergent/font/glyph-metrics.hpp>
 #include <emergent/font/kerning-table.hpp>
 #include <emergent/font/texture-atlas.hpp>
 #include <emergent/font/texture-packer.hpp>
+#include <emergent/font/typeface.hpp>
 #include <emergent/font/unicode-range.hpp>
 
 /**

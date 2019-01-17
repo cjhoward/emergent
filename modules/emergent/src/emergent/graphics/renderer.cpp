@@ -55,7 +55,7 @@ void RenderQueue::queue(const ModelInstance* instance)
 	RenderOperation operation;
 
 	// Set operation transform
-	operation.transform = instance->getSubstepMatrix();
+	operation.transform = instance->getTransformMatrixTween()->getSubstate();
 	
 	const Model* model = instance->getModel();
 	operation.vao = model->getVAO();
@@ -80,7 +80,7 @@ void RenderQueue::queue(const BillboardBatch* batch)
 	RenderOperation operation;
 
 	// Set operation transform
-	operation.transform = batch->getSubstepMatrix();
+	operation.transform = batch->getTransformMatrixTween()->getSubstate();
 	operation.vao = batch->vao;
 	operation.pose = nullptr;
 	
@@ -191,6 +191,8 @@ void Renderer::render(const Scene& scene)
 		// For each active camera
 		for (Camera* camera: cameras)
 		{
+			const ViewFrustum& viewFrustum = camera->getViewFrustumTween()->getSubstate();
+
 			const std::list<SceneObject*>* objects = layer->getObjects();
 			if (objects == nullptr)
 			{
@@ -198,11 +200,26 @@ void Renderer::render(const Scene& scene)
 			}
 			
 			// Add visible objects to render queue
-			for (auto object: *objects)
+			for (SceneObject* object: *objects)
 			{
-				// Cull objects outside view frustum
-				if (camera->getCullingMask() && !camera->getCullingMask()->intersects(object->getSubstepBounds()))
-					continue;
+				if (camera->isCullingEnabled() && object->isCullingEnabled())
+				{
+					const BoundingVolume* cameraCullingVolume = &viewFrustum;
+					const BoundingVolume* objectCullingVolume = &object->getBoundsTween()->getSubstate();
+					if (camera->getCullingMask())
+					{
+						cameraCullingVolume = camera->getCullingMask();
+					}
+
+					if (object->getCullingMask())
+					{
+						objectCullingVolume = object->getCullingMask();
+					}
+
+					// Cull objects outside culling volume
+					if (!cameraCullingVolume->intersects(*objectCullingVolume))
+						continue;
+				}
 				
 				renderQueue.queue(object);
 			}
@@ -210,7 +227,7 @@ void Renderer::render(const Scene& scene)
 			// Calculate depths (distance to near clipping plane)
 			for (RenderOperation& op: *renderQueue.getOperations())
 			{
-				op.depth = camera->getViewFrustum().getNear().distance(Vector3(op.transform[3]));
+				op.depth = viewFrustum.getNear().distance(Vector3(op.transform[3]));
 			}
 			
 			// Form render context

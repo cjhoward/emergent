@@ -32,6 +32,22 @@ ViewFrustum::ViewFrustum():
 	recalculateCorners();
 }
 
+ViewFrustum::ViewFrustum(const ViewFrustum& viewFrustum):
+	ConvexHull(6)
+{
+	view = viewFrustum.view;
+	projection = viewFrustum.projection;
+	recalculateFrustum();
+}
+
+ViewFrustum& ViewFrustum::operator=(const ViewFrustum& viewFrustum)
+{
+	view = viewFrustum.view;
+	projection = viewFrustum.projection;
+	recalculateFrustum();
+	return *this;
+}
+
 void ViewFrustum::setViewMatrix(const Matrix4& view)
 {
 	this->view = view;

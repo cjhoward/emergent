@@ -38,6 +38,9 @@ public:
 	 * Creates an instance of ViewFrustum.
 	 */
 	ViewFrustum();
+
+	ViewFrustum(const ViewFrustum& viewFrustum);
+	ViewFrustum& operator=(const ViewFrustum& viewFrustum);
 	
 	/**
 	 * Sets the view matrix of the frustum.
@@ -117,6 +120,9 @@ public:
 	 * @param index Index of a corner.
 	 */
 	const Vector3& getCorner(std::size_t index) const;
+
+	/// Compares two view frustums for equality.
+	bool operator==(const ViewFrustum& rhs) const;
 	
 protected:
 	virtual void recalculateFrustum();
@@ -184,6 +190,11 @@ inline std::size_t ViewFrustum::getCornerCount() const
 inline const Vector3& ViewFrustum::getCorner(std::size_t index) const
 {
 	return corners[index];
+}
+
+inline bool ViewFrustum::operator==(const ViewFrustum& rhs) const
+{
+	return (view == rhs.view && projection == rhs.projection);
 }
 
 } // namespace Emergent

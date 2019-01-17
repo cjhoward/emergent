@@ -20,6 +20,7 @@
 #ifndef EMERGENT_GRAPHICS_LIGHT_HPP
 #define EMERGENT_GRAPHICS_LIGHT_HPP
 
+#include <emergent/animation/tween.hpp>
 #include <emergent/graphics/scene-object.hpp>
 
 namespace Emergent
@@ -86,7 +87,7 @@ public:
 	 *
 	 * @param color Specifies the light color.
 	 */
-	void setColor(const glm::vec3& color);
+	void setColor(const Vector3& color);
 
 	/**
 	 * Sets the light intensity.
@@ -98,7 +99,7 @@ public:
 	/**
 	 * Returns the light color. The initial value is `(1, 1, 1)`.
 	 */
-	const glm::vec3& getColor() const;
+	const Vector3& getColor() const;
 	
 	/**
 	 * Returns the light intensity. The initial value is `1`.
@@ -108,7 +109,19 @@ public:
 	/**
 	 * Returns the light color multiplied by the light intensity.
 	 */
-	const glm::vec3& getScaledColor() const;
+	const Vector3& getScaledColor() const;
+
+	/// Returns the color tween
+	const Tween<Vector3>* getColorTween() const;
+
+	/// @copydoc PunctualLight::getColorTween() const
+	Tween<Vector3>* getColorTween();
+	
+	/// Returns the intensity tween
+	const Tween<float>* getIntensityTween() const;
+
+	/// @copydoc PunctualLight::getIntensityTween() const
+	Tween<float>* getIntensityTween();
 	
 protected:
 	/**
@@ -117,12 +130,14 @@ protected:
 	PunctualLight();
 
 private:
-	glm::vec3 color;
+	Vector3 color;
 	float intensity;
-	glm::vec3 scaledColor;
+	Vector3 scaledColor;
+	Tween<Vector3> colorTween;
+	Tween<float> intensityTween;
 };
 
-inline void PunctualLight::setColor(const glm::vec3& color)
+inline void PunctualLight::setColor(const Vector3& color)
 {
 	this->color = color;
 	this->scaledColor = color * intensity;
@@ -134,7 +149,7 @@ inline void PunctualLight::setIntensity(float intensity)
 	this->scaledColor = color * intensity;
 }
 
-inline const glm::vec3& PunctualLight::getColor() const
+inline const Vector3& PunctualLight::getColor() const
 {
 	return color;
 }
@@ -144,9 +159,29 @@ inline float PunctualLight::getIntensity() const
 	return intensity;
 }
 
-inline const glm::vec3& PunctualLight::getScaledColor() const
+inline const Vector3& PunctualLight::getScaledColor() const
 {
 	return scaledColor;
+}
+
+inline const Tween<Vector3>* PunctualLight::getColorTween() const
+{
+	return &colorTween;
+}
+
+inline Tween<Vector3>* PunctualLight::getColorTween()
+{
+	return &colorTween;
+}
+	
+inline const Tween<float>* PunctualLight::getIntensityTween() const
+{
+	return &intensityTween;
+}
+
+inline Tween<float>* PunctualLight::getIntensityTween()
+{
+	return &intensityTween;
 }
 
 /**
@@ -172,7 +207,7 @@ public:
 	 *
 	 * @param attenuation Specifies the attenuation vector.
 	 */
-	void setAttenuation(const glm::vec3& attenuation);
+	void setAttenuation(const Vector3& attenuation);
 	
 	/// Returns LightType::POINT
 	virtual LightType getLightType() const;
@@ -180,13 +215,20 @@ public:
 	/**
 	 * Returns the constant, linear, and quadratic attenuation factors.  The initial value is `(1, 0, 0)`.
 	 */
-	const glm::vec3& getAttenuation() const;
+	const Vector3& getAttenuation() const;
+
+	/// Returns the attenuation tween
+	const Tween<Vector3>* getAttenuationTween() const;
+
+	/// @copydoc PointLight::getAttenuationTween() const
+	Tween<Vector3>* getAttenuationTween();
 	
 private:
-	glm::vec3 attenuation;
+	Vector3 attenuation;
+	Tween<Vector3> attenuationTween;
 };
 
-inline void PointLight::setAttenuation(const glm::vec3& attenuation)
+inline void PointLight::setAttenuation(const Vector3& attenuation)
 {
 	this->attenuation = attenuation;
 }
@@ -196,9 +238,19 @@ inline LightType PointLight::getLightType() const
 	return LightType::POINT;
 }
 
-inline const glm::vec3& PointLight::getAttenuation() const
+inline const Vector3& PointLight::getAttenuation() const
 {
 	return attenuation;
+}
+
+inline const Tween<Vector3>* PointLight::getAttenuationTween() const
+{
+	return &attenuationTween;
+}
+
+inline Tween<Vector3>* PointLight::getAttenuationTween()
+{
+	return &attenuationTween;
 }
 
 /**
@@ -224,7 +276,7 @@ public:
 	 *
 	 * @param direction Specifies the light direction.
 	 */
-	void setDirection(const glm::vec3& direction);
+	void setDirection(const Vector3& direction);
 	
 	/// Returns LightType::DIRECTIONAL
 	virtual LightType getLightType() const;
@@ -232,12 +284,19 @@ public:
 	/**
 	 * Returns the light direction. The initial value is `(0, 0, -1)`.
 	 */
-	const glm::vec3& getDirection() const;
+	const Vector3& getDirection() const;
+
+	/// Returns the direction tween
+	const Tween<Vector3>* getDirectionTween() const;
+
+	/// @copydoc DirectionalLight::getDirectionTween() const
+	Tween<Vector3>* getDirectionTween();
 	
 private:
 	virtual void transformed();
 	
-	glm::vec3 direction;
+	Vector3 direction;
+	Tween<Vector3> directionTween;
 };
 
 inline LightType DirectionalLight::getLightType() const
@@ -245,9 +304,19 @@ inline LightType DirectionalLight::getLightType() const
 	return LightType::DIRECTIONAL;
 }
 
-inline const glm::vec3& DirectionalLight::getDirection() const
+inline const Vector3& DirectionalLight::getDirection() const
 {
 	return direction;
+}
+
+inline const Tween<Vector3>* DirectionalLight::getDirectionTween() const
+{
+	return &directionTween;
+}
+
+inline Tween<Vector3>* DirectionalLight::getDirectionTween()
+{
+	return &directionTween;
 }
 
 /**
@@ -266,21 +335,21 @@ public:
 	/**
 	 * Destroys an instance of Spotlight.
 	 */
-	~Spotlight();
+	virtual ~Spotlight();
 	
 	/**
 	 * Sets the constant, linear, and quadratic attenuation factors. 
 	 *
 	 * @param attenuation Specifies the attenuation vector.
 	 */
-	void setAttenuation(const glm::vec3& attenuation);
+	void setAttenuation(const Vector3& attenuation);
 	
 	/**
 	 * Sets the light direction.
 	 *
 	 * @param direction Specifies the light direction.
 	 */
-	void setDirection(const glm::vec3& direction);
+	void setDirection(const Vector3& direction);
 	
 	/**
 	 * Sets the cosine of the maximum spread angle of the spotlight.
@@ -302,12 +371,12 @@ public:
 	/**
 	 * Returns the constant, linear, and quadratic attenuation factors.  The initial value is `(1, 0, 0)`.
 	 */
-	const glm::vec3& getAttenuation() const;
+	const Vector3& getAttenuation() const;
 	
 	/**
 	 * Returns the light direction. The initial value is `(0, 0, -1)`.
 	 */
-	const glm::vec3& getDirection() const;
+	const Vector3& getDirection() const;
 	
 	/**
 	 * Returns the cosine of the maximum spread angle of the spotlight, in radians. The initial value is Pi.
@@ -318,17 +387,46 @@ public:
 	 * Returns the exponent value that specifies the intensity distribution of the light. The initial value is `0`.
 	 */
 	float getExponent() const;
+
+	/// Returns the attenuation tween
+	const Tween<Vector3>* getAttenuationTween() const;
+
+	/// @copydoc Spotlight::getAttenuationTween() const
+	Tween<Vector3>* getAttenuationTween();
+
+	/// Returns the direction tween
+	const Tween<Vector3>* getDirectionTween() const;
+
+	/// @copydoc Spotlight::getDirectionTween() const
+	Tween<Vector3>* getDirectionTween();
+
+	/// Returns the cutoff tween
+	const Tween<float>* getCutoffTween() const;
+
+	/// @copydoc Spotlight::getCutoffTween() const
+	Tween<float>* getCutoffTween();
+
+	/// Returns the exponent tween
+	const Tween<float>* getExponentTween() const;
+
+	/// @copydoc Spotlight::getExponentTween() const
+	Tween<float>* getExponentTween();
 	
 private:
 	virtual void transformed();
 
-	glm::vec3 attenuation;	
-	glm::vec3 direction;
+	Vector3 attenuation;
+	Vector3 direction;
 	float cutoff;
 	float exponent;
+
+	Tween<Vector3> attenuationTween;
+	Tween<Vector3> directionTween;
+	Tween<float> cutoffTween;
+	Tween<float> exponentTween;
 };
 
-inline void Spotlight::setAttenuation(const glm::vec3& attenuation)
+inline void Spotlight::setAttenuation(const Vector3& attenuation)
 {
 	this->attenuation = attenuation;
 }
@@ -348,12 +446,12 @@ inline LightType Spotlight::getLightType() const
 	return LightType::SPOTLIGHT;
 }
 
-inline const glm::vec3& Spotlight::getAttenuation() const
+inline const Vector3& Spotlight::getAttenuation() const
 {
 	return attenuation;
 }
 
-inline const glm::vec3& Spotlight::getDirection() const
+inline const Vector3& Spotlight::getDirection() const
 {
 	return direction;
 }
@@ -366,6 +464,46 @@ inline float Spotlight::getCutoff() const
 inline float Spotlight::getExponent() const
 {
 	return exponent;
+}
+
+inline const Tween<Vector3>* Spotlight::getAttenuationTween() const
+{
+	return &attenuationTween;
+}
+
+inline Tween<Vector3>* Spotlight::getAttenuationTween()
+{
+	return &attenuationTween;
+}
+
+inline const Tween<Vector3>* Spotlight::getDirectionTween() const
+{
+	return &directionTween;
+}
+
+inline Tween<Vector3>* Spotlight::getDirectionTween()
+{
+	return &directionTween;
+}
+
+inline const Tween<float>* Spotlight::getCutoffTween() const
+{
+	return &cutoffTween;
+}
+
+inline Tween<float>* Spotlight::getCutoffTween()
+{
+	return &cutoffTween;
+}
+
+inline const Tween<float>* Spotlight::getExponentTween() const
+{
+	return &exponentTween;
+}
+
+inline Tween<float>* Spotlight::getExponentTween()
+{
+	return &exponentTween;
 }
 
 } // namespace Emergent

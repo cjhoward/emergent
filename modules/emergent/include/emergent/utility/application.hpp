@@ -20,11 +20,11 @@
 #ifndef EMERGENT_UTILITY_APPLICATION_HPP
 #define EMERGENT_UTILITY_APPLICATION_HPP
 
+#include <emergent/animation/step-interpolator.hpp>
 #include <emergent/input/input-event.hpp>
 #include <emergent/utility/event-dispatcher.hpp>
 #include <emergent/utility/event-handler.hpp>
 #include <emergent/utility/step-scheduler.hpp>
-#include <emergent/utility/step-interpolator.hpp>
 #include <emergent/utility/performance-sampler.hpp>
 
 namespace Emergent

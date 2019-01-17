@@ -20,9 +20,9 @@
 #ifndef EMERGENT_GRAPHICS_SCENE_OBJECT_HPP
 #define EMERGENT_GRAPHICS_SCENE_OBJECT_HPP
 
-#include <emergent/math/types.hpp>
+#include <emergent/animation/tween.hpp>
 #include <emergent/geometry/aabb.hpp>
-#include <emergent/utility/tween.hpp>
+#include <emergent/math/types.hpp>
 #include <list>
 
 namespace Emergent
@@ -53,13 +53,15 @@ public:
 	virtual ~SceneObject() = 0;
 	
 	void setActive(bool active);
+	void setCullingEnabled(bool enabled);
+	void setCullingMask(const BoundingVolume* mask);
 	void setTransform(const Transform& transform);
 	void setTranslation(const Vector3& translation);
 	void setRotation(const Quaternion& rotation);
 	void setScale(const Vector3& scale);
 
-	/// Sets state0 = state1 for each substep-interpolated tween variable
-	void resetSubstepTweens();
+	/// Reset each tween in this object
+	void resetTweens();
 	
 	virtual SceneObjectType getSceneObjectType() const = 0;
 	
@@ -91,37 +93,52 @@ public:
 	const Vector3& getRight() const;
 	
 	/// Returns the transformation matrix
-	const Matrix4& getMatrix() const;
+	const Matrix4& getTransformMatrix() const;
 
-	/// Returns the bounds of this object, interpolated between the previous state and current state.
-	const AABB& getSubstepBounds() const;
+	/// Returns true if this object should be view frustum-culled
+	bool isCullingEnabled() const;
 
-	/// Returns the transformation of this object, interpolated between the previous state and current state.
-	const Transform& getSubstepTransform() const;
-	
-	/// Returns the transformation translation vector, interpolated between the previous state and current state.
-	const Vector3& getSubstepTranslation() const;
-	
-	/// Returns the transformation rotation quaternion, interpolated between the previous state and current state.
-	const Quaternion& getSubstepRotation() const;
-	
-	/// Returns the transformation scale vector, interpolated between the previous state and current state.
-	const Vector3& getSubstepScale() const;
-	
-	/// Returns the forward vector, interpolated between the previous state and current state.
-	const Vector3& getSubstepForward() const;
-	
-	/// Returns the up vector, interpolated between the previous state and current state.
-	const Vector3& getSubstepUp() const;
-	
-	/// Returns the right vector, interpolated between the previous state and current state.
-	const Vector3& getSubstepRight() const;
-	
-	/// Returns the transformation matrix, interpolated between the previous state and current state.
-	Matrix4 getSubstepMatrix() const;
+	/// Returns the culling mask of this object
+	const BoundingVolume* getCullingMask() const;
 
-	/// Returns a list of substep-interpolated tween variables
-	const std::list<TweenBase*>* getSubstepTweens() const;
+	/// Returns a list of tweens used by this object
+	const std::list<TweenBase*>* getTweens() const;
+
+	/// Returns the bounds tween
+	const Tween<AABB>* getBoundsTween() const;
+
+	/// @copydoc SceneObject::getBoundsTween() const
+	Tween<AABB>* getBoundsTween();
+
+	/// Returns the transformtion tween
+	const Tween<Transform>* getTransformTween() const;
+	
+	/// @copydoc SceneObject::getTransformTween() const
+	Tween<Transform>* getTransformTween();
+
+	/// Returns the forward vector tween
+	const Tween<Vector3>* getForwardTween() const;
+
+	/// @copydoc SceneObject::getForwardTween() const
+	Tween<Vector3>* getForwardTween();
+
+	/// Returns the up vector tween
+	const Tween<Vector3>* getUpTween() const;
+
+	/// @copydoc SceneObject::getUpTween() const
+	Tween<Vector3>* getUpTween();
+
+	/// Returns the right vector tween
+	const Tween<Vector3>* getRightTween() const;
+
+	/// @copydoc SceneObject::getRightTween() const
+	Tween<Vector3>* getRightTween();
+
+	/// Returns the transformation matrix tween
+	const Tween<Matrix4>* getTransformMatrixTween() const;
+
+	/// @copydoc SceneObject::getTransformMatrixTween() const
+	Tween<Matrix4>* getTransformMatrixTween();
 	
 protected:
 	/**
@@ -132,9 +149,9 @@ protected:
 	/**
 	 * Registers a tween variable to be interpolated between steps. This should only be done once for each tween in the constructor.
 	 *
-	 * @param variable Variable to be registered.
+	 * @param tween Tween to be registered.
 	 */
-	void registerSubstepTween(TweenBase* tween);
+	void registerTween(TweenBase* tween);
 
 private:
 	// Calculates the transformed AABB of this object
@@ -145,115 +162,168 @@ private:
 	
 	// Updates the transform
 	void updateTransform();
+
+	Vector3 interpolateForward(const Vector3& x, const Vector3& y, float a) const;
+	Vector3 interpolateUp(const Vector3& x, const Vector3& y, float a) const;
+	Vector3 interpolateRight(const Vector3& x, const Vector3& y, float a) const;
+	Matrix4 interpolateMatrix(const Matrix4& x, const Matrix4& y, float a) const;
 	
 	bool active;
-	std::list<TweenBase*> substepTweens;
-	Tween<AABB, lerp<AABB>> bounds;
-	Tween<Transform, lerp<Transform>> transform;
-	Tween<Vector3, lerp<Vector3>> forward;
-	Tween<Vector3, lerp<Vector3>> up;
-	Tween<Vector3, lerp<Vector3>> right;
+	bool cullingEnabled;
+	const BoundingVolume* cullingMask;
+	AABB bounds;
+	Transform transform;
+	Vector3 forward;
+	Vector3 up;
+	Vector3 right;
 	Matrix4 matrix;
+	Tween<AABB> boundsTween;
+	Tween<Transform> transformTween;
+	Tween<Vector3> forwardTween;
+	Tween<Vector3> upTween;
+	Tween<Vector3> rightTween;
+	Tween<Matrix4> matrixTween;
+	std::list<TweenBase*> tweens;
 };
+
+inline void SceneObject::setActive(bool active)
+{
+	this->active = active;
+}
+
+inline void SceneObject::setCullingEnabled(bool enabled)
+{
+	this->cullingEnabled = enabled;
+}
+
+inline void SceneObject::setCullingMask(const BoundingVolume* mask)
+{
+	this->cullingMask = mask;
+}
 
 inline bool SceneObject::isActive() const
 {
 	return active;
 }
 
+inline bool SceneObject::isCullingEnabled() const
+{
+	return cullingEnabled;
+}
+
+inline const BoundingVolume* SceneObject::getCullingMask() const
+{
+	return cullingMask;
+}
+
 inline const AABB& SceneObject::getBounds() const
 {
-	return bounds.getState1();
+	return bounds;
 }
 
 inline const Transform& SceneObject::getTransform() const
 {
-	return transform.getState1();
+	return transform;
 }
 
 inline const Vector3& SceneObject::getTranslation() const
 {
-	return transform.getState1().translation;
+	return transform.translation;
 }
 
 inline const Quaternion& SceneObject::getRotation() const
 {
-	return transform.getState1().rotation;
+	return transform.rotation;
 }
 
 inline const Vector3& SceneObject::getScale() const
 {
-	return transform.getState1().scale;
+	return transform.scale;
 }
 
 inline const Vector3& SceneObject::getForward() const
 {
-	return forward.getState1();
+	return forward;
 }
 
 inline const Vector3& SceneObject::getUp() const
 {
-	return up.getState1();
+	return up;
 }
 
 inline const Vector3& SceneObject::getRight() const
 {
-	return right.getState1();
+	return right;
 }
 
-inline const Matrix4& SceneObject::getMatrix() const
+inline const Matrix4& SceneObject::getTransformMatrix() const
 {
 	return matrix;
 }
 
-inline const AABB& SceneObject::getSubstepBounds() const
+inline const std::list<TweenBase*>* SceneObject::getTweens() const
 {
-	return bounds.getSubstate();
+	return &tweens;
 }
 
-inline const Transform& SceneObject::getSubstepTransform() const
+inline const Tween<AABB>* SceneObject::getBoundsTween() const
 {
-	return transform.getSubstate();
+	return &boundsTween;
 }
 
-inline const Vector3& SceneObject::getSubstepTranslation() const
+inline Tween<AABB>* SceneObject::getBoundsTween()
 {
-	return transform.getSubstate().translation;
+	return &boundsTween;
 }
 
-inline const Quaternion& SceneObject::getSubstepRotation() const
+inline const Tween<Transform>* SceneObject::getTransformTween() const
 {
-	return transform.getSubstate().rotation;
+	return &transformTween;
 }
 
-inline const Vector3& SceneObject::getSubstepScale() const
+inline Tween<Transform>* SceneObject::getTransformTween()
 {
-	return transform.getSubstate().scale;
+	return &transformTween;
 }
 
-inline const Vector3& SceneObject::getSubstepForward() const
+inline const Tween<Vector3>* SceneObject::getForwardTween() const
 {
-	return forward.getSubstate();
+	return &forwardTween;
 }
 
-inline const Vector3& SceneObject::getSubstepUp() const
+inline Tween<Vector3>* SceneObject::getForwardTween()
 {
-	return up.getSubstate();
+	return &forwardTween;
 }
 
-inline const Vector3& SceneObject::getSubstepRight() const
+inline const Tween<Vector3>* SceneObject::getUpTween() const
 {
-	return right.getSubstate();
+	return &upTween;
 }
 
-inline Matrix4 SceneObject::getSubstepMatrix() const
+inline Tween<Vector3>* SceneObject::getUpTween()
 {
-	return getSubstepTransform().toMatrix();
+	return &upTween;
 }
 
-inline const std::list<TweenBase*>* SceneObject::getSubstepTweens() const
+inline const Tween<Vector3>* SceneObject::getRightTween() const
 {
-	return &substepTweens;
+	return &rightTween;
+}
+
+inline Tween<Vector3>* SceneObject::getRightTween()
+{
+	return &rightTween;
+}
+
+inline const Tween<Matrix4>* SceneObject::getTransformMatrixTween() const
+{
+	return &matrixTween;
+}
+
+inline Tween<Matrix4>* SceneObject::getTransformMatrixTween()
+{
+	return &matrixTween;
 }
 
 } // namespace Emergent

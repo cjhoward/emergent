@@ -18,6 +18,7 @@
  */
 
 #include <emergent/graphics/light.hpp>
+#include <emergent/math/interpolation.hpp>
 
 namespace Emergent
 {
@@ -25,8 +26,13 @@ namespace Emergent
 PunctualLight::PunctualLight():
 	color(1.0f),
 	intensity(1.0f),
-	scaledColor(1.0f)
-{}
+	scaledColor(1.0f),
+	colorTween(&color, lerp<Vector3>),
+	intensityTween(&intensity, lerp<float>)
+{
+	registerTween(&colorTween);
+	registerTween(&intensityTween);
+}
 
 PunctualLight::~PunctualLight()
 {}
@@ -38,15 +44,21 @@ Light::~Light()
 {}
 
 PointLight::PointLight():
-	attenuation(1.0f, 0.0f, 0.0f)
-{}
+	attenuation(1.0f, 0.0f, 0.0f),
+	attenuationTween(&attenuation, lerp<Vector3>)
+{
+	registerTween(&attenuationTween);
+}
 
 PointLight::~PointLight()
 {}
 
 DirectionalLight::DirectionalLight():
-	direction(0.0f, 0.0f, -1.0f)
-{}
+	direction(0, 0, -1),
+	directionTween(&direction, lerp<Vector3>)
+{
+	registerTween(&directionTween);
+}
 
 DirectionalLight::~DirectionalLight()
 {}
@@ -62,18 +74,27 @@ void DirectionalLight::transformed()
 }
 
 Spotlight::Spotlight():
-	attenuation(1.0f, 0.0f, 0.0f),
-	direction(0.0f, 0.0f, -1.0f),
+	attenuation(1, 0, 0),
+	direction(0, 0, -1),
 	cutoff(glm::pi<float>()),
-	exponent(0.0f)
-{}
+	exponent(0.0f),
+	attenuationTween(&attenuation, lerp<Vector3>),
+	directionTween(&direction, lerp<Vector3>),
+	cutoffTween(&cutoff, lerp<float>),
+	exponentTween(&exponent, lerp<float>)
+{
+	registerTween(&attenuationTween);
+	registerTween(&directionTween);
+	registerTween(&cutoffTween);
+	registerTween(&exponentTween);
+}
 
 Spotlight::~Spotlight()
 {}
 
 void Spotlight::setDirection(const Vector3& direction)
 {
-	setRotation(glm::rotation(Vector3(0.0f, 0.0f, -1.0f), direction));;
+	setRotation(glm::rotation(Vector3(0.0f, 0.0f, -1.0f), direction));
 }
 
 void Spotlight::transformed()

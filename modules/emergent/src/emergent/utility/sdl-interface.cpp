@@ -125,6 +125,7 @@ SDLInterface::SDLInterface(EventDispatcher* eventDispatcher):
 
 
 	SDL_SetHint(SDL_HINT_GRAB_KEYBOARD, "0");
+	SDL_SetHint(SDL_HINT_IME_INTERNAL_EDITING, "0");
 	
 	// Register keyboard
 	keyboard = new Keyboard(deviceManager, "SDL Default Keyboard");
