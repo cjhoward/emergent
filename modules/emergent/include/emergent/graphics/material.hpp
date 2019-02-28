@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -139,6 +139,13 @@ public:
 	 * @return `true` if all variables were successfully uploaded, `false` otherwise.
 	 */
 	bool upload() const;
+
+	/**
+	 * Creates a copy of this material.
+	 *
+	 * @return Newly allocated copy of this material.
+	 */
+	Material* clone() const;
 	
 private:
 	friend class Shader;

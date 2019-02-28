@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -47,12 +47,10 @@ bool contained(const Vector3& p, const Vector3& a, const Vector3& b, const Vecto
 Vector3 closest_point_on_segment(const Vector3& p, const Vector3& a, const Vector3& b);
 
 // Projects a point (v) onto a plane defined by a position (p) and normal (n)
-Vector3 project_on_plane(const Vector3& v, const Vector3& p, const Vector3& n);
+Vector3 projectOnPlane(const Vector3& v, const Vector3& p, const Vector3& n);
 
 // Projects a point (p) onto a triangle (abc) and returns the projected point (closest) and edge, if any.
-void project_on_triangle(const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c, Vector3* closest, int* edge);
-
-float ease_out_quintic(float t, float b, float c, float d);
+Vector3 projectOnTriangle(const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c, int* edge, int* verex);
 
 float frand(float min, float max);
 

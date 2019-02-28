@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -84,7 +84,7 @@ Vector3 closest_point_on_segment(const Vector3& p, const Vector3& a, const Vecto
 	return a + d * t;
 }
 
-Vector3 project_on_plane(const Vector3& v, const Vector3& p, const Vector3& n)
+Vector3 projectOnPlane(const Vector3& v, const Vector3& p, const Vector3& n)
 {
 	return v - n * glm::dot(v - p, n);
 }
@@ -92,7 +92,7 @@ Vector3 project_on_plane(const Vector3& v, const Vector3& p, const Vector3& n)
 // code taken from Detour's dtClosestPtPointTriangle
 // @see https://github.com/recastnavigation/recastnavigation/blob/master/Detour/Source/DetourCommon.cpp
 // (zlib license)
-void project_on_triangle(const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c, Vector3* closest, int* edge)
+Vector3 projectOnTriangle(const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c, int* edge, int* vertex)
 {
 	// Check if P in vertex region outside A
 	Vector3 ab = b - a;
@@ -102,10 +102,9 @@ void project_on_triangle(const Vector3& p, const Vector3& a, const Vector3& b, c
 	float d2 = glm::dot(ac, ap);
 	if (d1 <= 0.0f && d2 <= 0.0f)
 	{
-		// barycentric coordinates (1,0,0)
-		*closest = a;
 		*edge = 0;
-		return;
+		*vertex = 0;
+		return Vector3(1.0f, 0.0f, 0.0f);
 	}
 	
 	// Check if P in vertex region outside B
@@ -114,21 +113,19 @@ void project_on_triangle(const Vector3& p, const Vector3& a, const Vector3& b, c
 	float d4 = glm::dot(ac, bp);
 	if (d3 >= 0.0f && d4 <= d3)
 	{
-		// barycentric coordinates (0,1,0)
-		*closest = b;
 		*edge = 1;
-		return;
+		*vertex = 1;
+		return Vector3(0.0f, 1.0f, 0.0f);
 	}
 	
 	// Check if P in edge region of AB, if so return projection of P onto AB
 	float vc = d1 * d4 - d3 * d2;
 	if (vc <= 0.0f && d1 >= 0.0f && d3 <= 0.0f)
 	{
-		// barycentric coordinates (1-v,v,0)
 		float v = d1 / (d1 - d3);
-		*closest = ab * v + a;
 		*edge = 0;
-		return;
+		*vertex = -1;
+		return Vector3(1.0f - v, v, 0.0f);
 	}
 	
 	// Check if P in vertex region outside C
@@ -137,49 +134,38 @@ void project_on_triangle(const Vector3& p, const Vector3& a, const Vector3& b, c
 	float d6 = glm::dot(ac, cp);
 	if (d6 >= 0.0f && d5 <= d6)
 	{
-		// barycentric coordinates (0,0,1)
-		*closest = c;
 		*edge = 2;
-		return;
+		*vertex = 2;
+		return Vector3(0.0f, 0.0f, 1.0f);
 	}
 	
 	// Check if P in edge region of AC, if so return projection of P onto AC
 	float vb = d5 * d2 - d1 * d6;
 	if (vb <= 0.0f && d2 >= 0.0f && d6 <= 0.0f)
 	{
-		// barycentric coordinates (1-w,0,w)
 		float w = d2 / (d2 - d6);
-		*closest = ac * w + a;
 		*edge = 2;
-		return;
+		*vertex = -1;
+		return Vector3(1.0f - w, 0.0f, w);
 	}
 	
 	// Check if P in edge region of BC, if so return projection of P onto BC
 	float va = d3 * d6 - d5 * d4;
 	if (va <= 0.0f && (d4 - d3) >= 0.0f && (d5 - d6) >= 0.0f)
 	{
-		// barycentric coordinates (0,1-w,w)
 		float w = (d4 - d3) / ((d4 - d3) + (d5 - d6));
-		*closest = (c - b) * w + b;
 		*edge = 1;
-		return;
+		*vertex = -1;
+		return Vector3(0.0f, 1.0f - w, w);
 	}
 	
 	// P inside face region. Compute Q through its barycentric coordinates (u,v,w)
 	float denom = 1.0f / (va + vb + vc);
 	float v = vb * denom;
 	float w = vc * denom;
-	*closest = ab * v + ac * w + a;
 	*edge = -1;
-}
-
-// t = time, b = beginning value, c = change in value, d = duration
-float ease_out_quintic(float t, float b, float c, float d) {
-	t /= d;
-	float ts=t*t;
-
-	float tc=ts*t;
-	return b+c*(tc*ts + -5*ts*ts + 10*tc + -10*ts + 5*t);
+	*vertex = -1;
+	return Vector3(1.0f - v - w, v, w);
 }
 
 float frand(float min, float max)

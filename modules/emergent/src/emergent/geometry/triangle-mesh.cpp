@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -17,7 +17,7 @@
  * along with Emergent.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <emergent/geometry/winged-edge.hpp>
+#include <emergent/geometry/triangle-mesh.hpp>
 #include <fstream>
 #include <map>
 #include <sstream>
@@ -26,29 +26,18 @@
 namespace Emergent
 {
 
-WingedEdge::WingedEdge()
-{}
-
-WingedEdge::~WingedEdge()
+TriangleMesh::TriangleMesh(const std::vector<Vector3>& vertices, const std::vector<std::size_t>& indices)
 {
-	destroy();
-}
-
-bool WingedEdge::create(const std::vector<Vector3>& vertices, const std::vector<std::size_t>& indices)
-{
-	destroy();
-	
 	if (indices.size() % 3 != 0)
 	{
-		std::cerr << "WingedEdge::create(): index count is non power of 3\n";
-		return false;
+		throw std::runtime_error("TriangleMesh::TriangleMesh(): index count is not a multuple of 3.");
 	}
 	
 	// Copy vertices
 	this->vertices.resize(vertices.size());
 	for (std::size_t i = 0; i < vertices.size(); ++i)
 	{
-		WingedEdge::Vertex* vertex = new WingedEdge::Vertex();
+		TriangleMesh::Vertex* vertex = new TriangleMesh::Vertex();
 		vertex->edge = nullptr;
 		vertex->position = vertices[i];
 		vertex->index = i;
@@ -61,7 +50,7 @@ bool WingedEdge::create(const std::vector<Vector3>& vertices, const std::vector<
 	std::size_t currentTriangle = 0;
 	
 	// Load triangles
-	std::map<std::pair<std::size_t, std::size_t>, WingedEdge::Edge*> edgeMap;
+	std::map<std::pair<std::size_t, std::size_t>, TriangleMesh::Edge*> edgeMap;
 	for (std::size_t i = 0; i < indices.size(); i += 3)
 	{
 		std::size_t a = indices[i];
@@ -70,27 +59,25 @@ bool WingedEdge::create(const std::vector<Vector3>& vertices, const std::vector<
 		
 		if (a >= vertices.size() || b >= vertices.size() || c >= vertices.size())
 		{
-			std::cerr << "WingedEdge::create(): Mesh contains invalid index.\n";
-			destroy();
-			return false;
+			throw std::runtime_error("TriangleMesh::TriangleMesh(): Mesh contains invalid index.");
 		}
 		
 		// Allocate three edges and a triangle
-		WingedEdge::Edge* ab = new WingedEdge::Edge();
-		WingedEdge::Edge* bc = new WingedEdge::Edge();
-		WingedEdge::Edge* ca = new WingedEdge::Edge();
-		WingedEdge::Triangle* triangle = new WingedEdge::Triangle();
+		TriangleMesh::Edge* ab = new TriangleMesh::Edge();
+		TriangleMesh::Edge* bc = new TriangleMesh::Edge();
+		TriangleMesh::Edge* ca = new TriangleMesh::Edge();
+		TriangleMesh::Triangle* triangle = new TriangleMesh::Triangle();
 
 		// Set triangle start edge
 		triangle->edge = ab;
 
 		// For each edge in this triangle
 		std::size_t triangleIndices[] = {a, b, c};
-		WingedEdge::Edge* triangleEdges[] = {ab, bc, ca};
+		TriangleMesh::Edge* triangleEdges[] = {ab, bc, ca};
 		for (std::size_t j = 0; j < 3; ++j)
 		{
 			// Set edge properties
-			WingedEdge::Edge* edge = triangleEdges[j];
+			TriangleMesh::Edge* edge = triangleEdges[j];
 			edge->triangle = triangle;
 			edge->vertex = this->vertices[triangleIndices[j]];
 			edge->previous = triangleEdges[(j + 2) % 3];
@@ -102,7 +89,7 @@ bool WingedEdge::create(const std::vector<Vector3>& vertices, const std::vector<
 
 			// Check for symmetry
 			std::pair<std::size_t, std::size_t> symmetricPair(triangleIndices[(j + 1) % 3], triangleIndices[j]);
-			std::map<std::pair<std::size_t, std::size_t>, WingedEdge::Edge*>::iterator it = edgeMap.find(symmetricPair);
+			std::map<std::pair<std::size_t, std::size_t>, TriangleMesh::Edge*>::iterator it = edgeMap.find(symmetricPair);
 			if (it == edgeMap.end())
 			{
 				// No symmetric edge found, insert this edge into the map
@@ -131,11 +118,9 @@ bool WingedEdge::create(const std::vector<Vector3>& vertices, const std::vector<
 	}
 	
 	calculateNormals();
-	
-	return true;
 }
 
-void WingedEdge::destroy()
+TriangleMesh::~TriangleMesh()
 {
 	for (std::size_t i = 0; i < vertices.size(); ++i)
 		delete vertices[i];
@@ -143,41 +128,13 @@ void WingedEdge::destroy()
 		delete edges[i];
 	for (std::size_t i = 0; i < triangles.size(); ++i)
 		delete triangles[i];
-	
-	vertices.clear();
-	edges.clear();
-	triangles.clear();
 }
 
-bool WingedEdge::loadOBJ(const std::string& filename)
-{
-	// Open OBJ file
-	std::ifstream file(filename.c_str());
-	if (!file.is_open())
-	{
-		std::cerr << "WingedEdge::loadOBJ(): Failed to open Wavefront OBJ file \"" << filename << "\"" << std::endl;
-		return false;
-	}
-
-	// Read OBJ file from file stream
-	if (!readOBJ(&file, filename))
-	{
-		std::cerr << "WingedEdge::loadOBJ(): Failed to read Wavefront OBJ file \"" << filename << "\"" << std::endl;
-		file.close();
-		return false;
-	}
-
-	// Close OBJ file
-	file.close();
-
-	return true;
-}
-
-void WingedEdge::calculateNormals()
+void TriangleMesh::calculateNormals()
 {
 	for (std::size_t i = 0; i < triangles.size(); ++i)
 	{
-		WingedEdge::Triangle* triangle = triangles[i];
+		TriangleMesh::Triangle* triangle = triangles[i];
 
 		// Calculate surface normal
 		const Vector3& a = triangle->edge->vertex->position;
@@ -187,67 +144,6 @@ void WingedEdge::calculateNormals()
 		Vector3 ca = c - a;
 		triangle->normal = glm::normalize(glm::cross(ba, ca));
 	}
-}
-
-bool WingedEdge::readOBJ(std::istream* stream, const std::string& filename)
-{
-	std::string line;
-	std::vector<Vector3> vertices;
-	std::vector<std::size_t> indices;
-
-	while (stream->good() && std::getline(*stream, line))
-	{
-		// Tokenize line
-		std::vector<std::string> tokens;
-		std::string token;
-		std::istringstream linestream(line);
-		while (linestream >> token)
-			tokens.push_back(token);
-		
-		// Skip empty lines and comments
-		if (tokens.empty() || tokens[0][0] == '#')
-			continue;
-		
-		if (tokens[0] == "v")
-		{
-			if (tokens.size() != 4)
-			{
-				std::cerr << "WingedEdge::readOBJ(): Invalid line \"" << line << "\" in file \"" << filename << "\"" << std::endl;
-				return false;
-			}
-			
-			Vector3 vertex;
-			
-			std::stringstream(tokens[1]) >> vertex.x;
-			std::stringstream(tokens[2]) >> vertex.y;
-			std::stringstream(tokens[3]) >> vertex.z;
-
-			vertices.push_back(vertex);
-		}
-		else if (tokens[0] == "f")
-		{
-			if (tokens.size() != 4)
-			{
-				std::cerr << "WingedEdge::readOBJ(): Invalid line \"" << line << "\" in file \"" << filename << "\"" << std::endl;
-				return false;
-			}
-			
-			std::size_t a, b, c;
-			std::stringstream(tokens[1]) >> a;
-			std::stringstream(tokens[2]) >> b;
-			std::stringstream(tokens[3]) >> c;
-			
-			a -= 1;
-			b -= 1;
-			c -= 1;
-			
-			indices.push_back(a);
-			indices.push_back(b);
-			indices.push_back(c);
-		}
-	}
-	
-	return create(vertices, indices);
 }
 
 } // namespace Emergent

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -33,7 +33,7 @@ namespace Emergent
 class Material;
 class Skeleton;
 class ModelInstance;
-class WingedEdge;
+class TriangleMesh;
 
 /**
  * A 3D model.
@@ -80,12 +80,12 @@ public:
 	void destroy();
 	
 	/**
-	 * Creates a model from a winged-edge mesh.
+	 * Creates a model from a triangle mesh.
 	 *
-	 * @param mesh Specifies the winged-edge mesh from which to create a model.
+	 * @param mesh Specifies the triangle mesh from which to create a model.
 	 * @return `true` if the model was sucessfully created, `false` otherwise.
 	 */
-	bool create(const WingedEdge* mesh);
+	bool create(const TriangleMesh* mesh);
 	
 	/**
 	 * Creates a model instance of this model.
@@ -160,20 +160,11 @@ public:
 	const AABB& getBounds() const;
 	
 private:
-	/// Generates vertex data from a winged-edge mesh
-	static float* generateVertexData(const WingedEdge* mesh);
+	/// Generates vertex data from a triangle mesh
+	static float* generateVertexData(const TriangleMesh* mesh);
 	
-	/// Generates index data from a winged-edge mesh
-	static std::uint32_t* generateIndexData(const WingedEdge* mesh);
-	
-	/**
-	 * Reads Emergent MDL data from an input stream.
-	 *
-	 * @param stream Input stream containing MDL data
-	 * @param filename Path to the MDL file
-	 * @return `true` if MDL data was successfully read from the file.
-	 */
-	bool readMDL(std::istream* stream, const std::string& filename);
+	/// Generates index data from a triangle mesh
+	static std::uint32_t* generateIndexData(const TriangleMesh* mesh);
 	
 	std::vector<Model::Group*> groups;
 	std::map<std::string, Model::Group*> groupMap;

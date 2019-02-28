@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -22,7 +22,7 @@
 #include <emergent/graphics/model-instance.hpp>
 #include <emergent/graphics/vertex-format.hpp>
 #include <emergent/graphics/gl3w.hpp>
-#include <emergent/geometry/winged-edge.hpp>
+#include <emergent/geometry/triangle-mesh.hpp>
 #include <iostream>
 #include <fstream>
 #include <streambuf>
@@ -74,7 +74,7 @@ void Model::destroy()
 	groupMap.clear();
 }
 
-bool Model::create(const WingedEdge* mesh)
+bool Model::create(const TriangleMesh* mesh)
 {
 	destroy();
 	
@@ -181,18 +181,18 @@ Model::Group* Model::getGroup(const std::string& name)
 	return it->second;
 }
 
-float* Model::generateVertexData(const WingedEdge* mesh)
+float* Model::generateVertexData(const TriangleMesh* mesh)
 {
 	float* vertexData = new float[mesh->getTriangles()->size() * 3 * 6];
 	std::size_t offset = 0;
 	
 	for (std::size_t i = 0; i < mesh->getTriangles()->size(); ++i)
 	{
-		const WingedEdge::Triangle* triangle = (*mesh->getTriangles())[i];
+		const TriangleMesh::Triangle* triangle = (*mesh->getTriangles())[i];
 		
-		const WingedEdge::Vertex* a = triangle->edge->vertex;
-		const WingedEdge::Vertex* b = triangle->edge->next->vertex;
-		const WingedEdge::Vertex* c = triangle->edge->previous->vertex;
+		const TriangleMesh::Vertex* a = triangle->edge->vertex;
+		const TriangleMesh::Vertex* b = triangle->edge->next->vertex;
+		const TriangleMesh::Vertex* c = triangle->edge->previous->vertex;
 		const Vector3& normal = triangle->normal;
 		
 		vertexData[offset++] = a->position[0];
@@ -219,8 +219,8 @@ float* Model::generateVertexData(const WingedEdge* mesh)
 		// Calculate smoothed vertex normal
 		/*
 		Vector3 normal(0.0f);
-		WingedEdge::Edge* start = vertex->edge;
-		WingedEdge::Edge* e = start;
+		TriangleMesh::Edge* start = vertex->edge;
+		TriangleMesh::Edge* e = start;
 		do
 		{
 			normal += e->triangle->normal;
@@ -234,7 +234,7 @@ float* Model::generateVertexData(const WingedEdge* mesh)
 	return vertexData;
 }
 
-std::uint32_t* Model::generateIndexData(const WingedEdge* mesh)
+std::uint32_t* Model::generateIndexData(const TriangleMesh* mesh)
 {
 	std::uint32_t* indexData = new std::uint32_t[mesh->getTriangles()->size() * 3];
 	std::size_t offset = 0;

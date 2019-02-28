@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -166,8 +166,8 @@ bool Typeface::loadGlyph(Font* font, char32_t charcode)
 	// Get glyph index from character code
 	FT_UInt index = FT_Get_Char_Index(ftFace, charcode);
 
-	std::cout << "charcode: " << charcode << std::endl;
-	std::cout << "index: " << index << std::endl;
+	//std::cout << "charcode: " << charcode << std::endl;
+	//std::cout << "index: " << index << std::endl;
 	
 	// Load glyph
 	error = FT_Load_Glyph(ftFace, index, flags);
@@ -191,8 +191,8 @@ bool Typeface::loadGlyph(Font* font, char32_t charcode)
 			ftFace->glyph->metrics.vertBearingY / 64.0f));
 	glyphMetrics.setVerticalAdvance(ftFace->glyph->metrics.vertAdvance / 64.0f);
 
-	std::cout << glyphMetrics.getWidth() << std::endl;
-	std::cout << glyphMetrics.getHeight() << std::endl;
+	//std::cout << glyphMetrics.getWidth() << std::endl;
+	//std::cout << glyphMetrics.getHeight() << std::endl;
 	
 	// Load glyph image data
 	const FT_Bitmap& bitmap = ftFace->glyph->bitmap;

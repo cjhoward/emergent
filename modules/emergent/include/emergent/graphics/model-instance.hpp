@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -21,10 +21,12 @@
 #define EMERGENT_GRAPHICS_MODEL_INSTANCE_HPP
 
 #include <emergent/graphics/scene-object.hpp>
+#include <vector>
 
 namespace Emergent
 {
 
+class Material;
 class Model;
 class Pose;
 
@@ -41,18 +43,25 @@ public:
 	
 	void setModel(const Model* model);
 	void setPose(Pose* pose);
+
+	void setMaterialSlot(std::size_t index, Material* material);
+	void resetMaterialSlots();
 	
 	virtual SceneObjectType getSceneObjectType() const;
 	const Model* getModel() const;
 	
 	const Pose* getPose() const;
 	Pose* getPose();
+
+	const Material* getMaterialSlot(std::size_t index) const;
+	Material* getMaterialSlot(std::size_t index);
 	
 private:
 	virtual AABB calculateBounds() const;
 	
 	const Model* model;
 	Pose* pose;
+	std::vector<Material*> materialSlots;
 };
 
 inline void ModelInstance::setPose(Pose* pose)
@@ -78,6 +87,16 @@ inline const Pose* ModelInstance::getPose() const
 inline Pose* ModelInstance::getPose()
 {
 	return pose;
+}
+
+inline const Material* ModelInstance::getMaterialSlot(std::size_t index) const
+{
+	return materialSlots[index];
+}
+
+inline Material* ModelInstance::getMaterialSlot(std::size_t index)
+{
+	return materialSlots[index];
 }
 
 } // namespace Emergent

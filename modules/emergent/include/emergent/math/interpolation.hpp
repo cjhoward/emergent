@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -49,6 +49,12 @@ AABB lerp<AABB>(const AABB& x, const AABB& y, float a);
 
 template <>
 Transform lerp<Transform>(const Transform& x, const Transform& y, float a);
+
+template <typename T>
+T slerp(const T& x, const T& y, float a)
+{
+	return glm::slerp(x, y, a);
+}
 
 template <typename T>
 inline T coserp(const T& x, const T& y, float a)

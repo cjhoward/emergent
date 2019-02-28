@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -124,6 +124,19 @@ bool Material::upload() const
 	}
 
 	return (transmissions == variables.size());
+}
+
+Material* Material::clone() const
+{
+	Material* material = new Material();
+	material->setShader(shader); 
+	for (std::size_t i = 0; i < variables.size(); ++i)
+	{
+		material->variables.push_back(variables[i]->clone());
+	}
+	material->variableMap = variableMap;
+	material->flags = flags;
+	return material;
 }
 
 } // namespace Emergent

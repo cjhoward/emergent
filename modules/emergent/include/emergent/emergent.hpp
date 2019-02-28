@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -47,9 +47,9 @@
 #include <emergent/geometry/ray.hpp>
 #include <emergent/geometry/rect.hpp>
 #include <emergent/geometry/sphere.hpp>
-#include <emergent/geometry/view-frustum.hpp>
 #include <emergent/geometry/split-view-frustum.hpp>
-#include <emergent/geometry/winged-edge.hpp>
+#include <emergent/geometry/triangle-mesh.hpp>
+#include <emergent/geometry/view-frustum.hpp>
 
 /**
  * @defgroup graphics Graphics

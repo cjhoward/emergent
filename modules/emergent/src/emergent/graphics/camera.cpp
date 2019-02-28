@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -194,7 +194,7 @@ Matrix4 Camera::interpolateProjection(const Matrix4& x, const Matrix4& y, float 
 Matrix4 Camera::interpolateInverseProjection(const Matrix4& x, const Matrix4& y, float a) const
 {
 	// WARNING: Assumes this tween has been interpolated beforehand
-	return glm::inverse(inverseProjectionTween.getSubstate());
+	return glm::inverse(projectionTween.getSubstate());
 }
 
 Matrix4 Camera::interpolateViewProjection(const Matrix4& x, const Matrix4& y, float a) const

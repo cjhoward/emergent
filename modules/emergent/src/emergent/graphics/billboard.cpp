@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -20,6 +20,7 @@
 #include <emergent/graphics/billboard.hpp>
 #include <emergent/graphics/vertex-format.hpp>
 #include <emergent/graphics/camera.hpp>
+#include <emergent/math/interpolation.hpp>
 #include <emergent/math/math.hpp>
 
 namespace Emergent
@@ -31,8 +32,24 @@ Billboard::Billboard():
 	dimensions(1.0f),
 	coordinatesMin(0.0f),
 	coordinatesMax(1.0f),
-	tintColor(1.0f)
+	tintColor(1.0f),
+	translationTween(&translation, lerp<Vector3>),
+	rotationTween(&rotation, slerp<Quaternion>),
+	dimensionsTween(&dimensions, lerp<Vector2>),
+	coordinatesMinTween(&coordinatesMin, lerp<Vector2>),
+	coordinatesMaxTween(&coordinatesMax, lerp<Vector2>),
+	tintColorTween(&tintColor, lerp<Vector4>)
 {}
+
+void Billboard::resetTweens()
+{
+	translationTween.reset();
+	rotationTween.reset();
+	dimensionsTween.reset();
+	coordinatesMinTween.reset();
+	coordinatesMaxTween.reset();
+	tintColorTween.reset();
+}
 
 BillboardBatch::Range::Range():
 	material(nullptr),
@@ -152,21 +169,46 @@ void BillboardBatch::resize(std::size_t count)
 	delete[] indexData32;
 }
 
-void BillboardBatch::update()
+void BillboardBatch::interpolate(float a)
+{
+	for (Billboard& billboard: billboards)
+	{
+		billboard.getTranslationTween()->interpolate(a);
+		billboard.getRotationTween()->interpolate(a);
+		billboard.getDimensionsTween()->interpolate(a);
+		billboard.getTextureCoordinatesMinTween()->interpolate(a);
+		billboard.getTextureCoordinatesMaxTween()->interpolate(a);
+		billboard.getTintColorTween()->interpolate(a);
+	}
+}
+
+void BillboardBatch::reset()
+{
+	for (Billboard& billboard: billboards)
+	{
+		billboard.getTranslationTween()->reset();
+		billboard.getRotationTween()->reset();
+		billboard.getDimensionsTween()->reset();
+		billboard.getTextureCoordinatesMinTween()->reset();
+		billboard.getTextureCoordinatesMaxTween()->reset();
+		billboard.getTintColorTween()->reset();
+	}
+}
+
+void BillboardBatch::batch()
 {
 	Quaternion alignment(1, 0, 0, 0);
-
 	
 	float* v = &vertexData[0];
 	for (std::size_t i = 0; i < billboards.size(); ++i)
 	{
 		const Billboard& billboard = billboards[i];
-		const Vector3& translation = billboard.getTranslation();
-		const Quaternion& rotation = billboard.getRotation();
-		const Vector2& dimensions = billboard.getDimensions();
-		const Vector2& coordinatesMin = billboard.getTextureCoordinatesMin();
-		const Vector2& coordinatesMax = billboard.getTextureCoordinatesMax();
-		const Vector4& tintColor = billboard.getTintColor();
+		const Vector3& translation = billboard.getTranslationTween()->getSubstate();
+		const Quaternion& rotation = billboard.getRotationTween()->getSubstate();
+		const Vector2& dimensions = billboard.getDimensionsTween()->getSubstate();
+		const Vector2& coordinatesMin = billboard.getTextureCoordinatesMinTween()->getSubstate();
+		const Vector2& coordinatesMax = billboard.getTextureCoordinatesMaxTween()->getSubstate();
+		const Vector4& tintColor = billboard.getTintColorTween()->getSubstate();
 		Vector2 uv(0.0f);
 		
 		if (camera != nullptr)
@@ -177,7 +219,7 @@ void BillboardBatch::update()
 			}
 			else if (alignmentMode == BillboardAlignmentMode::CYLINDRICAL)
 			{
-				Vector3 look = glm::normalize(project_on_plane((translation - camera->getTransformTween()->getSubstate().translation), Vector3(0.0f), rotation * alignmentVector));
+				Vector3 look = glm::normalize(projectOnPlane((translation - camera->getTransformTween()->getSubstate().translation), Vector3(0.0f), rotation * alignmentVector));
 				Vector3 up = glm::normalize(rotation * getUpTween()->getSubstate());
 				alignment = glm::normalize(lookRotation(look, up));
 			}

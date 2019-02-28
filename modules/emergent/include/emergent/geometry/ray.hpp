@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -31,7 +31,7 @@ class Sphere;
 class AABB;
 class ConvexHull;
 class BoundingVolume;
-class WingedEdge;
+class TriangleMesh;
 
 /**
  * A 3D ray.
@@ -103,12 +103,12 @@ public:
 	std::tuple<bool, float, float, float> intersects(const Vector3& a, const Vector3& b, const Vector3& c) const;
 	
 	/**
-	 * Checks for intersection between this ray and a winged-edge mesh.
+	 * Checks for intersection between this ray and a triangle mesh.
 	 *
 	 * @param mesh Mesh with which to check for intersection.
 	 * @return The first element in the tuple indicates whether or not an intersection occurred. The second and third elements indicate the distance from the origin to the nearest and farthest points of intersection, respectively. The fourth and fifth elements contain the indices of the nearest and farthest intersected triangles, respectively.
 	 */
-	std::tuple<bool, float, float, std::size_t, std::size_t> intersects(const WingedEdge& mesh) const;
+	std::tuple<bool, float, float, std::size_t, std::size_t> intersects(const TriangleMesh& mesh) const;
 	
 	/// Origin of the ray
 	Vector3 origin;

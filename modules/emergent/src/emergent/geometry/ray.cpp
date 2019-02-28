@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -23,7 +23,7 @@
 #include <emergent/geometry/aabb.hpp>
 #include <emergent/geometry/convex-hull.hpp>
 #include <emergent/geometry/bounding-volume.hpp>
-#include <emergent/geometry/winged-edge.hpp>
+#include <emergent/geometry/triangle-mesh.hpp>
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -203,9 +203,9 @@ std::tuple<bool, float, float, float> Ray::intersects(const Vector3& a, const Ve
 	return std::make_tuple(false, std::numeric_limits<float>::infinity(), 0.0f, 0.0f);
 }
 
-std::tuple<bool, float, float, std::size_t, std::size_t> Ray::intersects(const WingedEdge& mesh) const
+std::tuple<bool, float, float, std::size_t, std::size_t> Ray::intersects(const TriangleMesh& mesh) const
 {
-	const std::vector<WingedEdge::Triangle*>& triangles = *mesh.getTriangles();
+	const std::vector<TriangleMesh::Triangle*>& triangles = *mesh.getTriangles();
 	
 	bool intersection = false;
 	float t0 = std::numeric_limits<float>::infinity();
@@ -215,7 +215,7 @@ std::tuple<bool, float, float, std::size_t, std::size_t> Ray::intersects(const W
 
 	for (std::size_t i = 0; i < triangles.size(); ++i)
 	{
-		const WingedEdge::Triangle* triangle = triangles[i];
+		const TriangleMesh::Triangle* triangle = triangles[i];
 		const Vector3& a = triangle->edge->vertex->position;
 		const Vector3& b = triangle->edge->next->vertex->position;
 		const Vector3& c = triangle->edge->previous->vertex->position;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -99,6 +99,14 @@ public:
 	 * @return `true` if the shader variable value was successfully uploadted, `false` otherwise.
 	 */
 	virtual bool upload() const = 0;
+
+	/**
+	 * Creates a copy of this shader variable.
+	 *
+	 * @return Newly allocated copy of this shader variable.
+	 */
+	virtual ShaderVariableBase* clone() const = 0;
+
 	
 protected:
 	const ShaderInput* connectedInput;
@@ -192,6 +200,13 @@ public:
 	
 	/// @copydoc ShaderVariableBase::getDataType() const
 	virtual ShaderVariableType getDataType() const;
+
+	/**
+	 * Creates a copy of this shader variable.
+	 *
+	 * @return Newly allocated copy of this shader variable.
+	 */
+	virtual ShaderVariableBase* clone() const;
 	
 private:
 	/// Shader variable value
@@ -334,6 +349,15 @@ template <>
 inline ShaderVariableType ShaderVariable<const TextureCube*>::getDataType() const
 {
 	return ShaderVariableType::TEXTURE_CUBE;
+}
+
+template <typename T>
+ShaderVariableBase* ShaderVariable<T>::clone() const
+{
+	ShaderVariable<T>* variable = new ShaderVariable<T>(elementCount);
+	variable->connect(getConnectedInput());
+	variable->setValues(0, values, elementCount);
+	return variable;
 }
 
 /**

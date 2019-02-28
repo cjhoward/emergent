@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -36,7 +36,29 @@ ModelInstance::ModelInstance():
 void ModelInstance::setModel(const Model* model)
 {
 	this->model = model;
+
+	// Resize material slots
+	materialSlots.resize(model->getGroupCount());
+	for (std::size_t i = 0; i < model->getGroupCount(); ++i)
+	{
+		materialSlots[i] = nullptr;
+	}
+	resetMaterialSlots();
+
 	updateBounds();
+}
+
+void ModelInstance::setMaterialSlot(std::size_t index, Material* material)
+{
+	materialSlots[index] = material;
+}
+
+void ModelInstance::resetMaterialSlots()
+{
+	for (std::size_t i = 0; i < model->getGroupCount(); ++i)
+	{
+		materialSlots[i] = nullptr;
+	}
 }
 
 AABB ModelInstance::calculateBounds() const

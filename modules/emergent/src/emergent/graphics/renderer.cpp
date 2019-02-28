@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -68,7 +68,15 @@ void RenderQueue::queue(const ModelInstance* instance)
 		
 		operation.indexOffset = group->indexOffset;
 		operation.triangleCount = group->triangleCount;
-		operation.material = group->material;
+
+		if (instance->getMaterialSlot(i) != nullptr)
+		{
+			operation.material = instance->getMaterialSlot(i);
+		}
+		else
+		{
+			operation.material = group->material;
+		}
 
 		queue(operation);
 	}

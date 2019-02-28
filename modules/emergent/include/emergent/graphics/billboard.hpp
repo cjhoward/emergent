@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018  Christopher J. Howard
+ * Copyright (C) 2017-2019  Christopher J. Howard
  *
  * This file is part of Emergent.
  *
@@ -67,7 +67,22 @@ public:
 	const Vector2& getTextureCoordinatesMin() const;
 	const Vector2& getTextureCoordinatesMax() const;
 	const Vector4& getTintColor() const;
-	
+
+	const Tween<Vector3>* getTranslationTween() const;
+	Tween<Vector3>* getTranslationTween();
+	const Tween<Quaternion>* getRotationTween() const;
+	Tween<Quaternion>* getRotationTween();
+	const Tween<Vector2>* getDimensionsTween() const;
+	Tween<Vector2>* getDimensionsTween();
+	const Tween<Vector2>* getTextureCoordinatesMinTween() const;
+	Tween<Vector2>* getTextureCoordinatesMinTween();
+	const Tween<Vector2>* getTextureCoordinatesMaxTween() const;
+	Tween<Vector2>* getTextureCoordinatesMaxTween();
+	const Tween<Vector4>* getTintColorTween() const;
+	Tween<Vector4>* getTintColorTween();
+
+	void resetTweens();
+
 private:
 	Vector3 translation;
 	Quaternion rotation;
@@ -75,6 +90,13 @@ private:
 	Vector2 coordinatesMin;
 	Vector2 coordinatesMax;
 	Vector4 tintColor;
+
+	Tween<Vector3> translationTween;
+	Tween<Quaternion> rotationTween;
+	Tween<Vector2> dimensionsTween;
+	Tween<Vector2> coordinatesMinTween;
+	Tween<Vector2> coordinatesMaxTween;
+	Tween<Vector4> tintColorTween;
 };
 
 inline void Billboard::setTranslation(const Vector3& translation)
@@ -133,6 +155,66 @@ inline const Vector4& Billboard::getTintColor() const
 	return tintColor;
 }
 
+inline const Tween<Vector3>* Billboard::getTranslationTween() const
+{
+	return &translationTween;
+}
+
+inline Tween<Vector3>* Billboard::getTranslationTween()
+{
+	return &translationTween;
+}
+
+inline const Tween<Quaternion>* Billboard::getRotationTween() const
+{
+	return &rotationTween;
+}
+
+inline Tween<Quaternion>* Billboard::getRotationTween()
+{
+	return &rotationTween;
+}
+
+inline const Tween<Vector2>* Billboard::getDimensionsTween() const
+{
+	return &dimensionsTween;
+}
+
+inline Tween<Vector2>* Billboard::getDimensionsTween()
+{
+	return &dimensionsTween;
+}
+
+inline const Tween<Vector2>* Billboard::getTextureCoordinatesMinTween() const
+{
+	return &coordinatesMinTween;
+}
+
+inline Tween<Vector2>* Billboard::getTextureCoordinatesMinTween()
+{
+	return &coordinatesMinTween;
+}
+
+inline const Tween<Vector2>* Billboard::getTextureCoordinatesMaxTween() const
+{
+	return &coordinatesMaxTween;
+}
+
+inline Tween<Vector2>* Billboard::getTextureCoordinatesMaxTween()
+{
+	return &coordinatesMaxTween;
+}
+
+inline const Tween<Vector4>* Billboard::getTintColorTween() const
+{
+	return &tintColorTween;
+}
+
+inline Tween<Vector4>* Billboard::getTintColorTween()
+{
+	return &tintColorTween;
+}
+
 /**
  * A batch of billboards which can be rendered in a scene.
  *
@@ -159,8 +241,12 @@ public:
 	void setAlignmentVector(const Vector3& direction);
 	
 	void resize(std::size_t count);
+
+	void interpolate(float a);
+
+	void reset();
 	
-	void update();
+	void batch();
 	
 	/// Returns SceneObjectType::BILLBOARD_BATCH
 	virtual SceneObjectType getSceneObjectType() const;
