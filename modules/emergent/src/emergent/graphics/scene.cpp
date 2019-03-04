@@ -18,7 +18,8 @@
  */
 
 #include <emergent/graphics/scene.hpp>
-#include <emergent/graphics/scene-layer.hpp>
+#include <emergent/animation/step-interpolator.hpp>
+#include <emergent/graphics/scene-object.hpp>
 
 namespace Emergent
 {
@@ -28,25 +29,75 @@ Scene::Scene(StepInterpolator* interpolator):
 {}
 
 Scene::~Scene()
+{}
+
+void Scene::addObject(SceneObject* object)
 {
-	removeLayers();
+	objectList.push_back(object);
+	objectMap[object->getSceneObjectType()].push_back(object);
+	registerTweens(object);
 }
 
-SceneLayer* Scene::addLayer()
+void Scene::removeObject(SceneObject* object)
 {
-	SceneLayer* layer = new SceneLayer(this, layers.size());
-	layers.push_back(layer);
-	return layer;
+	objectList.remove(object);
+	objectMap[object->getSceneObjectType()].remove(object);
+	unregisterTweens(object);
 }
 
-void Scene::removeLayers()
+void Scene::removeObjects()
 {
-	for (SceneLayer* layer: layers)
+	for (SceneObject* object: objectList)
 	{
-		delete layer;
+		unregisterTweens(object);
+	}
+
+	objectList.clear();
+	objectMap.clear();
+}
+
+void Scene::removeObjects(SceneObjectType type)
+{
+	auto it = objectMap.find(type);
+	if (it != objectMap.end())
+	{
+		for (SceneObject* object: it->second)
+		{
+			objectList.remove(object);
+			unregisterTweens(object);
+		}
+		
+		objectMap.erase(it);
+	}
+}
+
+const std::list<SceneObject*>* Scene::getObjects(SceneObjectType type) const
+{
+	auto it = objectMap.find(type);
+	if (it != objectMap.end())
+	{
+		return &(it->second);
 	}
 	
-	layers.clear();
+	return nullptr;
+}
+
+void Scene::registerTweens(SceneObject* object)
+{
+	const std::list<TweenBase*>* tweens = object->getTweens();
+	for (TweenBase* tween: *tweens)
+	{
+		interpolator->addTween(tween);
+	}
+}
+
+void Scene::unregisterTweens(SceneObject* object)
+{
+	const std::list<TweenBase*>* tweens = object->getTweens();
+	for (TweenBase* tween: *tweens)
+	{
+		interpolator->removeTween(tween);
+	}
 }
 
 } // namespace Emergent

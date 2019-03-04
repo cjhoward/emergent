@@ -20,16 +20,18 @@
 #ifndef EMERGENT_GRAPHICS_SCENE_HPP
 #define EMERGENT_GRAPHICS_SCENE_HPP
 
-#include <vector>
+#include <list>
+#include <map>
 
 namespace Emergent
 {
 
-class SceneLayer;
+class SceneObject;
 class StepInterpolator;
+enum class SceneObjectType;
 
 /**
- * A three-dimensional scene consisting of one or more scene layers.
+ * A three-dimensional scene containing scene objects.
  *
  * @ingroup graphics
  */
@@ -49,41 +51,57 @@ public:
 	~Scene();
 	
 	/**
-	 * Adds a layer to the scene.
+	 * Adds an object to the scene.
 	 *
-	 * @return Pointer to the added scene.
+	 * @param object Pointer to the scene object to be added.
 	 */
-	SceneLayer* addLayer();
+	void addObject(SceneObject* object);
 	
 	/**
-	 * Removes all layers from the scene.
+	 * Removes an object from the scene.
+	 *
+	 * @param object Specifies a pointer to the scene object to be removed.
 	 */
-	void removeLayers();
+	void removeObject(SceneObject* object);
+	
+	/**
+	 * Removes all objects from the scene.
+	 */
+	void removeObjects();
+	
+	/**
+	 * Removes all objects of the specified type from the scene.
+	 *
+	 * @param type Specifies the type of objects to be removed.
+	 */
+	void removeObjects(SceneObjectType type);
+
 
 	/// Returns the scene's interpolator.
 	const StepInterpolator* getInterpolator() const;
 
 	/// @copydoc Scene::getInterpolator() const
 	StepInterpolator* getInterpolator();
-	
+
 	/**
-	 * Returns the number of layers in the scene.
+	 * Returns a pointer to a list of all objects in the scene.
 	 */
-	std::size_t getLayerCount() const;
+	const std::list<SceneObject*>* getObjects() const;
 	
 	/**
-	 * Returns the layer at the specified index.
+	 * Returns a pointer to a list of all objects in the scene with the specified type.
 	 *
-	 * @param index Specifies the index of a layer.
-	 * @return Pointer to the layer at the specified index.
+	 * @param type Specifies the type of objects to return.
 	 */
-	const SceneLayer* getLayer(std::size_t index) const;
-	
-	/// @copydoc Scene::getLayer(std::size_t) const
-	SceneLayer* getLayer(std::size_t index);
+	const std::list<SceneObject*>* getObjects(SceneObjectType type) const;
+
 private:
 	StepInterpolator* interpolator;
-	std::vector<SceneLayer*> layers;
+	void registerTweens(SceneObject* object);
+	void unregisterTweens(SceneObject* object);
+	
+	std::list<SceneObject*> objectList;
+	std::map<SceneObjectType, std::list<SceneObject*>> objectMap;
 };
 
 inline const StepInterpolator* Scene::getInterpolator() const
@@ -96,19 +114,9 @@ inline StepInterpolator* Scene::getInterpolator()
 	return interpolator;
 }
 
-inline std::size_t Scene::getLayerCount() const
+inline const std::list<SceneObject*>* Scene::getObjects() const
 {
-	return layers.size();
-}
-
-inline const SceneLayer* Scene::getLayer(std::size_t index) const
-{
-	return layers[index];
-}
-
-inline SceneLayer* Scene::getLayer(std::size_t index)
-{
-	return layers[index];
+	return &objectList;
 }
 
 } // namespace Emergent

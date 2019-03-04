@@ -31,7 +31,6 @@ namespace Emergent
 
 class Camera;
 class Scene;
-class SceneLayer;
 class Material;
 class Pose;
 class SceneObject;
@@ -139,8 +138,8 @@ public:
 	/// Pointer to the active camera
 	const Camera* camera;
 	
-	/// Pointer to the active scene layer
-	const SceneLayer* layer;
+	/// Pointer to the active scene
+	const Scene* scene;
 	
 	/// Pointer to the loaded render queue
 	RenderQueue* queue;

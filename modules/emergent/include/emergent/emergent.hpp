@@ -68,7 +68,6 @@
 #include <emergent/graphics/model-instance.hpp>
 #include <emergent/graphics/pose.hpp>
 #include <emergent/graphics/renderer.hpp>
-#include <emergent/graphics/scene-layer.hpp>
 #include <emergent/graphics/scene-object.hpp>
 #include <emergent/graphics/scene.hpp>
 #include <emergent/graphics/shader.hpp>

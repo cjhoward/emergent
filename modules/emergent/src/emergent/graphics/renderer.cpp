@@ -21,7 +21,6 @@
 #include <emergent/graphics/camera.hpp>
 #include <emergent/graphics/model.hpp>
 #include <emergent/graphics/scene.hpp>
-#include <emergent/graphics/scene-layer.hpp>
 #include <emergent/graphics/scene-object.hpp>
 #include <emergent/graphics/model-instance.hpp>
 #include <emergent/graphics/light.hpp>
@@ -167,88 +166,84 @@ Renderer::~Renderer()
 
 void Renderer::render(const Scene& scene)
 {
-	// For each layer in the scene
-	for (std::size_t layerIndex = 0; layerIndex < scene.getLayerCount(); ++layerIndex)
+	// Gather active cameras
+	std::list<Camera*> cameras;
+	if (scene.getObjects(SceneObjectType::CAMERA) == nullptr)
 	{
-		const SceneLayer* layer = scene.getLayer(layerIndex);
+		return;
+	}
+	
+	for (auto object: *(scene.getObjects(SceneObjectType::CAMERA)))
+	{
+		Camera* camera = static_cast<Camera*>(object);
 		
-		// Gather active cameras
-		std::list<Camera*> cameras;
-		if (layer->getObjects(SceneObjectType::CAMERA) == nullptr)
+		if (camera->isActive())
+		{
+			cameras.push_back(camera);
+		}
+	}
+	
+	// Sort active cameras by their composite indices
+	cameras.sort(
+		[](const Camera* lhs, const Camera* rhs)
+		{
+			return lhs->getCompositeIndex() < rhs->getCompositeIndex();
+		});
+	
+	// For each active camera
+	for (Camera* camera: cameras)
+	{
+		const ViewFrustum& viewFrustum = camera->getViewFrustumTween()->getSubstate();
+
+		const std::list<SceneObject*>* objects = scene.getObjects();
+		if (objects == nullptr)
 		{
 			continue;
 		}
 		
-		for (auto object: *(layer->getObjects(SceneObjectType::CAMERA)))
+		// Add visible objects to render queue
+		for (SceneObject* object: *objects)
 		{
-			Camera* camera = static_cast<Camera*>(object);
-			
-			if (camera->isActive())
+			if (camera->isCullingEnabled() && object->isCullingEnabled())
 			{
-				cameras.push_back(camera);
-			}
-		}
-		
-		// Sort active cameras by their composite indices
-		cameras.sort(
-			[](const Camera* lhs, const Camera* rhs)
-			{
-				return lhs->getCompositeIndex() < rhs->getCompositeIndex();
-			});
-		
-		// For each active camera
-		for (Camera* camera: cameras)
-		{
-			const ViewFrustum& viewFrustum = camera->getViewFrustumTween()->getSubstate();
-
-			const std::list<SceneObject*>* objects = layer->getObjects();
-			if (objects == nullptr)
-			{
-				continue;
-			}
-			
-			// Add visible objects to render queue
-			for (SceneObject* object: *objects)
-			{
-				if (camera->isCullingEnabled() && object->isCullingEnabled())
+				const BoundingVolume* cameraCullingVolume = &viewFrustum;
+				const BoundingVolume* objectCullingVolume = &object->getBoundsTween()->getSubstate();
+				if (camera->getCullingMask())
 				{
-					const BoundingVolume* cameraCullingVolume = &viewFrustum;
-					const BoundingVolume* objectCullingVolume = &object->getBoundsTween()->getSubstate();
-					if (camera->getCullingMask())
-					{
-						cameraCullingVolume = camera->getCullingMask();
-					}
-
-					if (object->getCullingMask())
-					{
-						objectCullingVolume = object->getCullingMask();
-					}
-
-					// Cull objects outside culling volume
-					if (!cameraCullingVolume->intersects(*objectCullingVolume))
-						continue;
+					cameraCullingVolume = camera->getCullingMask();
 				}
-				
-				renderQueue.queue(object);
+
+				if (object->getCullingMask())
+				{
+					objectCullingVolume = object->getCullingMask();
+				}
+
+				// Cull objects outside culling volume
+				if (!cameraCullingVolume->intersects(*objectCullingVolume))
+				{
+					continue;
+				}
 			}
 			
-			// Calculate depths (distance to near clipping plane)
-			for (RenderOperation& op: *renderQueue.getOperations())
-			{
-				op.depth = viewFrustum.getNear().distance(Vector3(op.transform[3]));
-			}
-			
-			// Form render context
-			renderContext.camera = camera;
-			renderContext.layer = layer;
-			renderContext.queue = &renderQueue;
-			
-			// Pass render context to the camera's compositor and render it
-			camera->getCompositor()->render(&renderContext);
-			
-			// Clear render queue
-			renderQueue.clear();
+			renderQueue.queue(object);
 		}
+		
+		// Calculate depths (distance to near clipping plane)
+		for (RenderOperation& op: *renderQueue.getOperations())
+		{
+			op.depth = viewFrustum.getNear().distance(Vector3(op.transform[3]));
+		}
+		
+		// Form render context
+		renderContext.camera = camera;
+		renderContext.scene = &scene;
+		renderContext.queue = &renderQueue;
+		
+		// Pass render context to the camera's compositor and render it
+		camera->getCompositor()->render(&renderContext);
+		
+		// Clear render queue
+		renderQueue.clear();
 	}
 }
 
