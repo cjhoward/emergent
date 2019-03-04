@@ -30,6 +30,26 @@ class OSInterface;
 class Window;
 
 /**
+ * Enumerates the mouse motion axes.
+ *
+ * @ingroup input
+ */
+enum class MouseMotionAxis
+{
+	/// Indicates the positive X-axis.
+	POSITIVE_X,
+
+	/// Indicates the negative X-axis.
+	NEGATIVE_X,
+
+	/// Indicates the positive Y-axis.
+	POSITIVE_Y,
+
+	/// Indicates the negative Y-axis.
+	NEGATIVE_Y
+};
+
+/**
  * Enumerates the mouse wheel axes.
  *
  * @ingroup input

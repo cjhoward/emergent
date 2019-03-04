@@ -216,7 +216,6 @@ void SDLInterface::routeEvents()
 				event.dx = sdlEvent.motion.xrel;
 				event.dy = sdlEvent.motion.yrel;
 
-
 				OSInterface::updateMousePosition(mouse, sdlEvent.motion.x, sdlEvent.motion.y);
 
 				eventDispatcher->queue(event);
@@ -250,7 +249,6 @@ void SDLInterface::routeEvents()
 				int direction = (sdlEvent.wheel.direction == SDL_MOUSEWHEEL_FLIPPED) ? -1 : 1;
 				event.x = sdlEvent.wheel.x * direction;
 				event.y = sdlEvent.wheel.y * direction;
-
 				eventDispatcher->queue(event);
 				break;
 			}

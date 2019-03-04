@@ -18,13 +18,6 @@
  */
 
 #include <emergent/input/control.hpp>
-#include <emergent/input/mouse.hpp>
-#include <emergent/input/keyboard.hpp>
-#include <emergent/input/gamepad.hpp>
-#include <emergent/input/input-event.hpp>
-#include <emergent/utility/os-interface.hpp>
-#include <emergent/utility/device-manager.hpp>
-#include <emergent/utility/event-dispatcher.hpp>
 
 namespace Emergent
 {
@@ -33,6 +26,7 @@ Control::Control():
 	deadzone(0.0f),
 	currentValue(0.0f),
 	previousValue(0.0f),
+	reset(false),
 	activatedCallback(nullptr),
 	deactivatedCallback(nullptr),
 	valueChangedCallback(nullptr),
@@ -75,14 +69,27 @@ void Control::update()
 		}
 	}
 
-	// Stop infinite mouse wheel scrolling
-	if (!boundMouseWheelAxes.empty())
-	{
-		currentValue = 0.0f;
-	}
-	
 	// Update previous value
 	previousValue = currentValue;
+
+	// Reset temporary values
+	if (reset)
+	{
+		currentValue = 0.0f;
+		reset = false;
+	}
+}
+
+void Control::setCurrentValue(float value)
+{
+	currentValue = value;
+	reset = false;
+}
+
+void Control::setTemporaryValue(float value)
+{
+	currentValue = value;
+	reset = true;
 }
 
 void Control::setDeadzone(float value)
@@ -103,287 +110,6 @@ void Control::setDeactivatedCallback(std::function<void()> callback)
 void Control::setValueChangedCallback(std::function<void(float)> callback)
 {
 	this->valueChangedCallback = callback;
-}
-
-bool Control::isUnbound() const
-{
-	return (boundKeys.empty() && boundMouseButtons.empty() && boundMouseWheelAxes.empty() && boundGamepadButtons.empty() && boundGamepadAxes.empty());
-}
-
-void Control::bindKey(Keyboard* keyboard, Scancode scancode)
-{
-	// Check if subscribed to keyboard events
-	if (boundKeys.empty())
-	{
-		keyboard->getDeviceManager()->getOSInterface()->getEventDispatcher()->subscribe<KeyPressedEvent>(this);
-		keyboard->getDeviceManager()->getOSInterface()->getEventDispatcher()->subscribe<KeyReleasedEvent>(this);
-	}
-
-	// Check if already bound to this scancode
-	for (auto it: boundKeys)
-	{
-		if (it.first == keyboard && it.second == scancode)
-		{
-			return;
-		}
-	}
-	
-	// Bind to the key
-	boundKeys.push_back(std::pair<Keyboard*, Scancode>(keyboard, scancode));
-}
-
-void Control::bindMouseButton(Mouse* mouse, int button)
-{
-	// Check if subscribed to mouse button events
-	if (boundMouseButtons.empty())
-	{
-		mouse->getDeviceManager()->getOSInterface()->getEventDispatcher()->subscribe<MouseButtonPressedEvent>(this);
-		mouse->getDeviceManager()->getOSInterface()->getEventDispatcher()->subscribe<MouseButtonReleasedEvent>(this);
-	}
-
-	// Checking if already bound to this mouse button
-	for (auto it: boundMouseButtons)
-	{
-		if (it.first == mouse && it.second == button)
-		{
-			return;
-		}
-	}
-	
-	// Bind to the mouse button
-	boundMouseButtons.push_back(std::pair<Mouse*, int>(mouse, button));
-}
-
-void Control::bindMouseWheelAxis(Mouse* mouse, MouseWheelAxis axis)
-{
-	if (boundMouseWheelAxes.empty())
-	{
-		mouse->getDeviceManager()->getOSInterface()->getEventDispatcher()->subscribe<MouseWheelScrolledEvent>(this);
-	}
-
-	// Checking if already observing this mouse
-	for (auto it: boundMouseWheelAxes)
-	{
-		if (it.first == mouse && it.second == axis)
-		{
-			return;
-		}
-	}
-	
-	boundMouseWheelAxes.push_back(std::pair<Mouse*, MouseWheelAxis>(mouse, axis));
-}
-
-void Control::bindGamepadButton(Gamepad* gamepad, int button)
-{
-	if (boundGamepadButtons.empty())
-	{
-		gamepad->getDeviceManager()->getOSInterface()->getEventDispatcher()->subscribe<GamepadButtonPressedEvent>(this);
-		gamepad->getDeviceManager()->getOSInterface()->getEventDispatcher()->subscribe<GamepadButtonReleasedEvent>(this);
-	}
-
-	for (auto it: boundGamepadButtons)
-	{
-		if (it.first == gamepad && it.second == button)
-		{
-			return;
-		}
-	}
-	
-	boundGamepadButtons.push_back(std::pair<Gamepad*, int>(gamepad, button));
-}
-
-void Control::bindGamepadAxis(Gamepad* gamepad, int axis, bool negative)
-{
-	if (boundGamepadAxes.empty())
-	{
-		gamepad->getDeviceManager()->getOSInterface()->getEventDispatcher()->subscribe<GamepadAxisMovedEvent>(this);
-	}
-
-	for (auto it: boundGamepadAxes)
-	{
-		if (std::get<0>(it) == gamepad && std::get<1>(it) == axis && std::get<2>(it) == negative)
-		{
-			return;
-		}
-	}
-	
-	boundGamepadAxes.push_back(std::make_tuple(gamepad, axis, negative));
-}
-
-void Control::unbind()
-{
-	for (auto it = boundKeys.begin(); it != boundKeys.end(); ++it)
-	{
-		it->first->getDeviceManager()->getOSInterface()->getEventDispatcher()->unsubscribe<KeyPressedEvent>(this);
-		it->first->getDeviceManager()->getOSInterface()->getEventDispatcher()->unsubscribe<KeyReleasedEvent>(this);
-	}
-	boundKeys.clear();
-
-	for (auto it = boundMouseButtons.begin(); it != boundMouseButtons.end(); ++it)
-	{
-		it->first->getDeviceManager()->getOSInterface()->getEventDispatcher()->unsubscribe<MouseButtonPressedEvent>(this);
-		it->first->getDeviceManager()->getOSInterface()->getEventDispatcher()->unsubscribe<MouseButtonReleasedEvent>(this);
-	}
-	boundMouseButtons.clear();
-
-	for (auto it = boundMouseWheelAxes.begin(); it != boundMouseWheelAxes.end(); ++it)
-	{
-		it->first->getDeviceManager()->getOSInterface()->getEventDispatcher()->unsubscribe<MouseWheelScrolledEvent>(this);
-	}
-	boundMouseWheelAxes.clear();
-
-	for (auto it = boundGamepadButtons.begin(); it != boundGamepadButtons.end(); ++it)
-	{
-		it->first->getDeviceManager()->getOSInterface()->getEventDispatcher()->unsubscribe<GamepadButtonPressedEvent>(this);
-		it->first->getDeviceManager()->getOSInterface()->getEventDispatcher()->unsubscribe<GamepadButtonReleasedEvent>(this);
-	}
-	boundGamepadButtons.clear();
-
-	for (auto it = boundGamepadAxes.begin(); it != boundGamepadAxes.end(); ++it)
-	{
-		std::get<0>(*it)->getDeviceManager()->getOSInterface()->getEventDispatcher()->unsubscribe<GamepadAxisMovedEvent>(this);
-	}
-	boundGamepadAxes.clear();
-}
-
-void Control::handleEvent(const KeyPressedEvent& event)
-{
-	for (auto it: boundKeys)
-	{
-		if (it.first == event.keyboard && it.second == event.scancode)
-		{
-			currentValue = 1.0f;
-			break;
-		}
-	}
-}
-
-void Control::handleEvent(const KeyReleasedEvent& event)
-{
-	for (auto it: boundKeys)
-	{
-		if (it.first == event.keyboard && it.second == event.scancode)
-		{
-			currentValue = 0.0f;
-			break;
-		}
-	}
-}
-
-void Control::handleEvent(const MouseButtonPressedEvent& event)
-{
-	for (auto it: boundMouseButtons)
-	{
-		if (it.first == event.mouse && it.second == event.button)
-		{
-			currentValue = 1.0f;
-			break;
-		}
-	}
-}
-
-void Control::handleEvent(const MouseButtonReleasedEvent& event)
-{
-	for (auto it: boundMouseButtons)
-	{
-		if (it.first == event.mouse && it.second == event.button)
-		{
-			currentValue = 0.0f;
-			break;
-		}
-	}
-}
-
-void Control::handleEvent(const MouseWheelScrolledEvent& event)
-{
-	for (auto it: boundMouseWheelAxes)
-	{
-		if (it.first == event.mouse)
-		{
-			if (it.second == MouseWheelAxis::POSITIVE_X && event.x > 0)
-			{
-				currentValue += event.x;
-				break;
-			}
-			else if (it.second == MouseWheelAxis::NEGATIVE_X && event.x < 0)
-			{
-				currentValue -= event.x;
-				break;
-			}
-			else if (it.second == MouseWheelAxis::POSITIVE_Y && event.y > 0)
-			{
-				currentValue += event.y;
-				break;
-			}
-			else if (it.second == MouseWheelAxis::NEGATIVE_Y && event.y < 0)
-			{
-				currentValue -= event.y;
-				break;
-			}
-		}
-	}
-}
-
-void Control::handleEvent(const GamepadButtonPressedEvent& event)
-{
-	for (auto it: boundGamepadButtons)
-	{
-		if (it.first == event.gamepad && it.second == event.button)
-		{
-			currentValue = 1.0f;
-			break;
-		}
-	}
-}
-
-void Control::handleEvent(const GamepadButtonReleasedEvent& event)
-{
-	for (auto it: boundGamepadButtons)
-	{
-		if (it.first == event.gamepad && it.second == event.button)
-		{
-			currentValue = 0.0f;
-			break;
-		}
-	}
-
-}
-
-void Control::handleEvent(const GamepadAxisMovedEvent& event)
-{
-	for (auto it: boundGamepadAxes)
-	{
-		if (std::get<0>(it) == event.gamepad && std::get<1>(it) == event.axis && std::get<2>(it) == event.negative)
-		{
-			currentValue = event.value;
-			break;
-		}
-	}
-}
-
-const std::list<std::pair<Keyboard*, Scancode>>* Control::getBoundKeys() const
-{
-	return &boundKeys;
-}
-
-const std::list<std::pair<Mouse*, int>>* Control::getBoundMouseButtons() const
-{
-	return &boundMouseButtons;
-}
-
-const std::list<std::pair<Mouse*, MouseWheelAxis>>* Control::getBoundMouseWheelAxes() const
-{
-	return &boundMouseWheelAxes;
-}
-
-const std::list<std::pair<Gamepad*, int>>* Control::getBoundGamepadButtons() const
-{
-	return &boundGamepadButtons;
-}
-
-const std::list<std::tuple<Gamepad*, int, bool>>* Control::getBoundGamepadAxes() const
-{
-	return &boundGamepadAxes;
 }
 
 } // namespace Emergent

@@ -86,12 +86,13 @@
  * Input devices and events
  */
 #include <emergent/input/arcball.hpp>
-#include <emergent/input/control-binder.hpp>
-#include <emergent/input/control-profile.hpp>
 #include <emergent/input/control.hpp>
+#include <emergent/input/control-set.hpp>
 #include <emergent/input/gamepad.hpp>
 #include <emergent/input/input-device.hpp>
 #include <emergent/input/input-event.hpp>
+#include <emergent/input/input-mapper.hpp>
+#include <emergent/input/input-mapping.hpp>
 #include <emergent/input/keyboard.hpp>
 #include <emergent/input/mouse.hpp>
 #include <emergent/input/scancode.hpp>

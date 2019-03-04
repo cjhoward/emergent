@@ -18,6 +18,7 @@
  */
 
 #include <emergent/configuration.hpp>
+#include <emergent/input/input-mapper.hpp>
 #include <emergent/utility/application.hpp>
 #include <stdexcept>
 #include <chrono>
@@ -36,6 +37,7 @@ Application::Application():
 	osInterface(nullptr),
 	deviceManager(nullptr),
 	windowManager(nullptr),
+	inputMapper(nullptr),
 	closed(false),
 	status(EXIT_SUCCESS)
 {
@@ -58,6 +60,9 @@ Application::Application():
 	// Get the window manager
 	windowManager = osInterface->getWindowManager();
 
+	// Create the input mapper
+	inputMapper = new InputMapper(&eventDispatcher);
+
 	// Setup step scheduling
 	stepScheduler.setMaxFrameDuration(0.25);
 	stepScheduler.setStepFrequency(60.0);
@@ -79,6 +84,9 @@ Application::Application():
 
 Application::~Application()
 {
+	// Delete the input mapper
+	delete inputMapper;
+
 	// Shutdown OS interface
 	delete osInterface;
 }
@@ -116,12 +124,12 @@ int Application::execute()
 
 			// Dispatch due events
 			eventDispatcher.update(elapsedTime);
-
-			// Update controls
-			input();
-
+			
 			// Perform update
 			update(elapsedTime, stepScheduler.getStepPeriod());
+
+			// Handle input
+			input();
 
 			// Add step period to total elapsed time
 			elapsedTime += stepScheduler.getStepPeriod();
