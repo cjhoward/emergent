@@ -92,6 +92,9 @@ public:
 
 	/// Unmaps all controls.
 	void reset();
+
+	/// Returns a list of mappings for the specified control, or nullptr if the control is unmapped.
+	const std::list<InputMapping*>* getMappings(Control* control) const;
 	
 private:
 	virtual void handleEvent(const KeyPressedEvent& event);

@@ -21,6 +21,8 @@
 #define EMERGENT_INPUT_KEYBOARD_HPP
 
 #include <emergent/input/input-device.hpp>
+#include <map>
+#include <string>
 
 namespace Emergent
 {
@@ -39,6 +41,14 @@ public:
 	 * Returns the UTF-8 encoded name of a scancode.
 	 */
 	static const char* getScancodeName(Scancode scancode);
+
+	/**
+	 * Returns the scancode corresponding to a scancode name.
+	 *
+	 * @param name Name of a scancode.
+	 * @return Corresponding scancode, or nullptr if a matching scancode was not found.
+	 */
+	static Scancode getScancodeFromName(const char* name);
 
 	/**
 	 * Creates a keyboard input device.
@@ -67,6 +77,11 @@ public:
 	 * @param scancode Scancode of the simulated key release.
 	 */
 	void release(Scancode scancode);
+
+private:
+	static std::map<std::string, Scancode> buildScancodeMap();
+	static const char* scancodeNames[];
+	static std::map<std::string, Scancode> scancodeMap;
 };
 
 inline InputDevice::Type Keyboard::getType() const

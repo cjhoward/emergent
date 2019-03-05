@@ -160,6 +160,17 @@ void InputMapper::reset()
 	gamepadButtonMappings.clear();
 }
 
+const std::list<InputMapping*>* InputMapper::getMappings(Control* control) const
+{
+	auto it = controls.find(control);
+	if (it == controls.end())
+	{
+		return nullptr;
+	}
+
+	return &it->second;
+}
+
 void InputMapper::handleEvent(const KeyPressedEvent& event)
 {
 	for (const KeyMapping* mapping: keyMappings)
