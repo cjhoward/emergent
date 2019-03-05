@@ -100,6 +100,21 @@ EventBase* MouseWheelScrolledEvent::clone() const
 	return event;
 }
 
+EventBase* GamepadConnectedEvent::clone() const
+{
+	GamepadConnectedEvent* event = new GamepadConnectedEvent();
+	event->gamepad = gamepad;
+	event->reconnected = reconnected;
+	return event;
+}
+
+EventBase* GamepadDisconnectedEvent::clone() const
+{
+	GamepadDisconnectedEvent* event = new GamepadDisconnectedEvent();
+	event->gamepad = gamepad;
+	return event;
+}
+
 EventBase* GamepadButtonPressedEvent::clone() const
 {
 	GamepadButtonPressedEvent* event = new GamepadButtonPressedEvent();

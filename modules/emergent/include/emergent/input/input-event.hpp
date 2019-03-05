@@ -163,6 +163,31 @@ public:
 };
 
 /**
+ * Input event which indicates a gamepad has been connected.
+ *
+ * @ingroup input
+ */
+class GamepadConnectedEvent: public Event<GamepadConnectedEvent>
+{
+public:
+	virtual EventBase* clone() const;
+
+	Gamepad* gamepad;
+	bool reconnected;
+};
+
+/**
+ * Input event which indicates a gamepad has been disconnected.
+ */
+class GamepadDisconnectedEvent: public Event<GamepadDisconnectedEvent>
+{
+public:
+	virtual EventBase* clone() const;
+
+	Gamepad* gamepad;
+};
+
+/**
  * Input event which indicates a gamepad button has been pressed.
  *
  * @ingroup input

@@ -80,6 +80,11 @@ Application::Application():
 	eventDispatcher.subscribe<MouseButtonPressedEvent>(this);
 	eventDispatcher.subscribe<MouseButtonReleasedEvent>(this);
 	eventDispatcher.subscribe<MouseWheelScrolledEvent>(this);
+	eventDispatcher.subscribe<GamepadConnectedEvent>(this);
+	eventDispatcher.subscribe<GamepadDisconnectedEvent>(this);
+	eventDispatcher.subscribe<GamepadButtonPressedEvent>(this);
+	eventDispatcher.subscribe<GamepadButtonReleasedEvent>(this);
+	eventDispatcher.subscribe<GamepadAxisMovedEvent>(this);
 }
 
 Application::~Application()
@@ -211,6 +216,21 @@ void Application::handleEvent(const MouseButtonReleasedEvent& event)
 {}
 
 void Application::handleEvent(const MouseWheelScrolledEvent& event)
+{}
+
+void Application::handleEvent(const GamepadConnectedEvent& event)
+{}
+
+void Application::handleEvent(const GamepadDisconnectedEvent& event)
+{}
+
+void Application::handleEvent(const GamepadButtonPressedEvent& event)
+{}
+
+void Application::handleEvent(const GamepadButtonReleasedEvent& event)
+{}
+
+void Application::handleEvent(const GamepadAxisMovedEvent& event)
 {}
 
 } // namespace Emergent

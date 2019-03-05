@@ -333,6 +333,7 @@ void SDLInterface::routeEvents()
 						name = "Unknown Gamepad";
 					}
 					
+					Gamepad* gamepad = nullptr;
 					bool reconnected = false;
 					const std::list<Gamepad*>* gamepads = deviceManager->getGamepads();
 					for (auto it = gamepads->begin(); it != gamepads->end(); ++it)
@@ -341,12 +342,10 @@ void SDLInterface::routeEvents()
 						if ((*it)->isDisconnected() && (*it)->getName() == name)
 						{
 							// Map to new instance ID
-							Gamepad* gamepad = *it;
+							gamepad = *it;
 							gamepadMap[instanceID] = gamepad;
 							gamepad->setDisconnected(false);
 							reconnected = true;
-							
-							std::cout << std::string("Reconnected gamepad \"") << name << std::string("\" with ID ") << instanceID << std::endl;
 							break;
 						}
 					}
@@ -354,7 +353,7 @@ void SDLInterface::routeEvents()
 					if (!reconnected)
 					{
 						// Create new gamepad
-						Gamepad* gamepad = new Gamepad(deviceManager, name);
+						gamepad = new Gamepad(deviceManager, name);
 						
 						// Add to list of allocated gamepads
 						allocatedGamepads.push_back(gamepad);
@@ -367,9 +366,13 @@ void SDLInterface::routeEvents()
 						
 						// Connect gamepad
 						gamepad->setDisconnected(false);
-						
-						std::cout << std::string("Connected gamepad \"") << name << std::string("\" with ID ") << instanceID << std::endl;
 					}
+
+					// Queue gamepad connected event
+					GamepadConnectedEvent event;
+					event.gamepad = gamepad;
+					event.reconnected = reconnected;
+					eventDispatcher->queue(event);
 				}
 				break;
 			}
@@ -393,7 +396,10 @@ void SDLInterface::routeEvents()
 				// Set disconnected flag
 				gamepad->setDisconnected(true);
 				
-				std::cout << std::string("Disconnected gamepad \"") << gamepad->getName() << std::string("\" with ID ") << instanceID << std::endl;
+				// Queue gamepad connected event
+				GamepadDisconnectedEvent event;
+				event.gamepad = gamepad;
+				eventDispatcher->queue(event);
 				break;
 			}
 			

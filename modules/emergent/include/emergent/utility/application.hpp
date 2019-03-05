@@ -50,7 +50,12 @@ class Application:
 	private EventHandler<MouseMovedEvent>,
 	private EventHandler<MouseButtonPressedEvent>,
 	private EventHandler<MouseButtonReleasedEvent>,
-	private EventHandler<MouseWheelScrolledEvent>
+	private EventHandler<MouseWheelScrolledEvent>,
+	private EventHandler<GamepadConnectedEvent>,
+	private EventHandler<GamepadDisconnectedEvent>,
+	private EventHandler<GamepadButtonPressedEvent>,
+	private EventHandler<GamepadButtonReleasedEvent>,
+	private EventHandler<GamepadAxisMovedEvent>
 {
 public:
 	/**
@@ -121,6 +126,11 @@ private:
 	virtual void handleEvent(const MouseButtonPressedEvent& event);
 	virtual void handleEvent(const MouseButtonReleasedEvent& event);
 	virtual void handleEvent(const MouseWheelScrolledEvent& event);
+	virtual void handleEvent(const GamepadConnectedEvent& event);
+	virtual void handleEvent(const GamepadDisconnectedEvent& event);
+	virtual void handleEvent(const GamepadButtonPressedEvent& event);
+	virtual void handleEvent(const GamepadButtonReleasedEvent& event);
+	virtual void handleEvent(const GamepadAxisMovedEvent& event);
 
 	bool closed;
 	int status;
