@@ -68,7 +68,7 @@ enum class Scancode
 	NINE,
 	ZERO,
 	ENTER,
-	ESC,
+	ESCAPE,
 	BACKSPACE,
 	TAB,
 	SPACE,
