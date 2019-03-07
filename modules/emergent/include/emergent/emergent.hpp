@@ -92,6 +92,7 @@
 #include <emergent/input/input-event.hpp>
 #include <emergent/input/input-mapper.hpp>
 #include <emergent/input/input-mapping.hpp>
+#include <emergent/input/input-router.hpp>
 #include <emergent/input/keyboard.hpp>
 #include <emergent/input/mouse.hpp>
 #include <emergent/input/scancode.hpp>

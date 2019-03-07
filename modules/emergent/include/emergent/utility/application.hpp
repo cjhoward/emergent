@@ -33,7 +33,7 @@ namespace Emergent
 class DeviceManager;
 class OSInterface;
 class InputManager;
-class InputMapper;
+class InputRouter;
 class WindowManager;
 
 /**
@@ -87,7 +87,7 @@ protected:
 	OSInterface* osInterface;
 	DeviceManager* deviceManager;
 	WindowManager* windowManager;
-	InputMapper* inputMapper;
+	InputRouter* inputRouter;
 	StepScheduler stepScheduler;
 	StepInterpolator stepInterpolator;
 	PerformanceSampler performanceSampler;

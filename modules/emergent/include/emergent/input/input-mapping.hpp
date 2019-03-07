@@ -47,7 +47,7 @@ enum class InputMappingType
 };
 
 /**
- * Abstract base class for control mappings.
+ * Abstract base class for input mappings.
  *
  * @ingroup input
  */

@@ -18,7 +18,7 @@
  */
 
 #include <emergent/configuration.hpp>
-#include <emergent/input/input-mapper.hpp>
+#include <emergent/input/input-router.hpp>
 #include <emergent/utility/application.hpp>
 #include <stdexcept>
 #include <chrono>
@@ -37,7 +37,7 @@ Application::Application():
 	osInterface(nullptr),
 	deviceManager(nullptr),
 	windowManager(nullptr),
-	inputMapper(nullptr),
+	inputRouter(nullptr),
 	closed(false),
 	status(EXIT_SUCCESS)
 {
@@ -60,8 +60,8 @@ Application::Application():
 	// Get the window manager
 	windowManager = osInterface->getWindowManager();
 
-	// Create the input mapper
-	inputMapper = new InputMapper(&eventDispatcher);
+	// Create the input router
+	inputRouter = new InputRouter(&eventDispatcher);
 
 	// Setup step scheduling
 	stepScheduler.setMaxFrameDuration(0.25);
@@ -89,8 +89,8 @@ Application::Application():
 
 Application::~Application()
 {
-	// Delete the input mapper
-	delete inputMapper;
+	// Delete the input router
+	delete inputRouter;
 
 	// Shutdown OS interface
 	delete osInterface;
