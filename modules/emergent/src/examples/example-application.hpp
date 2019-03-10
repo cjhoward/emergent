@@ -48,7 +48,7 @@ protected:
 	void setUpdateRate(double frequency);
 	
 	Window* window;
-	ControlProfile controlProfile;
+	ControlSet controls;
 
 private:
 	virtual void input();

@@ -8,11 +8,6 @@ cmake_minimum_required(VERSION 3.7)
 project(emergent-superbuild)
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
-# Set compiler flags
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS_DEBUG "-g")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-
 # Setup configuration options
 option(BUILD_DOCS "Build the API reference docs using Doxygen." OFF)
 option(BUILD_EXAMPLES "Build the example programs." ON)

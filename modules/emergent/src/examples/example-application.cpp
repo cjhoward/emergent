@@ -60,12 +60,13 @@ ExampleApplication::ExampleApplication(int argc, char* argv[]):
 	// Setup control profile
 	Keyboard* keyboard = deviceManager->getKeyboards()->front();
 	Mouse* mouse = deviceManager->getMice()->front();
-	closeControl.bindKey(keyboard, Scancode::ESCAPE);
+	inputRouter->addMapping(KeyMapping(&closeControl, keyboard, Scancode::ESCAPE));
+	inputRouter->addMapping(KeyMapping(&fullscreenControl, keyboard, Scancode::F11));
 	closeControl.setActivatedCallback(std::bind(&Application::close, this, EXIT_SUCCESS));
-	fullscreenControl.bindKey(keyboard, Scancode::F11);
 	fullscreenControl.setActivatedCallback(std::bind(&ExampleApplication::toggleFullscreen, this));
-	controlProfile.registerControl("close", &closeControl);
-	controlProfile.registerControl("fullscreen", &fullscreenControl);
+	
+	controls.addControl(&closeControl);
+	controls.addControl(&fullscreenControl);
 }
 
 ExampleApplication::~ExampleApplication()
@@ -95,6 +96,6 @@ void ExampleApplication::setUpdateRate(double frequency)
 
 void ExampleApplication::input()
 {
-	controlProfile.update();
+	controls.update();
 }
 

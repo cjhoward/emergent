@@ -643,13 +643,13 @@ void SDLInterface::setWindowFullscreen(Window* window, bool fullscreen)
 
 	if (!fullscreen)
 	{
-		SDL_HideWindow(data->window);
+		//SDL_HideWindow(data->window);
 		SDL_SetWindowFullscreen(data->window, SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
 		SDL_SetWindowSize(data->window, data->width, data->height);
 		SDL_SetWindowResizable(data->window, (window->isResizable()) ? SDL_TRUE : SDL_FALSE);
 		SDL_SetWindowBordered(data->window, (window->hasBorder()) ? SDL_TRUE : SDL_FALSE);
 		SDL_SetWindowPosition(data->window, data->x, data->y);
-		SDL_RaiseWindow(data->window);
+		//SDL_RaiseWindow(data->window);
 	}
 	else
 	{
@@ -805,7 +805,7 @@ const Scancode SDLInterface::scancodeTable[287] =
 	Scancode::INSERT, // SDL_SCANCODE_INSERT = 73,
 	Scancode::HOME, // SDL_SCANCODE_HOME = 74,
 	Scancode::PAGE_UP, // SDL_SCANCODE_PAGEUP = 75,
-	Scancode::DELETE, // SDL_SCANCODE_DELETE = 76,
+	Scancode::DEL, // SDL_SCANCODE_DELETE = 76,
 	Scancode::END, // SDL_SCANCODE_END = 77,
 	Scancode::PAGE_DOWN, // SDL_SCANCODE_PAGEDOWN = 78,
 	Scancode::RIGHT, // SDL_SCANCODE_RIGHT = 79,
@@ -889,7 +889,7 @@ const Scancode SDLInterface::scancodeTable[287] =
 	Scancode::PRIOR, // SDL_SCANCODE_PRIOR = 157,
 	Scancode::RETURN_2, // SDL_SCANCODE_RETURN2 = 158,
 	Scancode::SEPARATOR, // SDL_SCANCODE_SEPARATOR = 159,
-	Scancode::OUT, // SDL_SCANCODE_OUT = 160,
+	Scancode::_OUT, // SDL_SCANCODE_OUT = 160,
 	Scancode::OPER, // SDL_SCANCODE_OPER = 161,
 	Scancode::CLEAR_AGAIN, // SDL_SCANCODE_CLEARAGAIN = 162,
 	Scancode::CR_SEL, // SDL_SCANCODE_CRSEL = 163,

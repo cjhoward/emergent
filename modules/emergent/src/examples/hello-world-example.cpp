@@ -95,9 +95,11 @@ void HelloWorldExample::setup()
 	setTitle("Hello, World!");
 	setUpdateRate(60.0);
 
-	hue.setState1(0.0f);
-
-	stepInterpolator.addVariable(&hue);
+	hue = 0.0f;
+	hueTween = new Tween<float>(&hue, lerp<float>);
+	hueTween->reset();
+	
+	stepInterpolator.addTween(hueTween);
 
 	lastFrameDuration = 0.0;
 
@@ -114,7 +116,7 @@ void HelloWorldExample::setup()
 	eventDispatcher.schedule(event2, 10.0);
 	eventDispatcher.schedule(event3, 1.0);
 
-	clip.setInterpolationFunction(lerp<Vector4>);
+	clip.setInterpolator(lerp<Vector4>);
 	AnimationChannel<Vector4>* channel = clip.addChannel(0);
 	channel->insertKeyframe(0.0f, Vector4(0.0f, 0.0f, 0.0f, 0.0f));
 	channel->insertKeyframe(10.0f, Vector4(0.0f, 0.0f, 0.0f, 1.0f));
@@ -124,13 +126,13 @@ void HelloWorldExample::setup()
 	screenAnimation.setAnimateCallback(
 		[this](std::size_t id, const Vector4& frame)
 		{
-			this->hue.setState1(frame.w);
+			this->hue = frame.w;
 		}
 	);
 	screenAnimation.setLoopCallback(
 		[this]()
 		{
-			this->hue.setState0(this->hue.getState0() - 1.0f);
+			this->hue = this->hue - 1.0f;
 		}
 	);
 	screenAnimation.setSpeed(1.0f);
@@ -167,7 +169,7 @@ void HelloWorldExample::setup()
 
 void HelloWorldExample::input()
 {
-	controlProfile.update();
+	controls.update();
 }
 
 void HelloWorldExample::update(float t, float dt)
@@ -179,7 +181,7 @@ void HelloWorldExample::update(float t, float dt)
 
 void HelloWorldExample::render()
 {
-	float wrappedHue = std::fmod(hue.getSubstate(), 1.0f);
+	float wrappedHue = std::fmod(hueTween->getSubstate(), 1.0f);
 	if (wrappedHue < 0.0f)
 	{
 		wrappedHue += 1.0f;

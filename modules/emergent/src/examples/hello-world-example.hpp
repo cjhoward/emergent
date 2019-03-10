@@ -53,7 +53,8 @@ private:
 	virtual void handleEvent(const KeyPressedEvent& event);
 	virtual void handleEvent(const TestEvent& event);
 
-	Tween<float> hue;
+	float hue;
+	Tween<float>* hueTween;
 	double lastFrameDuration;
 
 	Animator animator;

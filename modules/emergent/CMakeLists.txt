@@ -1,14 +1,25 @@
 cmake_minimum_required(VERSION 3.7)
 project(emergent VERSION "0.0.0")
 
+# Set compiler flags
+if(CMAKE_COMPILER_IS_GNUCC)
+	set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3")
+elseif(MSVC)
+	set(CMAKE_CXX_FLAGS "/W3 /MP")
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS}")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} /Ox")
+endif()
+
+# Set emergent library options
+set(EMERGENT_DEBUG_OPTIONS "")
+set(EMERGENT_RELEASE_OPTIONS "")
+
 # Find dependency packages
 find_package(freetype REQUIRED CONFIG)
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED COMPONENTS SDL2::SDL2-static SDL2::SDL2main CONFIG)
-
-# Set compiler options
-set(EMERGENT_DEBUG_OPTIONS "")
-set(EMERGENT_RELEASE_OPTIONS "")
 
 # Determine dependencies
 set(EMERGENT_STATIC_LIBS
@@ -104,14 +115,35 @@ install(EXPORT emergent-targets
 
 # Build example programs
 if(BUILD_EXAMPLES)
-	# Build examples
-	add_executable(hello-world-example
-		${PROJECT_SOURCE_DIR}/src/examples/example-application.cpp
-		${PROJECT_SOURCE_DIR}/src/examples/hello-world-example.cpp)
-	target_link_libraries(hello-world-example emergent)
 
-	# Install examples
-	install(TARGETS hello-world-example RUNTIME DESTINATION bin/emergent)
+	# Set example executable name
+	set(EXAMPLE_EXECUTABLE "hello-world-example")
+	
+	# Add example executable source files
+	set(EXAMPLE_SOURCE_FILES
+		${PROJECT_SOURCE_DIR}/src/examples/example-application.cpp
+		${PROJECT_SOURCE_DIR}/src/examples/${EXAMPLE_EXECUTABLE}.cpp)
+	
+	# Make executable DPI-aware on Windows
+	if(WIN32)
+		set(EXAMPLE_SOURCE_FILES ${EXAMPLE_SOURCE_FILES} ${PROJECT_SOURCE_DIR}/src/examples/dpi-aware.manifest)
+	endif(WIN32)
+	
+	# Add executable
+	add_executable(${EXAMPLE_EXECUTABLE} ${EXAMPLE_SOURCE_FILES})
+	
+	# Set link flags to show console window on debug builds and hide it on release builds
+	if(MSVC)
+		set_target_properties(${EXAMPLE_EXECUTABLE} PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE")
+		set_target_properties(${EXAMPLE_EXECUTABLE} PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS /ENTRY:\"mainCRTStartup\"")
+	endif(MSVC)
+	
+	# Link executable
+	target_link_libraries(${EXAMPLE_EXECUTABLE} emergent)
+
+	# Install executable
+	install(TARGETS ${EXAMPLE_EXECUTABLE} RUNTIME DESTINATION bin/emergent)
+	
 endif(BUILD_EXAMPLES)
 
 # Generate documentation
