@@ -643,12 +643,13 @@ void SDLInterface::setWindowFullscreen(Window* window, bool fullscreen)
 
 	if (!fullscreen)
 	{
-		//SDL_HideWindow(data->window);
+		SDL_HideWindow(data->window);
 		SDL_SetWindowFullscreen(data->window, SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
 		SDL_SetWindowSize(data->window, data->width, data->height);
 		SDL_SetWindowResizable(data->window, (window->isResizable()) ? SDL_TRUE : SDL_FALSE);
 		SDL_SetWindowBordered(data->window, (window->hasBorder()) ? SDL_TRUE : SDL_FALSE);
 		SDL_SetWindowPosition(data->window, data->x, data->y);
+		SDL_ShowWindow(data->window);
 		//SDL_RaiseWindow(data->window);
 	}
 	else
