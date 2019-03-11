@@ -20,9 +20,8 @@
 #include <emergent/font/font.hpp>
 #include <emergent/font/texture-packer.hpp>
 #include <emergent/graphics/billboard.hpp>
-#include <codecvt>
+#include <emergent/utility/unicode.hpp>
 #include <iostream>
-#include <locale>
 
 namespace Emergent
 {
@@ -92,8 +91,7 @@ void Font::puts(BillboardBatch* batch, const Vector3& origin, const std::string&
 	}
 
 	// Convert UTF-8 string to UTF-32
-	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> utf32conv;
-    std::u32string utf32 = utf32conv.from_bytes(string);
+    std::u32string utf32 = toUTF32(string);
 	
 	float cursorX = origin.x;
 	float cursorY = origin.y + metrics.getAscender();
@@ -182,8 +180,7 @@ void Font::puts(BillboardBatch* batch, const Vector3& origin, const std::string&
 float Font::getWidth(const std::string& string) const
 {
 	// Convert UTF-8 string to UTF-32
-	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> utf32conv;
-    std::u32string utf32 = utf32conv.from_bytes(string);
+    std::u32string utf32 = toUTF32(string);
 
 	float width = 0.0f;
 	char32_t previous;

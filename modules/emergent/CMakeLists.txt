@@ -7,9 +7,16 @@ if(CMAKE_COMPILER_IS_GNUCC)
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g")
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3")
 elseif(MSVC)
-	set(CMAKE_CXX_FLAGS "/W3 /MP")
+	set(CMAKE_CXX_FLAGS "/W3 /MP /MD")
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS}")
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} /Ox")
+endif()
+
+# Set linker flags
+if(MSVC)
+	#set(CMAKE_EXE_LINKER_FLAGS "/NODEFAULTLIB:MSVCRT")
+	set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS}")
+	set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS}")
 endif()
 
 # Set emergent library options
@@ -24,14 +31,10 @@ find_package(SDL2 REQUIRED COMPONENTS SDL2::SDL2-static SDL2::SDL2main CONFIG)
 # Determine dependencies
 set(EMERGENT_STATIC_LIBS
 	freetype
-	${OPENGL_gl_LIBRARY}
 	SDL2::SDL2-static
 	SDL2::SDL2main)
 set(EMERGENT_SHARED_LIBS
-	freetype
-	${OPENGL_gl_LIBRARY}
-	SDL2::SDL2
-	SDL2::SDL2main)
+	${OPENGL_gl_LIBRARY})
 
 # Setup configuration variables
 set(EMERGENT_VERSION ${PROJECT_VERSION})
@@ -58,20 +61,21 @@ file(GLOB_RECURSE EMERGENT_SOURCE_FILES
 	${PROJECT_SOURCE_DIR}/src/gl3w/src/gl3w.c
 	${PROJECT_SOURCE_DIR}/src/stb/stb_image.c)
 
-# Build emergent library
+# Add emergent library
 if(BUILD_STATIC)
 	add_library(emergent STATIC ${EMERGENT_SOURCE_FILES})
-	set(EMERGENT_EXTRA_LIBS ${EMERGENT_STATIC_LIBS})
 else()
 	add_library(emergent SHARED ${EMERGENT_SOURCE_FILES})
-	set(EMERGENT_EXTRA_LIBS ${EMERGENT_SHARED_LIBS})
 endif(BUILD_STATIC)
+
+# Set emergent library version
 set_target_properties(emergent
 	PROPERTIES
 		VERSION ${PROJECT_VERSION}
 		SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 		DEBUG_POSTFIX d)
 
+# Set emergent library include directories
 target_include_directories(emergent
 	PUBLIC
 		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
@@ -82,9 +86,15 @@ target_include_directories(emergent
 		$<INSTALL_INTERFACE:include>
 	PRIVATE
 		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>)
+
+# Set emergent library config options
 target_compile_options(emergent PUBLIC "$<$<CONFIG:DEBUG>:${EMERGENT_DEBUG_OPTIONS}>")
 target_compile_options(emergent PUBLIC "$<$<CONFIG:RELEASE>:${EMERGENT_RELEASE_OPTIONS}>")
-target_link_libraries(emergent ${EMERGENT_EXTRA_LIBS})
+
+# Link emergent library with shared libs
+target_link_libraries(emergent
+	PUBLIC ${EMERGENT_SHARED_LIBS}
+	PRIVATE ${EMERGENT_STATIC_LIBS})
 
 # Install emergent library
 install(TARGETS emergent

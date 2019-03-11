@@ -124,6 +124,7 @@
 #include <emergent/utility/performance-sampler.hpp>
 #include <emergent/utility/step-scheduler.hpp>
 #include <emergent/utility/timer.hpp>
+#include <emergent/utility/unicode.hpp>
 
 /**
  * @defgroup font Font
