@@ -41,11 +41,6 @@ set(EMERGENT_VERSION ${PROJECT_VERSION})
 set(EMERGENT_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(EMERGENT_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 set(EMERGENT_VERSION_PATCH ${PROJECT_VERSION_PATCH})
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-	set(EMERGENT_DEBUG ON)
-else()
-	set(EMERGENT_DEBUG OFF)
-endif()
 
 # Generate configuration header
 set(EMERGENT_CONFIG_HEADER ${PROJECT_BINARY_DIR}/include/emergent/configuration.hpp)
@@ -67,6 +62,13 @@ if(BUILD_STATIC)
 else()
 	add_library(emergent SHARED ${EMERGENT_SOURCE_FILES})
 endif(BUILD_STATIC)
+
+# Add compile definitions
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+	target_compile_definitions(emergent PRIVATE DEBUG)
+else()
+	target_compile_definitions(emergent PRIVATE NDEBUG)
+endif()
 
 # Set emergent library version
 set_target_properties(emergent

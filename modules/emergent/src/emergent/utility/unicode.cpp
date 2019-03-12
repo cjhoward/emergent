@@ -19,6 +19,7 @@
 
 #include <emergent/utility/unicode.hpp>
 #include <codecvt>
+#include <locale>
 
 namespace Emergent
 {
