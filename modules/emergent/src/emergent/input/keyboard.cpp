@@ -122,7 +122,7 @@ const char* Keyboard::scancodeNames[] =
 	"8", // EIGHT
 	"9", // NINE
 	"0", // ZERO
-	"Return", // RETURN
+	"Enter", // ENTER
 	"Escape", // ESCAPE
 	"Backspace", // BACKSPACE
 	"Tab", // TAB

@@ -227,6 +227,8 @@ void SDLInterface::routeEvents()
 				MouseButtonPressedEvent event;
 				event.mouse = mouse;
 				event.button = sdlEvent.button.button;
+				event.x = sdlEvent.button.x;
+				event.y = sdlEvent.button.y;
 
 				eventDispatcher->queue(event);
 				break;
@@ -237,6 +239,8 @@ void SDLInterface::routeEvents()
 				MouseButtonReleasedEvent event;
 				event.mouse = mouse;
 				event.button = sdlEvent.button.button;
+				event.x = sdlEvent.button.x;
+				event.y = sdlEvent.button.y;
 
 				eventDispatcher->queue(event);
 				break;
