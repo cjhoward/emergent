@@ -654,7 +654,7 @@ void SDLInterface::setWindowFullscreen(Window* window, bool fullscreen)
 		SDL_SetWindowBordered(data->window, (window->hasBorder()) ? SDL_TRUE : SDL_FALSE);
 		SDL_SetWindowPosition(data->window, data->x, data->y);
 		SDL_ShowWindow(data->window);
-		//SDL_RaiseWindow(data->window);
+		SDL_RaiseWindow(data->window);
 	}
 	else
 	{
@@ -677,6 +677,7 @@ void SDLInterface::setWindowFullscreen(Window* window, bool fullscreen)
 		SDL_SetWindowSize(data->window, mode.w, mode.h);
 		SDL_SetWindowFullscreen(data->window, flags);
 		SDL_ShowWindow(data->window);
+		SDL_RaiseWindow(data->window);
 	}
 }
 
