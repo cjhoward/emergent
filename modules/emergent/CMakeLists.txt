@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.14)
 project(emergent VERSION "0.0.0")
 
 # Set compiler flags
@@ -71,11 +71,19 @@ else()
 endif()
 
 # Set emergent library version
-set_target_properties(emergent
-	PROPERTIES
+set_target_properties(
+		emergent PROPERTIES
 		VERSION ${PROJECT_VERSION}
 		SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 		DEBUG_POSTFIX d)
+
+# Set C++17 standard
+set_target_properties(emergent PROPERTIES
+	CXX_STANDARD 17
+	CXX_EXTENSIONS OFF)
+if(MSVC)
+	set_target_properties(emergent PROPERTIES COMPILE_FLAGS "/std:c++17")
+endif()
 
 # Set emergent library include directories
 target_include_directories(emergent
