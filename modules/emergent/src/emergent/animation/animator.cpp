@@ -19,6 +19,7 @@
 
 #include <emergent/animation/animator.hpp>
 #include <emergent/animation/animation.hpp>
+#include <algorithm>
 
 namespace Emergent
 {
@@ -51,13 +52,28 @@ void Animator::animate(float dt)
 
 void Animator::addAnimation(AnimationBase* animation)
 {
-	queuedAnimations.push_back(animation);
+	auto it = std::find(dequeuedAnimations.begin(), dequeuedAnimations.end(), animation);
+	if (it != dequeuedAnimations.end())
+	{
+		dequeuedAnimations.erase(it);
+	}
+	else
+	{
+		queuedAnimations.push_back(animation);
+	}
 }
 
 void Animator::removeAnimation(AnimationBase* animation)
 {
-	queuedAnimations.remove(animation);
-	dequeuedAnimations.push_back(animation);
+	auto it = std::find(queuedAnimations.begin(), queuedAnimations.end(), animation);
+	if (it != queuedAnimations.end())
+	{
+		queuedAnimations.remove(animation);
+	}
+	else
+	{
+		dequeuedAnimations.push_back(animation);
+	}
 }
 
 void Animator::removeAnimations()
