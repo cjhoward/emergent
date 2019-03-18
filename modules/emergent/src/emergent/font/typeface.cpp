@@ -31,8 +31,9 @@
 
 namespace Emergent
 {
-	
+
 Typeface::Typeface(std::istream* is):
+	fileBuffer(nullptr),
 	library(nullptr),
 	face(nullptr)
 {
@@ -49,17 +50,13 @@ Typeface::Typeface(std::istream* is):
 	// Read input stream into buffer
 	is->seekg(0, is->end);
 	std::size_t fileSize = is->tellg();
-	unsigned char* fileBuffer = new unsigned char[fileSize];
+	fileBuffer = new unsigned char[fileSize];
 	is->seekg(0, is->beg);
 	is->read(reinterpret_cast<char*>(&fileBuffer[0]), fileSize);
 
 	// Load FreeType face
 	FT_Face ftFace;
 	error = FT_New_Memory_Face(ftLibrary, fileBuffer, static_cast<FT_Long>(fileSize), 0, &ftFace);
-
-	// WARNING!!!!!!!!!!!!!!!!!!!!!!!!
-	// Free file buffer
-	//delete[] fileBuffer;
 
 	if (error != 0)
 	{
@@ -78,6 +75,9 @@ Typeface::Typeface(std::istream* is):
 
 Typeface::~Typeface()
 {
+	// Free file buffer
+	delete[] fileBuffer;
+
 	// Free FreeType face
 	FT_Done_Face(static_cast<FT_Face>(face));
 	
@@ -166,9 +166,6 @@ bool Typeface::loadGlyph(Font* font, char32_t charcode)
 	// Get glyph index from character code
 	FT_UInt index = FT_Get_Char_Index(ftFace, charcode);
 
-	//std::cout << "charcode: " << charcode << std::endl;
-	//std::cout << "index: " << index << std::endl;
-	
 	// Load glyph
 	error = FT_Load_Glyph(ftFace, index, flags);
 	if (error != 0)
@@ -191,9 +188,6 @@ bool Typeface::loadGlyph(Font* font, char32_t charcode)
 			ftFace->glyph->metrics.vertBearingY / 64.0f));
 	glyphMetrics.setVerticalAdvance(ftFace->glyph->metrics.vertAdvance / 64.0f);
 
-	//std::cout << glyphMetrics.getWidth() << std::endl;
-	//std::cout << glyphMetrics.getHeight() << std::endl;
-	
 	// Load glyph image data
 	const FT_Bitmap& bitmap = ftFace->glyph->bitmap;
 	unsigned int pixelCount = bitmap.width * bitmap.rows;

@@ -93,6 +93,7 @@ private:
 	 */
 	void rebuildKerningTable(Font* font);
 
+	unsigned char* fileBuffer;
 	void* library;
 	void* face;
 };
