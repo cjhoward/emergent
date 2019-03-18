@@ -146,6 +146,18 @@ vector<T, 4> mul(const vector<T, 4>& v, T s);
 ///@}
 
 /**
+ *
+ */
+///@{
+template <class T>
+vector<T, 2> negate(const vector<T, 2>& x);
+template <class T>
+vector<T, 3> negate(const vector<T, 3>& x);
+template <class T>
+vector<T, 4> negate(const vector<T, 4>& x);
+///@}
+
+/**
  * Calculates the unit vector in the same direction as the original vector.
  *
  * @param x Vector to normalize.
@@ -164,6 +176,54 @@ vector<T, 3> sub(const vector<T, 3>& x, const vector<T, 3>& y);
 template <class T>
 vector<T, 4> sub(const vector<T, 4>& x, const vector<T, 4>& y);
 ///@}
+
+/**
+ *
+ */
+template <class T, std::size_t N>
+vector<T, N> operator+(const vector<T, N>& x, const vector<T, N>& y);
+
+/**
+ *
+ */
+template <class T, std::size_t N>
+vector<T, N> operator-(const vector<T, N>& x);
+
+/**
+ *
+ */
+template <class T, std::size_t N>
+vector<T, N> operator-(const vector<T, N>& x, const vector<T, N>& y);
+
+/**
+ *
+ */
+template <class T, std::size_t N>
+vector<T, N> operator*(const vector<T, N>& x, const vector<T, N>& y);
+
+/**
+ *
+ */
+template <class T, std::size_t N>
+vector<T, N> operator*(const vector<T, N>& v, T s);
+
+/**
+ *
+ */
+template <class T, std::size_t N>
+vector<T, N> operator*(T s, const vector<T, N>& v);
+
+/**
+ *
+ */
+template <class T, std::size_t N>
+vector<T, N> operator/(const vector<T, N>& x, const vector<T, N>& y);
+
+/**
+ *
+ */
+template <class T, std::size_t N>
+vector<T, N> operator/(const vector<T, N>& v, T s);
 
 template <class T>
 inline vector<T, 2> add(const vector<T, 2>& x, const vector<T, 2>& y)
@@ -312,6 +372,24 @@ inline vector<T, 4> mul(const vector<T, 4>& v, T s)
 	return {v[0] * s, v[1] * s, v[2] * s, v[3] * s};
 }
 
+template <class T>
+inline vector<T, 2> negate(const vector<T, 2>& x)
+{
+	return {-x[0], -x[1]};
+}
+
+template <class T>
+inline vector<T, 3> negate(const vector<T, 3>& x)
+{
+	return {-x[0], -x[1], -x[2]};
+}
+
+template <class T>
+inline vector<T, 4> negate(const vector<T, 4>& x)
+{
+	return {-x[0], -x[1], -x[2], -x[3]};
+}
+
 template <class T, std::size_t N>
 inline vector<T, N> normalize(const vector<T, N>& x)
 {
@@ -335,6 +413,36 @@ template <class T>
 inline vector<T, 4> sub(const vector<T, 4>& x, const vector<T, 4>& y)
 {
 	return {x[0] - y[0], x[1] - y[1], x[2] - y[2], x[3] - y[3]};
+}
+
+template <class T, std::size_t N>
+inline vector<T, N> operator+(const vector<T, N>& x, const vector<T, N>& y)
+{
+	return add(x, y);
+}
+
+template <class T, std::size_t N>
+inline vector<T, N> operator-(const vector<T, N>& x)
+{
+	return negate(x);
+}
+
+template <class T, std::size_t N>
+inline vector<T, N> operator-(const vector<T, N>& x, const vector<T, N>& y)
+{
+	return sub(x, y);
+}
+
+template <class T, std::size_t N>
+inline vector<T, N> operator*(const vector<T, N>& x, const vector<T, N>& y)
+{
+	return mul(x, y);
+}
+
+template <class T, std::size_t N>
+inline vector<T, N> operator*(const vector<T, N>& v, T s)
+{
+	return mul(v, s);
 }
 
 } // namespace Emergent
