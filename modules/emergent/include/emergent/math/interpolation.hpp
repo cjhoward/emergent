@@ -20,6 +20,7 @@
 #ifndef EMERGENT_MATH_INTERPOLATION_HPP
 #define EMERGENT_MATH_INTERPOLATION_HPP
 
+#include <emergent/math/constants.hpp>
 #include <emergent/math/math.hpp>
 #include <cmath>
 
@@ -59,13 +60,13 @@ T slerp(const T& x, const T& y, float a)
 template <typename T>
 inline T coserp(const T& x, const T& y, float a)
 {
-	return lerp<T>(x, y, 1.0f - static_cast<float>(std::cos(static_cast<double>(a) * halfPi<double>())));
+	return lerp<T>(x, y, 1.0f - static_cast<float>(std::cos(static_cast<double>(a) * halfPi<double>)));
 }
 
 template <typename T>
 inline T sinerp(const T& x, const T& y, float a)
 {
-	return lerp<T>(x, y, static_cast<float>(std::sin(static_cast<double>(a) * halfPi<double>())));
+	return lerp<T>(x, y, static_cast<float>(std::sin(static_cast<double>(a) * halfPi<double>)));
 }
 
 template <typename T>

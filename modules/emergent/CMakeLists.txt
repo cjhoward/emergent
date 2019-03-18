@@ -81,7 +81,9 @@ set_target_properties(
 set_target_properties(emergent PROPERTIES
 	CXX_STANDARD 17
 	CXX_EXTENSIONS OFF)
-if(MSVC)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+	set_target_properties(emergent PROPERTIES COMPILE_FLAGS "-std=c++17")
+elseif(MSVC)
 	set_target_properties(emergent PROPERTIES COMPILE_FLAGS "/std:c++17")
 endif()
 

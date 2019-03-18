@@ -53,6 +53,7 @@ SDLInterface::SDLInterface(EventDispatcher* eventDispatcher):
 		throw std::runtime_error(error.c_str());
 	}
 
+	/*
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
@@ -60,6 +61,7 @@ SDLInterface::SDLInterface(EventDispatcher* eventDispatcher):
 	//SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+	*/
 
 	// Register displays
 	int displayCount = SDL_GetNumVideoDisplays();
@@ -559,7 +561,6 @@ void* SDLInterface::openWindow(const char* title, int x, int y, int width, int h
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
 
-
 	// Create OpenGL context
 	SDL_GLContext context = SDL_GL_CreateContext(sdlWindow);
 	if (!context)
@@ -648,7 +649,7 @@ void SDLInterface::setWindowFullscreen(Window* window, bool fullscreen)
 	if (!fullscreen)
 	{
 		SDL_HideWindow(data->window);
-		SDL_SetWindowFullscreen(data->window, SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
+		SDL_SetWindowFullscreen(data->window, 0);
 		SDL_SetWindowSize(data->window, data->width, data->height);
 		SDL_SetWindowResizable(data->window, (window->isResizable()) ? SDL_TRUE : SDL_FALSE);
 		SDL_SetWindowBordered(data->window, (window->hasBorder()) ? SDL_TRUE : SDL_FALSE);
@@ -668,16 +669,14 @@ void SDLInterface::setWindowFullscreen(Window* window, bool fullscreen)
 		SDL_DisplayMode mode;
 		SDL_GetCurrentDisplayMode(display, &mode);
 
-		Uint32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_BORDERLESS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_FULLSCREEN_DESKTOP;
-
-		SDL_HideWindow(data->window);
+		//SDL_HideWindow(data->window);
 		SDL_SetWindowBordered(data->window, SDL_FALSE);
 		SDL_SetWindowResizable(data->window, SDL_FALSE);
 		SDL_SetWindowPosition(data->window, bounds.x, bounds.y);
 		SDL_SetWindowSize(data->window, mode.w, mode.h);
-		SDL_SetWindowFullscreen(data->window, flags);
-		SDL_ShowWindow(data->window);
-		SDL_RaiseWindow(data->window);
+		SDL_SetWindowFullscreen(data->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+		//SDL_ShowWindow(data->window);
+		//SDL_RaiseWindow(data->window);
 	}
 }
 

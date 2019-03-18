@@ -41,7 +41,7 @@ For a full list of advanced CMake configuration options, run the command `cmake 
 
 ### Build on GNU/Linux
 
-Building on GNU/Linux requires GCC, G++, and GNU Make. Open a command prompt in the `build` directory then run the following commands:
+Building on GNU/Linux requires GCC, a C++17-compatible version of G++, and GNU Make. Open a command prompt in the `build` directory then run the following commands:
 
 	cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<...>
 	cmake --build .

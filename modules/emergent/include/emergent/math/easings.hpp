@@ -51,7 +51,7 @@
 #ifndef EMERGENT_MATH_EASINGS_HPP
 #define EMERGENT_MATH_EASINGS_HPP
 
-#include <emergent/math/math.hpp>
+#include <emergent/math/constants.hpp>
 #include <cmath>
 
 namespace Emergent
@@ -66,19 +66,19 @@ inline T easeLinear(const T& x, const T& y, float a)
 template <typename T>
 T easeInSine(const T& x, const T& y, float a)
 {
-	return -(y - x) * std::cos(a * glm::half_pi<float>()) + (y - x) + x;
+	return -(y - x) * std::cos(a * halfPi<float>) + (y - x) + x;
 }
 
 template <typename T>
 T easeOutSine(const T& x, const T& y, float a)
 {
-	return (y - x) * std::sin(a * glm::half_pi<float>()) + x;
+	return (y - x) * std::sin(a * halfPi<float>) + x;
 }
 
 template <typename T>
 T easeInOutSine(const T& x, const T& y, float a)
 {
-	return -(y - x) * 0.5f * (std::cos(glm::pi<float>() * a) - 1.0f) + x;
+	return -(y - x) * 0.5f * (std::cos(pi<float> * a) - 1.0f) + x;
 }
 
 template <typename T>

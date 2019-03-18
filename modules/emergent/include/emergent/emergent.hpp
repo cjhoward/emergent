@@ -103,12 +103,22 @@
  * Essential math functions and structures
  */
 #include <emergent/math/easings.hpp>
+#include <emergent/math/constants.hpp>
 #include <emergent/math/glm.hpp>
 #include <emergent/math/hash.hpp>
 #include <emergent/math/interpolation.hpp>
 #include <emergent/math/math.hpp>
+#include <emergent/math/matrix-math.hpp>
+#include <emergent/math/matrix-types.hpp>
+#include <emergent/math/quaternion-type.hpp>
+#include <emergent/math/swizzle.hpp>
 #include <emergent/math/transform.hpp>
+#include <emergent/math/transform-types.hpp>
+#include <emergent/math/triangle-types.hpp>
+#include <emergent/math/trigonometry.hpp>
 #include <emergent/math/types.hpp>
+#include <emergent/math/vector-math.hpp>
+#include <emergent/math/vector-types.hpp>
 
 /**
  * @defgroup utility Utility

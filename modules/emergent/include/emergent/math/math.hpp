@@ -62,24 +62,6 @@ inline bool nonzero(const Vector3& v)
 }
 
 template <typename T>
-inline constexpr T pi()
-{
-	return static_cast<T>(std::acos(-1.0));
-}
-
-template <typename T>
-inline constexpr T twoPi()
-{
-	return pi<T>() * T(2.0);
-}
-
-template <typename T>
-inline constexpr T halfPi()
-{
-	return pi<T>() * T(0.5);
-}
-
-template <typename T>
 inline T clamp(const T& value, const T& valueMin, const T& valueMax)
 {
 	return (value < valueMin) ? valueMin : ((value > valueMax) ? valueMax : value);
