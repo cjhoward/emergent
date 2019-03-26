@@ -26,14 +26,27 @@ namespace Emergent
 {
 
 /**
+ * An n-dimensional triangle.
  *
+ * @tparam T Vertex vector component type.
+ * @tparam N Number of dimensions.
  */
 template <class T, std::size_t N>
 using triangle = std::array<vector<T, N>, 3>;
 
+/**
+ * A 2-dimensional triangle.
+ *
+ * @tparam T Vertex vector component type.
+ */
 template <class T>
 using triangle2 = triangle<T, 2>;
 
+/**
+ * A 3-dimensional triangle.
+ *
+ * @tparam T Vertex vector component type.
+ */
 template <class T>
 using triangle3 = triangle<T, 3>;
 

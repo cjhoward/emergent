@@ -63,7 +63,6 @@ public:
 	 */
 	void setDeadzone(float value);
 
-
 	/// Sets the callback for when the control is activated.
 	void setActivatedCallback(std::function<void()> callback);
 
@@ -139,4 +138,3 @@ inline bool Control::wasActive() const
 } // namespace Emergent
 
 #endif // EMERGENT_INPUT_CONTROL_HPP
-

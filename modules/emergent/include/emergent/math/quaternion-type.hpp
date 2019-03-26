@@ -26,7 +26,9 @@ namespace Emergent
 {
 
 /**
+ * A quaternion type.
  *
+ * @tparam T Quaternion component type.
  */
 template <class T>
 using quaternion = std::array<T, 4>;

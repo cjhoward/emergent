@@ -27,11 +27,19 @@ namespace Emergent
 {
 
 /**
+ * An NxM matrix.
  *
+ * @tparam T Matrix element type.
+ * @tparam N Number of rows.
+ * @tparam M Number of columns.
  */
 template <class T, std::size_t N, std::size_t M>
 using matrix = std::array<std::array<T, M>, N>;
 
+/**
+ *
+ */
+///@{
 using bool1x1 = matrix<bool, 1, 1>;
 using bool2x2 = matrix<bool, 2, 2>;
 using bool3x3 = matrix<bool, 3, 3>;
@@ -76,6 +84,7 @@ using double1x1 = matrix<double, 1, 1>;
 using double2x2 = matrix<double, 2, 2>;
 using double3x3 = matrix<double, 3, 3>;
 using double4x4 = matrix<double, 4, 4>;
+///@}
 
 } // namespace Emergent
 
