@@ -425,6 +425,15 @@ void SDLInterface::routeEvents()
 
 							eventDispatcher->queue(event);
 						}
+						else if (sdlEvent.window.event == SDL_WINDOWEVENT_MOVED)
+						{
+							WindowMovedEvent event;
+							event.window = *it;
+							event.x = sdlEvent.window.data1;
+							event.y = sdlEvent.window.data2;
+
+							eventDispatcher->queue(event);
+						}
 						else if (sdlEvent.window.event == SDL_WINDOWEVENT_CLOSE)
 						{
 							WindowClosedEvent event;

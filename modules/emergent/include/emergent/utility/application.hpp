@@ -45,6 +45,7 @@ class Application:
 	private EventHandler<ApplicationClosedEvent>,
 	private EventHandler<WindowClosedEvent>,
 	private EventHandler<WindowResizedEvent>,
+	private EventHandler<WindowMovedEvent>,
 	private EventHandler<KeyPressedEvent>,
 	private EventHandler<KeyReleasedEvent>,
 	private EventHandler<MouseMovedEvent>,
@@ -120,6 +121,7 @@ private:
 	virtual void handleEvent(const ApplicationClosedEvent& event) final;
 	virtual void handleEvent(const WindowClosedEvent& event);
 	virtual void handleEvent(const WindowResizedEvent& event);
+	virtual void handleEvent(const WindowMovedEvent& event);
 	virtual void handleEvent(const KeyPressedEvent& event);
 	virtual void handleEvent(const KeyReleasedEvent& event);
 	virtual void handleEvent(const MouseMovedEvent& event);

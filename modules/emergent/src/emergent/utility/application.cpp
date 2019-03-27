@@ -74,6 +74,7 @@ Application::Application():
 	eventDispatcher.subscribe<ApplicationClosedEvent>(this);
 	eventDispatcher.subscribe<WindowClosedEvent>(this);
 	eventDispatcher.subscribe<WindowResizedEvent>(this);
+	eventDispatcher.subscribe<WindowMovedEvent>(this);
 	eventDispatcher.subscribe<KeyPressedEvent>(this);
 	eventDispatcher.subscribe<KeyReleasedEvent>(this);
 	eventDispatcher.subscribe<MouseMovedEvent>(this);
@@ -198,6 +199,9 @@ void Application::handleEvent(const WindowClosedEvent& event)
 }
 
 void Application::handleEvent(const WindowResizedEvent& event)
+{}
+
+void Application::handleEvent(const WindowMovedEvent& event)
 {}
 
 void Application::handleEvent(const KeyPressedEvent& event)

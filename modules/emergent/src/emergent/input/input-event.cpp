@@ -44,6 +44,15 @@ EventBase* WindowResizedEvent::clone() const
 	return event;
 }
 
+EventBase* WindowMovedEvent::clone() const
+{
+	WindowMovedEvent* event = new WindowMovedEvent();
+	event->window = window;
+	event->x = x;
+	event->y = y;
+	return event;
+}
+
 EventBase* KeyPressedEvent::clone() const
 {
 	KeyPressedEvent* event = new KeyPressedEvent();

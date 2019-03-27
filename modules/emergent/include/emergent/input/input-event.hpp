@@ -71,6 +71,21 @@ public:
 };
 
 /**
+ * Input event which indicates a window has been moved.
+ *
+ * @ingroup input
+ */
+class WindowMovedEvent: public Event<WindowMovedEvent>
+{
+public:
+	virtual EventBase* clone() const;
+
+	Window* window;
+	int x;
+	int y;
+};
+
+/**
  * Input event which indicates a keyboard key has been pressed.
  *
  * @ingroup input
