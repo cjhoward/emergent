@@ -131,6 +131,7 @@
 #include <emergent/utility/event-handler.hpp>
 #include <emergent/utility/event.hpp>
 #include <emergent/utility/os-interface.hpp>
+#include <emergent/utility/parameter-dict.hpp>
 #include <emergent/utility/performance-sampler.hpp>
 #include <emergent/utility/step-scheduler.hpp>
 #include <emergent/utility/timer.hpp>
