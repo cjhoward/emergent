@@ -102,6 +102,7 @@
  *
  * Essential math functions and structures
  */
+#include <emergent/math/angles.hpp>
 #include <emergent/math/easings.hpp>
 #include <emergent/math/constants.hpp>
 #include <emergent/math/glm.hpp>
