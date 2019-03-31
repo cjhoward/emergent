@@ -82,6 +82,34 @@ bool contained(const vector<T, N>& p, const triangle<T, N>& t);
 template <class T, std::size_t N>
 std::tuple<vector<T, N>, std::optional<std::size_t>, std::optional<std::size_t>> project(const vector<T, N>& p, const triangle<T, N>& t);
 
+template <class T, std::size_t N>
+vector<T, N> barycentric(const vector<T, N>& p, const triangle<T, N>& t)
+{
+	vector<T, N> v0 = t[1] - t[0];
+	vector<T, N> v1 = t[2] - t[0];
+	vector<T, N> v2 = p - t[0];
+
+	T d00 = dot(v0, v0);
+	T d01 = dot(v0, v1);
+	T d11 = dot(v1, v1);
+	T d20 = dot(v2, v0);
+	T d21 = dot(v2, v1);
+	T denom = d00 * d11 - d01 * d01;
+
+	vector<T, N> result;
+	result[1] = (d11 * d20 - d01 * d21) / denom;
+	result[2] = (d00 * d21 - d01 * d20) / denom;
+	result[0] = 1.0f - result.y - result.z;
+
+	return result;
+}
+
+template <class T, std::size_t N>
+vector<T, N> cartesian(const vector<T, N>& p, const triangle<T, N>& t)
+{
+	return t[0] * p[0] + t[1] * p[1] + t[2] * p[2];
+}
+
 } // namespace Emergent
 
 #endif // EMERGENT_MATH_TRIGONOMETRY_HPP
