@@ -98,11 +98,11 @@ vector<T, 4> div(const vector<T, 4>& v, T s);
  */
 ///@{
 template <class T>
-vector<T, 2> dot(const vector<T, 2>& x, const vector<T, 2>& y);
+T dot(const vector<T, 2>& x, const vector<T, 2>& y);
 template <class T>
-vector<T, 3> dot(const vector<T, 3>& x, const vector<T, 3>& y);
+T dot(const vector<T, 3>& x, const vector<T, 3>& y);
 template <class T>
-vector<T, 4> dot(const vector<T, 4>& x, const vector<T, 4>& y);
+T dot(const vector<T, 4>& x, const vector<T, 4>& y);
 ///@}
 
 /**
@@ -305,19 +305,19 @@ inline vector<T, 4> div(const vector<T, 4>& v, T s)
 }
 
 template <class T>
-inline vector<T, 2> dot(const vector<T, 2>& x, const vector<T, 2>& y)
+inline T dot(const vector<T, 2>& x, const vector<T, 2>& y)
 {
 	return x[0] * y[0] + x[1] * y[1];
 }
 
 template <class T>
-inline vector<T, 3> dot(const vector<T, 3>& x, const vector<T, 3>& y)
+inline T dot(const vector<T, 3>& x, const vector<T, 3>& y)
 {
 	return x[0] * y[0] + x[1] * y[1] + x[2] * y[2];
 }
 
 template <class T>
-inline vector<T, 4> dot(const vector<T, 4>& x, const vector<T, 4>& y)
+inline T dot(const vector<T, 4>& x, const vector<T, 4>& y)
 {
 	return x[0] * y[0] + x[1] * y[1] + x[2] * y[2] + x[3] * y[3];
 }

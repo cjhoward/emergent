@@ -22,6 +22,8 @@
 
 #include <emergent/math/triangle-types.hpp>
 #include <emergent/math/vector-types.hpp>
+#include <emergent/math/vector-math.hpp>
+#include <numeric>
 #include <optional>
 #include <tuple>
 
@@ -34,8 +36,8 @@ namespace Emergent
  * @param p Cartesian point for which to calculate the barycentric coordinates.
  * @param t Triangle to which the barycentric coordinates are in respect.
  */
-template <class T, std::size_t N>
-vector<T, N> barycentric(const vector<T, N>& p, const triangle<T, N>& t);
+template <class T>
+vector<T, 3> barycentric(const vector<T, 3>& p, const triangle<T, 3>& t);
 
 /**
  * Calculates the cartesian coordinates for barycentric point p with respect to triangle t.
@@ -43,8 +45,8 @@ vector<T, N> barycentric(const vector<T, N>& p, const triangle<T, N>& t);
  * @param p Barycentric point for which to calculate the cartesian coordinates.
  * @param t Triangle to which the barycentric coordinates are in respect.
  */
-template <class T, std::size_t N>
-vector<T, N> cartesian(const vector<T, N>& p, const triangle<T, N>& t);
+template <class T>
+vector<T, 3> cartesian(const vector<T, 3>& p, const triangle<T, 3>& t);
 
 /**
  * Calculates the normalized barycentric coordinates of a point so that u + v + w = 1.
@@ -59,8 +61,8 @@ vector<T, N> normalizeBarycentric(const vector<T, N>& p);
  *
  * @param t Triangle for which to calculate the signed area.
  */
-template <class T, std::size_t N>
-T signedArea(const triangle<T, N>& t);
+template <class T>
+T signedArea(const triangle<T, 3>& t);
 
 /**
  * Returns true if point p is contained within triangle t.
@@ -68,8 +70,8 @@ T signedArea(const triangle<T, N>& t);
  * @param p Point to check for containment.
  * @param t Triangle in which to check for containment.
  */
-template <class T, std::size_t N>
-bool contained(const vector<T, N>& p, const triangle<T, N>& t);
+template <class T>
+bool contained(const vector<T, 3>& p, const triangle<T, 3>& t);
 
 /**
  * Projects a point onto a triangle and returns the closest projected point, as well as the edge index and vertex index, if any.
@@ -82,12 +84,12 @@ bool contained(const vector<T, N>& p, const triangle<T, N>& t);
 template <class T, std::size_t N>
 std::tuple<vector<T, N>, std::optional<std::size_t>, std::optional<std::size_t>> project(const vector<T, N>& p, const triangle<T, N>& t);
 
-template <class T, std::size_t N>
-vector<T, N> barycentric(const vector<T, N>& p, const triangle<T, N>& t)
+template <class T>
+vector<T, 3> barycentric(const vector<T, 3>& p, const triangle<T, 3>& t)
 {
-	vector<T, N> v0 = t[1] - t[0];
-	vector<T, N> v1 = t[2] - t[0];
-	vector<T, N> v2 = p - t[0];
+	vector<T, 3> v0 = t[1] - t[0];
+	vector<T, 3> v1 = t[2] - t[0];
+	vector<T, 3> v2 = p - t[0];
 
 	T d00 = dot(v0, v0);
 	T d01 = dot(v0, v1);
@@ -96,18 +98,42 @@ vector<T, N> barycentric(const vector<T, N>& p, const triangle<T, N>& t)
 	T d21 = dot(v2, v1);
 	T denom = d00 * d11 - d01 * d01;
 
-	vector<T, N> result;
+	vector<T, 3> result;
 	result[1] = (d11 * d20 - d01 * d21) / denom;
 	result[2] = (d00 * d21 - d01 * d20) / denom;
-	result[0] = 1.0f - result.y - result.z;
+	result[0] = 1.0f - result[1] - result[2];
 
 	return result;
 }
 
-template <class T, std::size_t N>
-vector<T, N> cartesian(const vector<T, N>& p, const triangle<T, N>& t)
+template <class T>
+vector<T, 3> cartesian(const vector<T, 3>& p, const triangle<T, 3>& t)
 {
 	return t[0] * p[0] + t[1] * p[1] + t[2] * p[2];
+}
+
+template <class T, std::size_t N>
+vector<T, N> normalizeBarycentric(const vector<T, N>& p)
+{
+	return p * (T(1) / std::accumulate(p.begin(), p.end(), T(0)));
+}
+
+template <class T>
+T signedArea(const triangle<T, 3>& t)
+{
+	return T(0.5) * (-t[1][1] * t[2][0] + t[0][1] *(-t[1][0] + t[2][0]) + t[0][0] * (t[1][1] - t[2][1]) + t[1][0] * t[2][1]);
+}
+
+
+template <class T>
+bool contained(const vector<T, 3>& p, const triangle<T, 3>& t)
+{
+	auto sameSide = [](const vector<T, 3>& p1, const vector<T, 3>& p2, const vector<T, 3>& a, const vector<T, 3>& b) -> bool
+	{
+		return (dot(cross(b - a, p1 - a), cross(b - a, p2 - a)) >= T(0));
+	};
+	
+	return (sameSide(p, t[0], t[1], t[2]) && sameSide(p, t[1], t[0], t[2]) && sameSide(p, t[2], t[0], t[1]));
 }
 
 } // namespace Emergent
