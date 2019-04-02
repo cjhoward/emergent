@@ -20,18 +20,19 @@
 #ifndef EMERGENT_MATH_QUATERNION_TYPE_HPP
 #define EMERGENT_MATH_QUATERNION_TYPE_HPP
 
-#include <array>
+#include <emergent/math/vector-type.hpp>
+#include <tuple>
 
 namespace Emergent
 {
 
 /**
- * A quaternion type.
+ * A quaternion type is a tuple made of a scalar (real) part and vector (imaginary) part.
  *
- * @tparam T Quaternion component type.
+ * @tparam T Scalar type.
  */
 template <class T>
-using quaternion = std::array<T, 4>;
+using quaternion = std::tuple<T, vector<T, 3>>;
 
 } // namespace Emergent
 

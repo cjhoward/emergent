@@ -105,12 +105,15 @@
 #include <emergent/math/angles.hpp>
 #include <emergent/math/easings.hpp>
 #include <emergent/math/constants.hpp>
+#include <emergent/math/fundamental-vector-types.hpp>
+#include <emergent/math/fundamental-matrix-types.hpp>
 #include <emergent/math/glm.hpp>
 #include <emergent/math/hash.hpp>
 #include <emergent/math/interpolation.hpp>
 #include <emergent/math/math.hpp>
-#include <emergent/math/matrix-math.hpp>
-#include <emergent/math/matrix-types.hpp>
+#include <emergent/math/matrix-operations.hpp>
+#include <emergent/math/matrix-type.hpp>
+#include <emergent/math/quaternion-operations.hpp>
 #include <emergent/math/quaternion-type.hpp>
 #include <emergent/math/swizzle.hpp>
 #include <emergent/math/transform.hpp>
@@ -118,8 +121,8 @@
 #include <emergent/math/triangle-types.hpp>
 #include <emergent/math/trigonometry.hpp>
 #include <emergent/math/types.hpp>
-#include <emergent/math/vector-math.hpp>
-#include <emergent/math/vector-types.hpp>
+#include <emergent/math/vector-operations.hpp>
+#include <emergent/math/vector-type.hpp>
 
 /**
  * @defgroup utility Utility

@@ -20,16 +20,11 @@
 #ifndef EMERGENT_MATH_CONSTANTS_HPP
 #define EMERGENT_MATH_CONSTANTS_HPP
 
-#include <emergent/math/matrix-types.hpp>
+#include <emergent/math/matrix-type.hpp>
+#include <emergent/math/quaternion-type.hpp>
 
 namespace Emergent
 {
-
-/**
- * 1x1 identity matrix.
- */
-template <class T>
-constexpr matrix<T, 1, 1> identity1x1 = {{{1}}};
 
 /**
  * 2x2 identity matrix.
@@ -65,22 +60,28 @@ constexpr matrix<T, 4, 4> identity4x4 =
 }};
 
 /**
- * Pi
+ * Pi.
  */
 template <class T>
 constexpr T pi = T(3.1415926535897932385L);
 
 /**
- * Pi * 2
+ * Pi * 2.
  */
 template <class T>
-constexpr T twoPi = pi<T> * T(2);
+constexpr T two_pi = pi<T> * T(2);
 
 /**
- * Pi / 2
+ * Pi / 2.
  */
-template <typename T>
-constexpr T halfPi = pi<T> * (0.5);
+template <class T>
+constexpr T half_pi = pi<T> * (0.5);
+
+/**
+ * Unit quaternion.
+ */
+template <class T>
+constexpr quaternion<T> identity_quaternion = {1, {0, 0, 0}};
 
 } // namespace Emergent
 

@@ -21,8 +21,8 @@
 #define EMERGENT_MATH_TRIGONOMETRY_HPP
 
 #include <emergent/math/triangle-types.hpp>
-#include <emergent/math/vector-types.hpp>
-#include <emergent/math/vector-math.hpp>
+#include <emergent/math/vector-type.hpp>
+#include <emergent/math/vector-operations.hpp>
 #include <numeric>
 #include <optional>
 #include <tuple>
