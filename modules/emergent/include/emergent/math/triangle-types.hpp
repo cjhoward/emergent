@@ -20,7 +20,7 @@
 #ifndef EMERGENT_MATH_TRIANGLE_TYPES_HPP
 #define EMERGENT_MATH_TRIANGLE_TYPES_HPP
 
-#include <emergent/math/vector-types.hpp>
+#include <emergent/math/vector-type.hpp>
 
 namespace Emergent
 {

@@ -21,7 +21,7 @@
 #define EMERGENT_MATH_TRANSFORM_TYPES_HPP
 
 #include <emergent/math/quaternion-type.hpp>
-#include <emergent/math/vector-types.hpp>
+#include <emergent/math/vector-type.hpp>
 
 namespace Emergent
 {

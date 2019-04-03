@@ -20,6 +20,7 @@
 #ifndef EMERGENT_WINDOW_DISPLAY_HPP
 #define EMERGENT_WINDOW_DISPLAY_HPP
 
+#include <string>
 #include <tuple>
 #include <vector>
 
