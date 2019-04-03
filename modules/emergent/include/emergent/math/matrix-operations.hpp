@@ -63,11 +63,11 @@ matrix<T, 4, 4> inverse(const matrix<T, 4, 4>& m);
  */
 ///@{
 template <class T>
-matrix<T, 2, 2> matrix_comp_mult(const matrix<T, 2, 2>& x, const matrix<T, 2, 2>& y);
+matrix<T, 2, 2> componentwise_mul(const matrix<T, 2, 2>& x, const matrix<T, 2, 2>& y);
 template <class T>
-matrix<T, 3, 3> matrix_comp_mult(const matrix<T, 3, 3>& x, const matrix<T, 3, 3>& y);
+matrix<T, 3, 3> componentwise_mul(const matrix<T, 3, 3>& x, const matrix<T, 3, 3>& y);
 template <class T>
-matrix<T, 4, 4> matrix_comp_mult(const matrix<T, 4, 4>& x, const matrix<T, 4, 4>& y);
+matrix<T, 4, 4> componentwise_mul(const matrix<T, 4, 4>& x, const matrix<T, 4, 4>& y);
 ///@}
 
 /**
@@ -231,7 +231,7 @@ matrix<T, 4, 4> inverse(const matrix<T, 4, 4>& m)
 }
 
 template <class T>
-matrix<T, 2, 2> matrix_comp_mult(const matrix<T, 2, 2>& x, const matrix<T, 2, 2>& y)
+matrix<T, 2, 2> componentwise_mul(const matrix<T, 2, 2>& x, const matrix<T, 2, 2>& y)
 {
 	return
 		{{
@@ -241,7 +241,7 @@ matrix<T, 2, 2> matrix_comp_mult(const matrix<T, 2, 2>& x, const matrix<T, 2, 2>
 }
 
 template <class T>
-matrix<T, 3, 3> matrix_comp_mult(const matrix<T, 3, 3>& x, const matrix<T, 3, 3>& y)
+matrix<T, 3, 3> componentwise_mul(const matrix<T, 3, 3>& x, const matrix<T, 3, 3>& y)
 {
 	return
 		{{
@@ -252,7 +252,7 @@ matrix<T, 3, 3> matrix_comp_mult(const matrix<T, 3, 3>& x, const matrix<T, 3, 3>
 }
 
 template <class T>
-matrix<T, 4, 4> matrix_comp_mult(const matrix<T, 4, 4>& x, const matrix<T, 4, 4>& y)
+matrix<T, 4, 4> componentwise_mul(const matrix<T, 4, 4>& x, const matrix<T, 4, 4>& y)
 {
 	return
 		{{

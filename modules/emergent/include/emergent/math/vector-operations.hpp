@@ -22,6 +22,7 @@
 
 #include <emergent/math/vector-type.hpp>
 #include <cmath>
+#include <ostream>
 #include <type_traits>
 
 namespace Emergent
@@ -244,6 +245,15 @@ vector<T, N> operator/(const vector<T, N>& x, const vector<T, N>& y);
 template <class T, std::size_t N>
 vector<T, N> operator/(const vector<T, N>& v, T s);
 
+/**
+ * Writes the elements of a vector to an output stream, with each element delimeted by a space.
+ *
+ * @param os Output stream.
+ * @param v Vector.
+ */
+template <class T, std::size_t N>
+std::ostream& operator<<(std::ostream& os, const vector<T, N>& v);
+
 template <class T>
 inline vector<T, 2> add(const vector<T, 2>& x, const vector<T, 2>& y)
 {
@@ -462,6 +472,22 @@ template <class T, std::size_t N>
 inline vector<T, N> operator*(const vector<T, N>& v, T s)
 {
 	return mul(v, s);
+}
+
+template <class T, std::size_t N>
+std::ostream& operator<<(std::ostream& os, const vector<T, N>& v)
+{
+	for (std::size_t i = 0; i < N; ++i)
+	{
+		os << v[i];
+
+		if (i < N - 1)
+		{
+			os << ' ';
+		}
+	}
+
+	return os;
 }
 
 } // namespace Emergent

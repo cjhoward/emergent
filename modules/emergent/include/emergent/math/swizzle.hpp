@@ -26,54 +26,20 @@ namespace Emergent
 {
 
 /**
- * Rearranges the elements of an n-dimensional vector to make a 2-dimensional vector.
+ * Makes an m-dimensional vector by rearranging and/or duplicating elements of an n-dimensional vector.
  *
- * @tparam index0 Index of an element in vector v which will be the first element in the swizzled vector.
- * @tparam index1 Index of an element in vector v which will be the second element in the swizzled vector.
+ * @tparam Indices List of indices of elements in the vector `v`.
+ * @tparam T Vector component type.
+ * @tparam N Number of dimensions in vector `v`.
+ * @return Vector containing elements from vector `v` in the order specified by `Indices`. The size of the returned vector is equivalent to the number of indices in `Indices`.
  */
-template <std::size_t index0, std::size_t index1, class T, std::size_t N>
-vector<T, 2> swizzle(const vector<T, N>& v);
+template <std::size_t... Indices, class T, std::size_t N>
+vector<T, sizeof...(Indices)> swizzle(const vector<T, N>& v);
 
-/**
- * Rearranges the elements of an n-dimensional vector to make a 3-dimensional vector.
- *
- * @tparam index0 Index of an element in vector v which will be the first element in the swizzled vector.
- * @tparam index1 Index of an element in vector v which will be the second element in the swizzled vector.
- * @tparam index2 Index of an element in vector v which will be the third element in the swizzled vector.
- */
-template <std::size_t index0, std::size_t index1, std::size_t index2, class T, std::size_t N>
-vector<T, 3> swizzle(const vector<T, N>& v);
-
-/**
- * Rearranges the elements of an n-dimensional vector to make a 4-dimensional vector.
- *
- * @tparam index0 Index of an element in vector v which will be the first element in the swizzled vector.
- * @tparam index1 Index of an element in vector v which will be the second element in the swizzled vector.
- * @tparam index2 Index of an element in vector v which will be the third element in the swizzled vector.
- * @tparam index3 Index of an element in vector v which will be the fourth element in the swizzled vector.
- */
-template <std::size_t index0, std::size_t index1, std::size_t index2, std::size_t index3, class T, std::size_t N>
-vector<T, 4> swizzle(const vector<T, N>& v);
-
-template <std::size_t index0, std::size_t index1, class T, std::size_t N>
-inline vector<T, 2> swizzle(const vector<T, N>& v)
+template <std::size_t... Indices, class T, std::size_t N>
+inline vector<T, sizeof...(Indices)> swizzle(const vector<T, N>& v)
 {
-	static_assert(index0 < v.size() && index1 < v.size());
-	return { v[index0], v[index1] };
-}
-
-template <std::size_t index0, std::size_t index1, std::size_t index2, class T, std::size_t N>
-inline vector<T, 3> swizzle(const vector<T, N>& v)
-{
-	static_assert(index0 < v.size() && index1 < v.size() && index2 < v.size());
-	return { v[index0], v[index1], v[index2] };
-}
-
-template <std::size_t index0, std::size_t index1, std::size_t index2, std::size_t index3, class T, std::size_t N>
-inline vector<T, 4> swizzle(const vector<T, N>& v)
-{
-	static_assert(index0 < v.size() && index1 < v.size() && index2 < v.size() && index3 < v.size());
-	return { v[index0], v[index1], v[index2], v[index3] };
+	return { v[Indices]... };
 }
 
 } // namespace Emergent
