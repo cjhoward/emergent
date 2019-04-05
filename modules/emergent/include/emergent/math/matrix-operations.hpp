@@ -21,6 +21,7 @@
 #define EMERGENT_MATH_MATRIX_OPERATIONS_HPP
 
 #include <emergent/math/matrix-type.hpp>
+#include <emergent/math/vector-operations.hpp>
 #include <emergent/math/vector-type.hpp>
 #include <type_traits>
 
@@ -71,6 +72,41 @@ matrix<T, 4, 4> componentwise_mul(const matrix<T, 4, 4>& x, const matrix<T, 4, 4
 ///@}
 
 /**
+ * Multiplies two matrices.
+ *
+ * @param x First matrix.
+ * @param y Second matrix.
+ * @return Product of the two matrices.
+ */
+///@{
+template <class T>
+matrix<T, 2, 2> mul(const matrix<T, 2, 2>& x, const matrix<T, 2, 2>& y);
+template <class T>
+matrix<T, 3, 3> mul(const matrix<T, 3, 3>& x, const matrix<T, 3, 3>& y);
+template <class T>
+matrix<T, 4, 4> mul(const matrix<T, 4, 4>& x, const matrix<T, 4, 4>& y);
+template <class T, std::size_t N, std::size_t M>
+matrix<T, N, M> operator*(const matrix<T, N, M>& x, const matrix<T, N, M>& y);
+///@}
+
+/**
+ * Multiplies a matrix by a scalar.
+ *
+ * @param m Matrix.
+ * @param s Scalar.
+ * @return Product of the matrix and the scalar..
+ */
+///@{
+template <class T, std::size_t N, std::size_t M>
+matrix<T, N, M> mul(const matrix<T, N, M>& m, T s);
+template <class T, std::size_t N, std::size_t M>
+matrix<T, N, M> operator*(const matrix<T, N, M>& m, T s);
+template <class T, std::size_t N, std::size_t M>
+matrix<T, N, M> operator*(T s, const matrix<T, N, M>& m);
+///@}
+
+
+/**
  * Calculates the outer product of a pair of vectors.
  *
  * @param c Parameter to be treated as a column vector.
@@ -83,22 +119,6 @@ template <class T>
 matrix<T, 3, 3> outer_product(const vector<T, 3>& c, const vector<T, 3>& r);
 template <class T>
 matrix<T, 4, 4> outer_product(const vector<T, 4>& c, const vector<T, 4> r);
-///@}
-
-/**
- * Transforms a vector by a matrix.
- *
- * @param m Matrix.
- * @param v Vector.
- * @return Transformed vector.
- */
-///@{
-template <class T>
-vector<T, 2> transform(const matrix<T, 2, 2>& m, const vector<T, 2>& v);
-template <class T>
-vector<T, 3> transform(const matrix<T, 3, 3>& m, const vector<T, 3>& v);
-template <class T>
-vector<T, 4> transform(const matrix<T, 4, 4>& m, const vector<T, 4>& v);
 ///@}
 
 /**
@@ -264,6 +284,70 @@ matrix<T, 4, 4> componentwise_mul(const matrix<T, 4, 4>& x, const matrix<T, 4, 4
 }
 
 template <class T>
+matrix<T, 2, 2> mul(const matrix<T, 2, 2>& x, const matrix<T, 2, 2>& y)
+{
+	return
+		{{
+			x[0] * y[0][0] + x[1] * y[0][1],
+			x[0] * y[1][0] + x[1] * y[1][1]
+		}};
+}
+
+template <class T>
+matrix<T, 3, 3> mul(const matrix<T, 3, 3>& x, const matrix<T, 3, 3>& y)
+{
+	return
+		{{
+			x[0] * y[0][0] + x[1] * y[0][1] + x[2] * y[0][2],
+			x[0] * y[1][0] + x[1] * y[1][1] + x[2] * y[1][2],
+			x[0] * y[2][0] + x[1] * y[2][1] + x[2] * y[2][2]
+		}};
+}
+
+template <class T>
+matrix<T, 4, 4> mul(const matrix<T, 4, 4>& x, const matrix<T, 4, 4>& y)
+{
+	return
+		{{
+			x[0] * y[0][0] + x[1] * y[0][1] + x[2] * y[0][2] + x[3] * y[0][3],
+			x[0] * y[1][0] + x[1] * y[1][1] + x[2] * y[1][2] + x[3] * y[1][3],
+			x[0] * y[2][0] + x[1] * y[2][1] + x[2] * y[2][2] + x[3] * y[2][3],
+			x[0] * y[3][0] + x[1] * y[3][1] + x[2] * y[3][2] + x[3] * y[3][3]
+		}};
+}
+
+template <class T, std::size_t N, std::size_t M>
+inline matrix<T, N, M> operator*(const matrix<T, N, M>& x, const matrix<T, N, M>& y)
+{
+	return mul(x, y);
+}
+
+/// @internal
+template <class T, std::size_t N, std::size_t M, std::size_t... I>
+inline matrix<T, N, M> mul(const matrix<T, N, M>& m, T s, std::index_sequence<I...>)
+{
+	return {{(m[I] * s)...}};
+}
+
+template <class T, std::size_t N, std::size_t M>
+inline matrix<T, N, M> mul(const matrix<T, N, M>& m, T s)
+{
+	return mul(m, s, std::make_index_sequence<N>{});
+}
+
+template <class T, std::size_t N, std::size_t M>
+inline matrix<T, N, M> operator*(const matrix<T, N, M>& m, T s)
+{
+	return mul(m, s);
+}
+
+template <class T, std::size_t N, std::size_t M>
+inline matrix<T, N, M> operator*(T s, const matrix<T, N, M>& m)
+{
+	return mul(m, s);
+}
+
+template <class T>
 matrix<T, 2, 2> outer_product(const vector<T, 2>& c, const vector<T, 2>& r)
 {
 	return
@@ -293,39 +377,6 @@ matrix<T, 4, 4> outer_product(const vector<T, 4>& c, const vector<T, 4> r)
 			 {c[0] * r[1], c[1] * r[1], c[2] * r[1], c[3] * r[1]},
 			 {c[0] * r[2], c[1] * r[2], c[2] * r[2], c[3] * r[2]},
 			 {c[0] * r[3], c[1] * r[3], c[2] * r[3], c[3] * r[3]}
-		}};
-}
-
-template <class T>
-vector<T, 2> transform(const matrix<T, 2, 2>& m, const vector<T, 2>& v)
-{
-	return
-		{{
-			{m[0][0] * v[0] + m[1][0] * v[1]},
-			{m[0][1] * v[0] + m[1][1] * v[1]}
-		}};
-}
-
-template <class T>
-vector<T, 3> transform(const matrix<T, 3, 3>& m, const vector<T, 3>& v)
-{
-	return
-		{{
-			{m[0][0] * v[0] + m[1][0] * v[1] + m[2][0] * v[2]},
-			{m[0][1] * v[0] + m[1][1] * v[1] + m[2][1] * v[2]},
-			{m[0][2] * v[0] + m[1][2] * v[1] + m[2][2] * v[2]}
-		}};
-}
-
-template <class T>
-vector<T, 4> transform(const matrix<T, 4, 4>& m, const vector<T, 4>& v)
-{
-	return
-		{{
-			{m[0][0] * v[0] + m[1][0] * v[1] + m[2][0] * v[2] + m[3][0] * v[3]},
-			{m[0][1] * v[0] + m[1][1] * v[1] + m[2][1] * v[2] + m[3][1] * v[3]},
-			{m[0][2] * v[0] + m[1][2] * v[1] + m[2][2] * v[2] + m[3][2] * v[3]},
-			{m[0][3] * v[0] + m[1][3] * v[1] + m[2][3] * v[2] + m[3][3] * v[3]}
 		}};
 }
 

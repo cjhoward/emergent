@@ -113,8 +113,10 @@
 #include <emergent/math/math.hpp>
 #include <emergent/math/matrix-operations.hpp>
 #include <emergent/math/matrix-type.hpp>
+#include <emergent/math/matrix-vector-operations.hpp>
 #include <emergent/math/quaternion-operations.hpp>
 #include <emergent/math/quaternion-type.hpp>
+#include <emergent/math/quaternion-vector-operations.hpp>
 #include <emergent/math/swizzle.hpp>
 #include <emergent/math/transform.hpp>
 #include <emergent/math/transform-types.hpp>

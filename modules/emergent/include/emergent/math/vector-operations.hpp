@@ -37,8 +37,12 @@ namespace Emergent
  * @param y Second vector.
  * @return Sum of the two vectors.
  */
+///@{
 template <class T, std::size_t N>
 vector<T, N> add(const vector<T, N>& x, const vector<T, N>& y);
+template <class T, std::size_t N>
+vector<T, N> operator+(const vector<T, N>& x, const vector<T, N>& y);
+///@}
 
 /**
  * Checks if all elements of a boolean vector are `true`.
@@ -116,8 +120,12 @@ vector<T, N> distance_squared(const vector<T, N>& p0, const vector<T, N>& p1);
  * @param y Second vector.
  * @return Result of the division.
  */
+///@{
 template <class T, std::size_t N>
 vector<T, N> div(const vector<T, N>& x, const vector<T, N>& y);
+template <class T, std::size_t N>
+vector<T, N> operator/(const vector<T, N>& x, const vector<T, N>& y);
+///@}
 
 /**
  * Divides a vector by a scalar.
@@ -126,8 +134,12 @@ vector<T, N> div(const vector<T, N>& x, const vector<T, N>& y);
  * @param s Scalar.
  * @return Result of the division.
  */
+///@{
 template <class T, std::size_t N>
 vector<T, N> div(const vector<T, N>& v, T s);
+template <class T, std::size_t N>
+vector<T, N> operator/(const vector<T, N>& v, T s);
+///@}
 
 /**
  * Calculates the dot product of two vectors.
@@ -214,8 +226,12 @@ vector<bool, N> less_than_equal(const vector<T, N>& x, const vector<T, N>& y);
  * @param y Second vector.
  * @return Product of the two vectors.
  */
+///@{
 template <class T, std::size_t N>
 vector<T, N> mul(const vector<T, N>& x, const vector<T, N>& y);
+template <class T, std::size_t N>
+vector<T, N> operator*(const vector<T, N>& x, const vector<T, N>& y);
+///@}
 
 /**
  * Multiplies a vector by a scalar.
@@ -224,8 +240,14 @@ vector<T, N> mul(const vector<T, N>& x, const vector<T, N>& y);
  * @param s Scalar.
  * @return Product of the vector and scalar.
  */
+///@{
 template <class T, std::size_t N>
 vector<T, N> mul(const vector<T, N>& v, T s);
+template <class T, std::size_t N>
+vector<T, N> operator*(const vector<T, N>& v, T s);
+template <class T, std::size_t N>
+vector<T, N> operator*(T s, const vector<T, N>& v);
+///@}
 
 /**
  * Negates a vector.
@@ -233,8 +255,12 @@ vector<T, N> mul(const vector<T, N>& v, T s);
  * @param x Vector to negate.
  * @return Negated vector.
  */
+///@{
 template <class T, std::size_t N>
-vector<T, N> negate(const vector<T, N>& x, const vector<T, N>& y);
+vector<T, N> negate(const vector<T, N>& x);
+template <class T, std::size_t N>
+vector<T, N> operator-(const vector<T, N>& x);
+///@}
 
 /**
  * Calculates the unit vector in the same direction as the original vector.
@@ -269,42 +295,14 @@ vector<bool, N> not_equal(const vector<T, N>& x, const vector<T, N>& y);
  *
  * @param x First vector.
  * @param y Second vector.
- * @return Result of the subtraction.
+ * @return Difference between the two vectors.
  */
+///@{
 template <class T, std::size_t N>
 vector<T, N> sub(const vector<T, N>& x, const vector<T, N>& y);
-
-/// @copydoc add(const vector<T, N>&, const vector<T, N>&)
-template <class T, std::size_t N>
-vector<T, N> operator+(const vector<T, N>& x, const vector<T, N>& y);
-
-/// @copydoc negate(const vector<T, N>&)
-template <class T, std::size_t N>
-vector<T, N> operator-(const vector<T, N>& x);
-
-/// @copydoc sub(const vector<T, N>&, const vector<T, N>&)
 template <class T, std::size_t N>
 vector<T, N> operator-(const vector<T, N>& x, const vector<T, N>& y);
-
-/// @copydoc mul(const vector<T, N>&, const vector<T, N>&)
-template <class T, std::size_t N>
-vector<T, N> operator*(const vector<T, N>& x, const vector<T, N>& y);
-
-/// @copydoc mul(const vector<T, N>&, T)
-template <class T, std::size_t N>
-vector<T, N> operator*(const vector<T, N>& v, T s);
-
-/// @copydoc mul(const vector<T, N>&, T)
-template <class T, std::size_t N>
-vector<T, N> operator*(T s, const vector<T, N>& v);
-
-/// @copydoc div(const vector<T, N>&, const vector<T, N>&)
-template <class T, std::size_t N>
-vector<T, N> operator/(const vector<T, N>& x, const vector<T, N>& y);
-
-/// @copydoc div(const vector<T, N>&, T)
-template <class T, std::size_t N>
-vector<T, N> operator/(const vector<T, N>& v, T s);
+///@}
 
 /**
  * Adds two vectors and stores the result in the first vector.
@@ -618,7 +616,7 @@ inline vector<T, N> negate(const vector<T, N>& x, std::index_sequence<I...>)
 }
 
 template <class T, std::size_t N>
-inline vector<T, N> negate(const vector<T, N>& x, const vector<T, N>& y)
+inline vector<T, N> negate(const vector<T, N>& x)
 {
 	return negate(x, std::make_index_sequence<N>{});
 }
