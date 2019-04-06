@@ -87,6 +87,15 @@ template <class T>
 quaternion<T> look_rotation(const vector<T, 3>& forward, const vector<T, 3>& up);
 
 /**
+ * Converts a quaternion to a rotation matrix.
+ *
+ * @param q Unit quaternion.
+ * @return Matrix representing the rotation described by `q`.
+ */
+template <class T>
+matrix<T, 3, 3> matrix_cast(const quaternion<T>& q);
+
+/**
  * Multiplies two quaternions.
  *
  * @param x First quaternion.
@@ -142,7 +151,7 @@ quaternion<T> operator-(const quaternion<T>& x, const quaternion<T>& y);
  * @return Unit quaternion representing the rotation described by `m`.
  */
 template <class T>
-quaternion<T> to_quaternion(const matrix<T, 3, 3>& m);
+quaternion<T> quaternion_cast(const matrix<T, 3, 3>& m);
 
 template <class T>
 inline quaternion<T> add(const quaternion<T>& x, const quaternion<T>& y)
@@ -196,7 +205,28 @@ quaternion<T> look_rotation(const vector<T, 3>& forward, const vector<T, 3>& up)
 	m[2] = forward;                       // Forward
 
 	// Convert to quaternion
-	return to_quaternion(m);
+	return normalize(quaternion_cast(m));
+}
+
+template <class T>
+matrix<T, 3, 3> matrix_cast(const quaternion<T>& q)
+{
+	T wx = std::get<0>(q) * std::get<1>(q)[0];
+	T wy = std::get<0>(q) * std::get<1>(q)[1];
+	T wz = std::get<0>(q) * std::get<1>(q)[2];
+	T xx = std::get<1>(q)[0] * std::get<1>(q)[0];
+	T xy = std::get<1>(q)[0] * std::get<1>(q)[1];
+	T xz = std::get<1>(q)[0] * std::get<1>(q)[2];
+	T yy = std::get<1>(q)[1] * std::get<1>(q)[1];
+	T yz = std::get<1>(q)[1] * std::get<1>(q)[2];
+	T zz = std::get<1>(q)[2] * std::get<1>(q)[2];
+
+	return
+		{{
+			{T(1) - (yy + zz) * T(2), (xy + wz) * T(2), (xz - wy) * T(2)},
+			{(xy - wz) * T(2), T(1) - (xx + zz) * T(2), (yz + wx) * T(2)},
+			{(xz + wy) * T(2), (yz - wx) * T(2), T(1) - (xx + yy) * T(2)}
+		}};
 }
 
 template <class T>
@@ -250,7 +280,7 @@ inline quaternion<T> operator-(const quaternion<T>& x, const quaternion<T>& y)
 }
 
 template <class T>
-quaternion<T> to_quaternion(const matrix<T, 3, 3>& m)
+quaternion<T> quaternion_cast(const matrix<T, 3, 3>& m)
 {
 	T r;
 	vector<T, 3> i;
