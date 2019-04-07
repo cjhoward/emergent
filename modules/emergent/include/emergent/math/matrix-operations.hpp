@@ -29,6 +29,24 @@ namespace Emergent
 {
 
 /**
+ * Adds two matrices.
+ *
+ * @param x First matrix.
+ * @param y Second matrix.
+ * @return Sum of the two matrices.
+ */
+///@{
+template <class T>
+matrix<T, 2, 2> add(const matrix<T, 2, 2>& x, const matrix<T, 2, 2>& y);
+template <class T>
+matrix<T, 3, 3> add(const matrix<T, 3, 3>& x, const matrix<T, 3, 3>& y);
+template <class T>
+matrix<T, 4, 4> add(const matrix<T, 4, 4>& x, const matrix<T, 4, 4>& y);
+template <class T, std::size_t N, std::size_t M>
+matrix<T, N, M> operator+(const matrix<T, N, M>& x, const matrix<T, N, M>& y);
+///@}
+
+/**
  * Calculates the determinant of a matrix.
  *
  * @param m Matrix of which to take the determinant. 
@@ -122,6 +140,24 @@ matrix<T, 4, 4> outer_product(const vector<T, 4>& c, const vector<T, 4> r);
 ///@}
 
 /**
+ * Subtracts a matrix from another matrix.
+ *
+ * @param x First matrix.
+ * @param y Second matrix.
+ * @return Difference between the two matrices.
+ */
+///@{
+template <class T>
+matrix<T, 2, 2> sub(const matrix<T, 2, 2>& x, const matrix<T, 2, 2>& y);
+template <class T>
+matrix<T, 3, 3> sub(const matrix<T, 3, 3>& x, const matrix<T, 3, 3>& y);
+template <class T>
+matrix<T, 4, 4> sub(const matrix<T, 4, 4>& x, const matrix<T, 4, 4>& y);
+template <class T, std::size_t N, std::size_t M>
+matrix<T, N, M> operator-(const matrix<T, N, M>& x, const matrix<T, N, M>& y);
+///@}
+
+/**
  * Calculates the transpose of a matrix.
  *
  * @param m Matrix of which to take the transpose.
@@ -134,6 +170,45 @@ matrix<T, 3, 3> transpose(const matrix<T, 3, 3>& m);
 template <class T>
 matrix<T, 4, 4> transpose(const matrix<T, 4, 4>& m);
 ///@}
+
+template <class T>
+matrix<T, 2, 2> add(const matrix<T, 2, 2>& x, const matrix<T, 2, 2>& y)
+{
+	return
+		{{
+			x[0] + y[0],
+			x[1] + y[1]
+		}};
+}
+
+template <class T>
+matrix<T, 3, 3> add(const matrix<T, 3, 3>& x, const matrix<T, 3, 3>& y)
+{
+	return
+		{{
+			x[0] + y[0],
+			x[1] + y[1],
+			x[2] + y[2]
+		}};
+}
+
+template <class T>
+matrix<T, 4, 4> add(const matrix<T, 4, 4>& x, const matrix<T, 4, 4>& y)
+{
+	return
+		{{
+			x[0] + y[0],
+			x[1] + y[1],
+			x[2] + y[2],
+			x[3] + y[3]
+		}};
+}
+
+template <class T, std::size_t N, std::size_t M>
+inline matrix<T, N, M> operator+(const matrix<T, N, M>& x, const matrix<T, N, M>& y)
+{
+	return add(x, y);
+}
 
 template <class T>
 T determinant(const matrix<T, 2, 2>& m)
@@ -378,6 +453,45 @@ matrix<T, 4, 4> outer_product(const vector<T, 4>& c, const vector<T, 4> r)
 			 {c[0] * r[2], c[1] * r[2], c[2] * r[2], c[3] * r[2]},
 			 {c[0] * r[3], c[1] * r[3], c[2] * r[3], c[3] * r[3]}
 		}};
+}
+
+template <class T>
+matrix<T, 2, 2> sub(const matrix<T, 2, 2>& x, const matrix<T, 2, 2>& y)
+{
+	return
+		{{
+			x[0] - y[0],
+			x[1] - y[1]
+		}};
+}
+
+template <class T>
+matrix<T, 3, 3> sub(const matrix<T, 3, 3>& x, const matrix<T, 3, 3>& y)
+{
+	return
+		{{
+			x[0] - y[0],
+			x[1] - y[1],
+			x[2] - y[2]
+		}};
+}
+
+template <class T>
+matrix<T, 4, 4> sub(const matrix<T, 4, 4>& x, const matrix<T, 4, 4>& y)
+{
+	return
+		{{
+			x[0] - y[0],
+			x[1] - y[1],
+			x[2] - y[2],
+			x[3] - y[3]
+		}};
+}
+
+template <class T, std::size_t N, std::size_t M>
+inline matrix<T, N, M> operator-(const matrix<T, N, M>& x, const matrix<T, N, M>& y)
+{
+	return sub(x, y);
 }
 
 template <class T>
