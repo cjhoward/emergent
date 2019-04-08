@@ -108,7 +108,6 @@
 #include <emergent/math/fundamental-vector-types.hpp>
 #include <emergent/math/fundamental-matrix-types.hpp>
 #include <emergent/math/glm.hpp>
-#include <emergent/math/hash.hpp>
 #include <emergent/math/interpolation.hpp>
 #include <emergent/math/math.hpp>
 #include <emergent/math/matrix-operations.hpp>
