@@ -123,6 +123,19 @@ template <class T, std::size_t N, std::size_t M>
 matrix<T, N, M> operator*(T s, const matrix<T, N, M>& m);
 ///@}
 
+/**
+ * Creates an orthographic projection matrix.
+ *
+ * @param left Distance to the left clipping plane.
+ * @param right Distance to the right clipping plane.
+ * @param bottom Distance to the bottom clipping plane.
+ * @param top Distance to the top clipping plane.
+ * @param z_near Distance to the near clipping plane.
+ * @param z_far Distance to the far clipping plane.
+ * @return Orthographic projection matrix.
+ */
+template <class T>
+matrix<T, 4, 4> ortho(T left, T right, T bottom, T top, T z_near, T z_far);
 
 /**
  * Calculates the outer product of a pair of vectors.
@@ -138,6 +151,18 @@ matrix<T, 3, 3> outer_product(const vector<T, 3>& c, const vector<T, 3>& r);
 template <class T>
 matrix<T, 4, 4> outer_product(const vector<T, 4>& c, const vector<T, 4> r);
 ///@}
+
+/**
+ * Creates a perspective projection matrix.
+ *
+ * @param vertical_fov Vertical field of view angle, in radians.
+ * @param aspect_ratio Aspect ratio which determines the horizontal field of view.
+ * @param z_near Distance to the near clipping plane.
+ * @param z_far Distance to the far clipping plane.
+ * @return Perspective projection matrix.
+ */
+template <class T>
+matrix<T, 4, 4> perspective(T vertical_fov, T aspect_ratio, T z_near, T z_far);
 
 /**
  * Subtracts a matrix from another matrix.
@@ -423,6 +448,18 @@ inline matrix<T, N, M> operator*(T s, const matrix<T, N, M>& m)
 }
 
 template <class T>
+matrix<T, 4, 4> ortho(T left, T right, T bottom, T top, T z_near, T z_far)
+{
+	return
+		{{
+			 {T(2) / (right - left), T(0), T(0), -((right + left) / (right - left))},
+			 {T(0), T(2) / (top - bottom), T(0), -((top + bottom) / (top - bottom))},
+			 {T(0), T(0), T(-2) / (z_far - z_near), -((z_far + z_near) / (z_far - z_near))},
+			 {T(0), T(0), T(0), T(1)}
+		}};
+}
+
+template <class T>
 matrix<T, 2, 2> outer_product(const vector<T, 2>& c, const vector<T, 2>& r)
 {
 	return
@@ -452,6 +489,21 @@ matrix<T, 4, 4> outer_product(const vector<T, 4>& c, const vector<T, 4> r)
 			 {c[0] * r[1], c[1] * r[1], c[2] * r[1], c[3] * r[1]},
 			 {c[0] * r[2], c[1] * r[2], c[2] * r[2], c[3] * r[2]},
 			 {c[0] * r[3], c[1] * r[3], c[2] * r[3], c[3] * r[3]}
+		}};
+}
+
+template <class T>
+matrix<T, 4, 4> perspective(T vertical_fov, T aspect_ratio, T z_near, T z_far)
+{
+	T half_fov = vertical_fov * T(0.5);
+	T f = std::cos(half_fov) / std::sin(half_fov);
+
+	return
+		{{
+			 {f / aspect_ratio, T(0), T(0), T(0)},
+			 {T(0), f, T(0), T(0)},
+			 {T(0), T(0), (z_far + z_near) / (z_near - z_far), (T(2) * z_near * z_far) / (z_near - z_far)},
+			 {T(0), T(0), T(-1), T(0)}
 		}};
 }
 
