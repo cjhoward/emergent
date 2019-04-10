@@ -27,18 +27,23 @@
  *
  * Animation-related classes.
  */
+///@addtogroup animation
+///@{
 #include <emergent/animation/animation-channel.hpp>
 #include <emergent/animation/animation-clip.hpp>
 #include <emergent/animation/animation.hpp>
 #include <emergent/animation/animator.hpp>
 #include <emergent/animation/step-interpolator.hpp>
 #include <emergent/animation/tween.hpp>
+///@}
 
 /**
  * @defgroup geometry Geometry
  *
  * Computational geometry
  */
+///@addtogroup geometry
+///@{
 #include <emergent/geometry/aabb.hpp>
 #include <emergent/geometry/bounding-volume.hpp>
 #include <emergent/geometry/convex-hull.hpp>
@@ -50,12 +55,15 @@
 #include <emergent/geometry/split-view-frustum.hpp>
 #include <emergent/geometry/triangle-mesh.hpp>
 #include <emergent/geometry/view-frustum.hpp>
+///@}
 
 /**
  * @defgroup graphics Graphics
  *
  * High-level hardware-accelerated 3D graphics
  */
+///@addtogroup graphics
+///@{
 #include <emergent/graphics/ambient-light.hpp>
 #include <emergent/graphics/billboard.hpp>
 #include <emergent/graphics/bind-pose.hpp>
@@ -78,12 +86,15 @@
 #include <emergent/graphics/texture-cube.hpp>
 #include <emergent/graphics/texture-loader.hpp>
 #include <emergent/graphics/vertex-format.hpp>
+///@}
 
 /**
  * @defgroup input Input
  *
  * Input devices and events
  */
+///@addtogroup input
+///@{
 #include <emergent/input/arcball.hpp>
 #include <emergent/input/control.hpp>
 #include <emergent/input/control-set.hpp>
@@ -96,12 +107,15 @@
 #include <emergent/input/keyboard.hpp>
 #include <emergent/input/mouse.hpp>
 #include <emergent/input/scancode.hpp>
+///@}
 
 /**
  * @defgroup math Math
  *
  * Essential math functions and structures
  */
+///@addtogroup math
+///@{
 #include <emergent/math/angles.hpp>
 #include <emergent/math/easings.hpp>
 #include <emergent/math/constants.hpp>
@@ -124,12 +138,15 @@
 #include <emergent/math/types.hpp>
 #include <emergent/math/vector-operations.hpp>
 #include <emergent/math/vector-type.hpp>
+///@}
 
 /**
  * @defgroup utility Utility
  *
  * Utility classes
  */
+///@addtogroup utility
+///@{
 #include <emergent/utility/application.hpp>
 #include <emergent/utility/device-manager.hpp>
 #include <emergent/utility/event-dispatcher.hpp>
@@ -141,12 +158,15 @@
 #include <emergent/utility/step-scheduler.hpp>
 #include <emergent/utility/timer.hpp>
 #include <emergent/utility/unicode.hpp>
+///@}
 
 /**
  * @defgroup font Font
  *
  * Font-related classes
  */
+///@addtogroup font
+///@{
 #include <emergent/font/font.hpp>
 #include <emergent/font/font-metrics.hpp>
 #include <emergent/font/glyph.hpp>
@@ -156,15 +176,19 @@
 #include <emergent/font/texture-packer.hpp>
 #include <emergent/font/typeface.hpp>
 #include <emergent/font/unicode-range.hpp>
+///@}
 
 /**
  * @defgroup window Window
  *
  * Window management classes
  */
+///@addtogroup window
+///@{
 #include <emergent/window/display.hpp>
 #include <emergent/window/window-manager.hpp>
 #include <emergent/window/window.hpp>
+///@}
 
 #endif // EMERGENT_HPP
 
