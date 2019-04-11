@@ -1,6 +1,6 @@
 # Emergent &middot; [![GitHub license](https://img.shields.io/github/license/cjhoward/emergent.svg)](https://github.com/cjhoward/emergent/blob/master/COPYING) [![GitHub release](https://img.shields.io/github/release/cjhoward/emergent.svg)](https://github.com/cjhoward/emergent/releases/)
 
-Emergent is a cross-platform compatible C++ framework for real-time 3D applications.
+Emergent is a cross-platform compatible C++ framework for real-time 3D applications. It is currently being developed alongside [*Antkeeper*](https://antkeeper.com/), an ant colony simulation game which is powered by Emergent.
 
 ## Table of Contents
 
