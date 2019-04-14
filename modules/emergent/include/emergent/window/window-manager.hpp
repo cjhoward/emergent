@@ -67,11 +67,10 @@ public:
 	 * @param y Y-coordinate of the window position, when in windowed mode.
 	 * @param width Width of the window, when in windowed mode.
 	 * @param height Height of the window, when in windowed mode.
-	 * @param fullscreen Whether fullscreen mode is enabled. If fullscreen mode is enabled, the dimensions of the window will be equal to the dimensions of the parent display.
 	 * @param flags Window creation flags.
 	 * @return Pointer to the created window, or nullptr if the window creation failed.
 	 */
-	Window* createWindow(const char* title, int x, int y, int width, int height, bool fullscreen, unsigned int flags);
+	Window* createWindow(const char* title, int x, int y, int width, int height, unsigned int flags);
 
 	/**
 	 * Destroys a window.

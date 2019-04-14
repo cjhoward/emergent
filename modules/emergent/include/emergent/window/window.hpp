@@ -74,13 +74,6 @@ public:
 	void setBordered(bool bordered);
 
 	/**
-	 * Enables or disables fullscreen mode.
-	 *
-	 * @param fullscreen Whether to enable fullscreen mode.
-	 */
-	void setFullscreen(bool fullscreen);
-
-	/**
 	 * Enables or disables v-sync.
 	 *
 	 * @param vsync Whether to enable v-sync.

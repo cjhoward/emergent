@@ -33,9 +33,9 @@ WindowManager::~WindowManager()
 	osInterface = nullptr;
 }
 
-Window* WindowManager::createWindow(const char* title, int x, int y, int width, int height, bool fullscreen, unsigned int flags)
+Window* WindowManager::createWindow(const char* title, int x, int y, int width, int height, unsigned int flags)
 {
-	void* data = osInterface->openWindow(title, x, y, width, height, fullscreen, flags);
+	void* data = osInterface->openWindow(title, x, y, width, height, flags);
 	if (data == nullptr)
 	{
 		return nullptr;

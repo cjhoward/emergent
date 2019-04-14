@@ -112,18 +112,16 @@ private:
 	 * @param y Y-coordinate of the window position, when in windowed mode.
 	 * @param width Width of the window, when in windowed mode.
 	 * @param height Height of the window, when in windowed mode.
-	 * @param fullscreen Whether fullscreen mode is enabled. If fullscreen mode is enabled, the dimensions of the window will be equal to the dimensions of the parent display.
 	 * @param flags Window creation flags.
 	 * @return OS interface-specific window data.
 	 */
-	virtual void* openWindow(const char* title, int x, int y, int width, int height, bool fullscreen, unsigned int flags) = 0;
+	virtual void* openWindow(const char* title, int x, int y, int width, int height, unsigned int flags) = 0;
 	virtual void closeWindow(Window* window) = 0;
 	virtual void setWindowTitle(Window* window, const char* title) = 0;
 	virtual void setWindowPosition(Window* window, int x, int y) = 0;
 	virtual void setWindowDimensions(Window* window, int width, int height) = 0;
 	virtual void setWindowResizable(Window* window, bool resizable) = 0;
 	virtual void setWindowBordered(Window* window, bool bordered) = 0;
-	virtual void setWindowFullscreen(Window* window, bool fullscreen) = 0;
 	virtual void setWindowVSync(Window* window, bool vsync) = 0;
 	virtual void setWindowInputGrabbed(Window* window, bool grabbed) = 0;
 	virtual void makeWindowCurrent(Window* window) = 0;

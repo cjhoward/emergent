@@ -62,11 +62,6 @@ void Window::setBordered(bool bordered)
 	windowManager->getOSInterface()->setWindowBordered(this, bordered);
 }
 
-void Window::setFullscreen(bool fullscreen)
-{
-	windowManager->getOSInterface()->setWindowFullscreen(this, fullscreen);
-}
-
 void Window::setVSync(bool vsync)
 {
 	windowManager->getOSInterface()->setWindowVSync(this, vsync);

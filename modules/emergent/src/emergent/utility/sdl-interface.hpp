@@ -86,7 +86,7 @@ private:
 	 * @throw std::runtime_error Failed to initialize OpenGL.
 	 * @throw std::runtime_error OpenGL version X.Y not supported.
 	 */
-	virtual void* openWindow(const char* title, int x, int y, int width, int height, bool fullscreen, unsigned int flags);
+	virtual void* openWindow(const char* title, int x, int y, int width, int height, unsigned int flags);
 
 	virtual void closeWindow(Window* window);
 	virtual void setWindowTitle(Window* window, const char* title);
@@ -94,7 +94,6 @@ private:
 	virtual void setWindowDimensions(Window* window, int width, int height);
 	virtual void setWindowResizable(Window* window, bool resizable);
 	virtual void setWindowBordered(Window* window, bool bordered);
-	virtual void setWindowFullscreen(Window* window, bool fullscreen);
 	virtual void setWindowVSync(Window* window, bool vsync);
 	virtual void setWindowInputGrabbed(Window* window, bool grabbed);
 	virtual void makeWindowCurrent(Window* window);

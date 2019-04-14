@@ -492,7 +492,7 @@ const char* SDLInterface::getClipboardText() const
 	return nullptr;
 }
 
-void* SDLInterface::openWindow(const char* title, int x, int y, int width, int height, bool fullscreen, unsigned int flags)
+void* SDLInterface::openWindow(const char* title, int x, int y, int width, int height, unsigned int flags)
 {
 	int display = 0;
 	SDL_Rect bounds;
@@ -500,48 +500,24 @@ void* SDLInterface::openWindow(const char* title, int x, int y, int width, int h
 	SDL_DisplayMode mode;
 	SDL_GetCurrentDisplayMode(display, &mode);
 
-	int windowedX = x;
-	int windowedY = y;
-	int windowedWidth = width;
-	int windowedHeight = height;
-	int fullscreenX = bounds.x;
-	int fullscreenY = bounds.y;
-	int fullscreenWidth = mode.w;
-	int fullscreenHeight = mode.h;
-
 	// Determine window flags
 	Uint32 sdlFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
-	if (fullscreen)
-	{
-		sdlFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_BORDERLESS;
-		x = fullscreenX;
-		y = fullscreenY;
-		width = fullscreenWidth;
-		height = fullscreenHeight;
-	}
-	else
-	{
-		x = windowedX;
-		y = windowedY;
-		width = windowedWidth;
-		height = windowedHeight;
 
-		if (flags & WindowFlag::RESIZABLE)
-		{
-			sdlFlags |= SDL_WINDOW_RESIZABLE;
-		}
-		if (flags & WindowFlag::BORDERLESS)
-		{
-			sdlFlags |= SDL_WINDOW_BORDERLESS;
-		}
-		if (flags & WindowFlag::MINIMIZED)
-		{
-			sdlFlags |= SDL_WINDOW_MINIMIZED;
-		}
-		if (flags & WindowFlag::MAXIMIZED)
-		{
-			sdlFlags |= SDL_WINDOW_MAXIMIZED;
-		}
+	if (flags & WindowFlag::RESIZABLE)
+	{
+		sdlFlags |= SDL_WINDOW_RESIZABLE;
+	}
+	if (flags & WindowFlag::BORDERLESS)
+	{
+		sdlFlags |= SDL_WINDOW_BORDERLESS;
+	}
+	if (flags & WindowFlag::MINIMIZED)
+	{
+		sdlFlags |= SDL_WINDOW_MINIMIZED;
+	}
+	if (flags & WindowFlag::MAXIMIZED)
+	{
+		sdlFlags |= SDL_WINDOW_MAXIMIZED;
 	}
 
 	// Create SDL window
@@ -649,44 +625,6 @@ void SDLInterface::setWindowBordered(Window* window, bool bordered)
 {
 	WindowData* data = static_cast<WindowData*>(window->getWindowData());
 	SDL_SetWindowBordered(data->window, (bordered) ? SDL_TRUE : SDL_FALSE);
-}
-
-void SDLInterface::setWindowFullscreen(Window* window, bool fullscreen)
-{
-	WindowData* data = static_cast<WindowData*>(window->getWindowData());
-
-	if (!fullscreen)
-	{
-		SDL_HideWindow(data->window);
-		SDL_SetWindowFullscreen(data->window, 0);
-		SDL_SetWindowSize(data->window, data->width, data->height);
-		SDL_SetWindowResizable(data->window, (window->isResizable()) ? SDL_TRUE : SDL_FALSE);
-		SDL_SetWindowBordered(data->window, (window->hasBorder()) ? SDL_TRUE : SDL_FALSE);
-		SDL_SetWindowPosition(data->window, data->x, data->y);
-		SDL_ShowWindow(data->window);
-		SDL_RaiseWindow(data->window);
-	}
-	else
-	{
-		// Store windowed mode position and size
-		SDL_GetWindowPosition(data->window, &data->x, &data->y);
-		SDL_GetWindowSize(data->window, &data->width, &data->height);
-
-		int display = SDL_GetWindowDisplayIndex(data->window);
-		SDL_Rect bounds;
-		SDL_GetDisplayBounds(display, &bounds);
-		SDL_DisplayMode mode;
-		SDL_GetCurrentDisplayMode(display, &mode);
-
-		//SDL_HideWindow(data->window);
-		SDL_SetWindowBordered(data->window, SDL_FALSE);
-		SDL_SetWindowResizable(data->window, SDL_FALSE);
-		SDL_SetWindowPosition(data->window, bounds.x, bounds.y);
-		SDL_SetWindowSize(data->window, mode.w, mode.h);
-		SDL_SetWindowFullscreen(data->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-		//SDL_ShowWindow(data->window);
-		//SDL_RaiseWindow(data->window);
-	}
 }
 
 void SDLInterface::setWindowVSync(Window* window, bool vsync)
